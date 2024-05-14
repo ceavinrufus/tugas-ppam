@@ -1,7 +1,8 @@
 {
   "expo": {
     "name": "Virtuoso",
-    "slug": "tugas-ppam",
+    "scheme": "virtuoso",
+    "slug": "virtuoso",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -23,12 +24,14 @@
       "package": "com.ceavinrufus.tugasppam"
     },
     "web": {
+      "bundler": "metro",
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
         "projectId": "8f85afb5-ff80-4283-a219-0165bc17d513"
       }
-    }
+    },
+    "plugins": ["expo-router"]
   }
 }
