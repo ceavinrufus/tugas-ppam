@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "tugas-ppam",
+    "name": "Virtuoso",
     "slug": "tugas-ppam",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -11,9 +11,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
@@ -21,10 +19,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.ceavinrufus.tugasppam"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "8f85afb5-ff80-4283-a219-0165bc17d513"
+      }
     }
   }
 }
