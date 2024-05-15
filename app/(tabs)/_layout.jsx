@@ -11,10 +11,12 @@ import profile from "../../assets/icons/profile.png";
 
 const TabIcon = ({ icon, color, name, focused }) => {
   return (
-    <View className="items-center justify-center space-y-1 border-[#FACC2D]">
-      <View
-        className={`${focused ? "bg-[#FACC2D]" : "bg-white"} rounded-sm p-1`}
-      >
+    <View
+      className={`${
+        focused && "border-t-2 border-yellow"
+      } flex-1 items-center justify-center space-y-1`}
+    >
+      <View className={`${focused ? "bg-yellow" : "bg-white"} rounded-sm p-1`}>
         <Image
           source={icon}
           resizeMode="contain"
