@@ -17,7 +17,9 @@ export default function CustomButton({
       }`}
       disabled={isLoading}
     >
-      <Text className={`text-white ${textStyles}`}>{title}</Text>
+      <Text className={`text-white font-RalewayBold ${textStyles}`}>
+        {title}
+      </Text>
     </TouchableOpacity>
   );
 }
