@@ -10,7 +10,9 @@ module.exports = {
         grey: "#807E78",
       },
       fontFamily: {
-        Raleway: "Raleway",
+        RalewayBold: "Raleway_700Bold",
+        ProximaNovaReg: "ProximaNovaReg",
+        ProximaNovaBold: "ProximaNovaBold",
       },
     },
   },
