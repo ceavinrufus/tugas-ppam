@@ -5,12 +5,15 @@ import FormField from "../../components/FormField";
 import CustomButton from "../../components/CustomButton";
 import { Link } from "expo-router";
 import TextProximaNovaReg from "../../components/TextProximaNovaReg";
+import { router } from "expo-router";
 
 const Login = () => {
   const [form, setForm] = useState({ email: "", password: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const submit = () => {};
+  const submit = () => {
+    router.push("/focus");
+  };
   return (
     <SafeAreaView className="">
       <ScrollView

@@ -8,6 +8,7 @@ import analytics from "../../assets/icons/analytics.png";
 import focus from "../../assets/icons/focus.png";
 import leaderboard from "../../assets/icons/leaderboard.png";
 import profile from "../../assets/icons/profile.png";
+import HamburgerButton from "../../components/HamburgerButton";
 
 const TabIcon = ({ icon, color, name, focused }) => {
   return (
@@ -28,7 +29,9 @@ const TabIcon = ({ icon, color, name, focused }) => {
     </View>
   );
 };
+
 const TabsLayout = () => {
+  const handleMenuPress = () => {};
   return (
     <>
       <LinearGradient colors={["#C2D9FF", "#DFEBFF"]} style={{ flex: 1 }}>
@@ -41,6 +44,9 @@ const TabsLayout = () => {
               backgroundColor: "transparent",
               elevation: 0,
               height: 73,
+            },
+            headerStyle: {
+              backgroundColor: "#C2D9FF",
             },
           }}
         >
@@ -78,7 +84,7 @@ const TabsLayout = () => {
             name="focus"
             options={{
               title: "Focus",
-              headerShown: false,
+              headerShown: true,
               tabBarIcon: ({ color, focused }) => (
                 <TabIcon
                   icon={focus}
@@ -86,6 +92,9 @@ const TabsLayout = () => {
                   name={"Focus"}
                   focused={focused}
                 />
+              ),
+              headerRight: () => (
+                <HamburgerButton onPress={handleMenuPress} /> // Menu
               ),
             }}
           />
