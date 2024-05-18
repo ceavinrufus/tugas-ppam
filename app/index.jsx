@@ -31,7 +31,7 @@ export default function App() {
             <CustomButton
               title={"Log in"}
               handlePress={() => {
-                router.push("/sign-in");
+                router.push("/login");
               }}
               containerStyles="w-full mt-7"
               textStyles={"font-ProximaNovaBold"}
