@@ -7,7 +7,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-const TabButtons = ({ buttons, selectedTab, setSelectedTab }) => {
+const TabButtons = ({ buttons, setSelectedTab }) => {
   const [dimensions, setDimensions] = useState({ height: 30, width: 300 });
 
   const buttonWidth = dimensions.width / buttons.length;

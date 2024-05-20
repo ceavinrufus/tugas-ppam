@@ -10,13 +10,17 @@ const FormField = ({
   placeholder,
   handleChangeText,
   otherStyles,
+  required = true,
   ...props
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
     <View className={`space-y-2 ${otherStyles}`}>
-      <Text className="text-base font-ProximaNovaMedium">{title}*</Text>
+      <Text className="text-base font-ProximaNovaMedium">
+        {title}
+        {required && <Text className="text-[#FF3528]">*</Text>}
+      </Text>
 
       <View className="w-full h-11 px-4 bg-black-100 border border-lightgrey rounded-xl focus:border-yellow flex-row items-center">
         <TextInput
