@@ -8,7 +8,10 @@ import analytics from "../../assets/icons/analytics.png";
 import focus from "../../assets/icons/focus.png";
 import leaderboard from "../../assets/icons/leaderboard.png";
 import profile from "../../assets/icons/profile.png";
-
+import HamburgerButton from "../../components/HamburgerButton";
+import { FontAwesome5 } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 const TabIcon = ({ icon, color, name, focused }) => {
   return (
     <View
@@ -17,21 +20,22 @@ const TabIcon = ({ icon, color, name, focused }) => {
       } flex-1 items-center justify-center space-y-1`}
     >
       <View className={`${focused ? "bg-yellow" : "bg-white"} rounded-sm p-1`}>
-        <Image
-          source={icon}
-          resizeMode="contain"
-          tintColor={color}
-          className={`w-[26px] h-[26px]`}
-        />
+        {icon}
       </View>
       <Text className={`${focused} text-[10px]`}>{name}</Text>
     </View>
   );
 };
+
 const TabsLayout = () => {
+  const handleMenuPress = () => {};
   return (
     <>
-      <LinearGradient colors={["#C2D9FF", "#DFEBFF"]} style={{ flex: 1 }}>
+      <LinearGradient
+        colors={["#C2D9FF", "#DFEBFF"]}
+        locations={[0.95, 1]}
+        style={{ flex: 1 }}
+      >
         <Tabs
           screenOptions={{
             tabBarShowLabel: false,
@@ -42,6 +46,9 @@ const TabsLayout = () => {
               elevation: 0,
               height: 73,
             },
+            headerStyle: {
+              backgroundColor: "#C2D9FF",
+            },
           }}
         >
           <Tabs.Screen
@@ -51,7 +58,13 @@ const TabsLayout = () => {
               headerShown: false,
               tabBarIcon: ({ color, focused }) => (
                 <TabIcon
-                  icon={spaces}
+                  icon={
+                    <MaterialCommunityIcons
+                      name="account-group"
+                      size={24}
+                      color="black"
+                    />
+                  }
                   color={color}
                   name={"Spaces"}
                   focused={focused}
@@ -66,7 +79,13 @@ const TabsLayout = () => {
               headerShown: false,
               tabBarIcon: ({ color, focused }) => (
                 <TabIcon
-                  icon={analytics}
+                  icon={
+                    <MaterialCommunityIcons
+                      name="google-analytics"
+                      size={24}
+                      color="black"
+                    />
+                  }
                   color={color}
                   name={"Analytics"}
                   focused={focused}
@@ -78,14 +97,23 @@ const TabsLayout = () => {
             name="focus"
             options={{
               title: "Focus",
-              headerShown: false,
+              headerShown: true,
               tabBarIcon: ({ color, focused }) => (
                 <TabIcon
-                  icon={focus}
+                  icon={
+                    <MaterialCommunityIcons
+                      name="av-timer"
+                      size={24}
+                      color="black"
+                    />
+                  }
                   color={color}
                   name={"Focus"}
                   focused={focused}
                 />
+              ),
+              headerRight: () => (
+                <HamburgerButton onPress={handleMenuPress} /> // Menu
               ),
             }}
           />
@@ -96,7 +124,9 @@ const TabsLayout = () => {
               headerShown: false,
               tabBarIcon: ({ color, focused }) => (
                 <TabIcon
-                  icon={leaderboard}
+                  icon={
+                    <MaterialIcons name="leaderboard" size={24} color="black" />
+                  }
                   color={color}
                   name={"Leaderboard"}
                   focused={focused}
@@ -111,7 +141,9 @@ const TabsLayout = () => {
               headerShown: false,
               tabBarIcon: ({ color, focused }) => (
                 <TabIcon
-                  icon={profile}
+                  icon={
+                    <FontAwesome5 name="user-alt" size={24} color="black" />
+                  }
                   color={color}
                   name={"Profile"}
                   focused={focused}
