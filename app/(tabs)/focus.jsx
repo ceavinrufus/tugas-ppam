@@ -1,21 +1,14 @@
-import {
-  ScrollView,
-  Text,
-  View,
-  Modal,
-  TouchableOpacity,
-  StyleSheet,
-  Pressable,
-  Alert,
-} from "react-native";
+import { ScrollView, Text, View, Pressable } from "react-native";
+
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import TabButtons from "../../components/TabButtons";
 import CustomButton from "../../components/CustomButton";
-import { ModalContent, ModalTitle, SlideAnimation } from "react-native-modals";
+
 import { MaterialIcons } from "@expo/vector-icons";
-import FormField from "../../components/FormField";
+import TaskModal from "../../components/TaskModal";
+
 const Focus = () => {
   const [selectedTab1, setSelectedTab1] = useState(0);
   const [selectedTab2, setSelectedTab2] = useState(0);
@@ -87,7 +80,11 @@ const Focus = () => {
             </View>
           </LinearGradient>
           <View className="mt-2">
-            <TabButtons buttons={buttons2} setSelectedTab={setSelectedTab2} />
+            {/* <TabButtons
+              buttons={buttons2}
+              setSelectedTab={setSelectedTab2}
+              otherTextStyles={"text-sm"}
+            /> */}
             {/* <CalendarComponent /> */}
             <View className="flex-row gap-2 mt-2 flex-1">
               <View className="flex-1 items-center justify-center rounded-md h-[45px] bg-secondary">
@@ -117,40 +114,20 @@ const Focus = () => {
               textStyles={"font-ProximaNovaBold"}
               handlePress={() => setModalVisible(true)}
             />
-          </View>
-          <Modal
-            onRequestClose={() => {
-              Alert.alert("Modal has been closed.");
-              setModalVisible(!modalVisible);
-            }}
-            transparent={true}
-            visible={modalVisible}
-          >
-            <View className="flex-1 justify-center">
-              <View
-                style={styles.modalView}
-                className="bg-white border border-primary mx-[30px] rounded-xl px-5 py-10"
-              >
-                <FormField title={"Task Name"} />
-                <FormField
-                  title={"Notes"}
-                  required={false}
-                  otherStyles="mt-4"
-                />
-                <CustomButton
-                  containerStyles={"mt-6 border-primary border"}
-                  title={"Save Changes"}
-                  handlePress={() => setModalVisible(!modalVisible)}
-                />
-                <CustomButton
-                  containerStyles={"bg-white mt-2 border-primary border"}
-                  textStyles={"text-primary"}
-                  title={"Cancel"}
-                  handlePress={() => setModalVisible(!modalVisible)}
-                />
-              </View>
+            <View className="border-t border-primary my-3"></View>
+            <View className="flex-row items-center mb-3 justify-center border-secondary border-2 px-4 rounded-xl h-[40px]">
+              <Text className="text-primary font-ProximaNovaReg text-xs">
+                <Text className="font-ProximaNovaBold">
+                  Today's Focus Session:{" "}
+                </Text>
+                3 sessions / 01 : 15 : 00
+              </Text>
             </View>
-          </Modal>
+          </View>
+          <TaskModal
+            modalVisible={modalVisible}
+            setModalVisible={setModalVisible}
+          />
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -158,15 +135,3 @@ const Focus = () => {
 };
 
 export default Focus;
-const styles = StyleSheet.create({
-  modalView: {
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-});
