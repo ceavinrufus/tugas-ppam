@@ -32,6 +32,14 @@ const ProfileLayout = () => {
             headerShown: true,
             headerStyle: { backgroundColor: "#C2D9FF" },
             headerTitle: "Badges",
+            headerLeft: () => (
+              <CustomButton 
+                title={""}
+                handlePress={() => {router.push("/profile");}} 
+                icon={<AntDesign name="arrowleft" size={25} color="black" />}
+                containerStyles="mt-3 h-[30px] w-[40px] rounded-md bg-[#C2D9FF]"
+              />
+            ),
           }}
         />
         <Stack.Screen

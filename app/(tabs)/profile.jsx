@@ -30,8 +30,8 @@ const Profile = () => {
             locations={[0, 0, 0, 1]}
             style={{ flex: 1, padding: 20 }}
           >
-            <Text className="text-1xl font-ProximaNovaBold color-[#190482] mt-1">Marcheline Fanni</Text>
-            <Text className="text-1xl font-ProximaNova mt-1">A penultimate year student in Institut Teknologi Bandung who loves learning new things and wants to keep her life organized.</Text>
+            <Text className="text-base font-ProximaNovaBold color-[#190482] mt-1">Marcheline Fanni</Text>
+            <Text className="text-xs font-ProximaNova mt-1">A penultimate year student in Institut Teknologi Bandung who loves learning new things and wants to keep her life organized.</Text>
             <View className="flex-row gap-2 mt-1 flex-1">
               <View className="flex-1">
                 <CustomButton
@@ -102,6 +102,7 @@ const Profile = () => {
                     textStyles={"font-RalewayBold text-2xs"}
                   />
           </View>
+          <View className="mt-4"/>
         </View>
       </ScrollView>
     </SafeAreaView>
