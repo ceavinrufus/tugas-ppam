@@ -2,6 +2,9 @@ import { Text, View } from "react-native";
 import React from "react";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { Redirect, router } from "expo-router";
+import CustomButton from "../../components/CustomButton";
+import { MaterialIcons, AntDesign } from "@expo/vector-icons";
 
 const ProfileLayout = () => {
   return (
@@ -13,6 +16,14 @@ const ProfileLayout = () => {
             headerShown: true,
             headerStyle: { backgroundColor: "#C2D9FF" },
             headerTitle: "Edit Profile",
+            headerLeft: () => (
+              <CustomButton 
+                title={""}
+                handlePress={() => {router.push("/profile");}} 
+                icon={<AntDesign name="arrowleft" size={25} color="black" />}
+                containerStyles="mt-3 h-[30px] w-[40px] rounded-md bg-[#C2D9FF]"
+              />
+            ),
           }}
         />
         <Stack.Screen
@@ -21,6 +32,22 @@ const ProfileLayout = () => {
             headerShown: true,
             headerStyle: { backgroundColor: "#C2D9FF" },
             headerTitle: "Badges",
+          }}
+        />
+        <Stack.Screen
+          name="changepassword"
+          options={{
+            headerShown: true,
+            headerStyle: { backgroundColor: "#C2D9FF" },
+            headerTitle: "Change Password",
+            headerLeft: () => (
+              <CustomButton 
+                title={""}
+                handlePress={() => {router.push("/edit");}} 
+                icon={<AntDesign name="arrowleft" size={25} color="black" />}
+                containerStyles="mt-3 h-[30px] w-[40px] rounded-md bg-[#C2D9FF]"
+              />
+            ),
           }}
         />
       </Stack>
