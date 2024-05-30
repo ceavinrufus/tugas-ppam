@@ -3,6 +3,7 @@ import React from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { Foundation } from "@expo/vector-icons";
+import TextProximaNovaReg from "../TextProximaNovaReg";
 
 function StatCard({ otherClassName, children }) {
   return (
@@ -26,22 +27,29 @@ export default function ProfileCard({ user }) {
     >
       <View className="flex flex-col border rounded-lg border-[#FACC2D] p-3">
         <View className="flex-row justify-start">
-          <View>
+          <View className="border-primary border overflow-hidden mr-4 rounded-full">
             <Image
               source={{ uri: user.image }}
-              className="w-12 h-12 rounded-full mr-4"
+              resizeMode="cover"
+              className="h-[50px] w-[50px]"
             />
           </View>
           <View className="flex flex-col">
-            <Text className="text-md font-bold text-primary">{user.name}</Text>
+            <Text className="text-[14px] font-ProximaNovaBold text-primary">
+              {user.name}
+            </Text>
             <View className="flex flex-row py-1 justify-start">
               <View className="items-center justify-center rounded-md flex-row bg-[#FACC2D] py-1 px-2 mr-2">
                 <Foundation size={12} name="sheriff-badge" color="black" />
-                <Text className="ml-1 text-xs">{user.badges} badges</Text>
+                <TextProximaNovaReg className="ml-1 text-xs">
+                  {user.badges} badges
+                </TextProximaNovaReg>
               </View>
               <View className="items-center justify-center rounded-md flex-row bg-[#FACC2D] py-1 px-2 mr-2">
                 <FontAwesome6 size={10} name="bolt" color="black" />
-                <Text className="ml-1 text-xs">{user.sessions} sessions</Text>
+                <TextProximaNovaReg className="ml-1 text-xs">
+                  {user.sessions} sessions
+                </TextProximaNovaReg>
               </View>
             </View>
           </View>
@@ -50,16 +58,22 @@ export default function ProfileCard({ user }) {
         {/* Todo: Blom dibikin dinamis */}
         <View className="flex flex-row justify-between mt-2">
           <StatCard otherClassName={"px-5"}>
-            <Text className="text-xs">Daily Rank</Text>
-            <Text className="text-sm font-bold">1</Text>
+            <TextProximaNovaReg className="text-xs ">
+              Daily Rank
+            </TextProximaNovaReg>
+            <Text className="text-xl font-ProximaNovaBold">1</Text>
           </StatCard>
           <StatCard otherClassName={"px-4"}>
-            <Text className="text-xs">Weekly Rank</Text>
-            <Text className="text-sm font-bold">27</Text>
+            <TextProximaNovaReg className="text-xs">
+              Weekly Rank
+            </TextProximaNovaReg>
+            <Text className="text-xl font-ProximaNovaBold">27</Text>
           </StatCard>
           <StatCard otherClassName={"px-3"}>
-            <Text className="text-xs">Monthly Rank</Text>
-            <Text className="text-sm font-bold">38</Text>
+            <TextProximaNovaReg className="text-xs">
+              Monthly Rank
+            </TextProximaNovaReg>
+            <Text className="text-xl font-ProximaNovaBold">38</Text>
           </StatCard>
         </View>
       </View>
