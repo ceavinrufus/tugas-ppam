@@ -26,9 +26,9 @@ const TabIcon = ({ icon, color, name, focused }) => {
 const TabsLayout = () => {
   let [fontsLoaded, error] = useFonts({
     Raleway_700Bold,
-    ProximaNovaReg: require("../../assets/fonts/Proxima Nova Regular.otf"),
-    ProximaNovaBold: require("../../assets/fonts/Proxima Nova Bold.otf"),
-    ProximaNovaMedium: require("../../assets/fonts/Proxima Nova Semibold.otf"),
+    ProximaNovaReg: require("../../assets/fonts/ProximaNovaRegular.otf"),
+    ProximaNovaBold: require("../../assets/fonts/ProximaNovaBold.otf"),
+    ProximaNovaMedium: require("../../assets/fonts/ProximaNovaSemibold.otf"),
   });
 
   useEffect(() => {
