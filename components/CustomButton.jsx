@@ -7,7 +7,8 @@ export default function CustomButton({
   containerStyles,
   textStyles,
   isLoading,
-  icon,
+  leftIcon,
+  rightIcon,
 }) {
   return (
     <TouchableOpacity
@@ -18,10 +19,11 @@ export default function CustomButton({
       }`}
       disabled={isLoading}
     >
-      {icon}
+      {leftIcon}
       <Text className={`text-white font-RalewayBold ${textStyles}`}>
         {title}
       </Text>
+      {rightIcon}
     </TouchableOpacity>
   );
 }

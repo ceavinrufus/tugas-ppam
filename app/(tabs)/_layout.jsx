@@ -6,7 +6,8 @@ import { useFonts, Raleway_700Bold } from "@expo-google-fonts/raleway";
 import HamburgerButton from "../../components/HamburgerButton";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons, AntDesign } from "@expo/vector-icons";
+import CustomButton from "../../components/CustomButton";
 
 const TabIcon = ({ icon, color, name, focused }) => {
   return (
@@ -62,6 +63,10 @@ const TabsLayout = () => {
             },
             headerStyle: {
               backgroundColor: "#C2D9FF",
+            },
+            headerTitleStyle: {
+              fontFamily: "ProximaNovaBold",
+              fontSize: 24,
             },
             headerLeftContainerStyle: {
               paddingLeft: 6,

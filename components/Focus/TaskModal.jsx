@@ -1,8 +1,8 @@
 import { StyleSheet, Text, View, Modal, Alert } from "react-native";
 import React, { useState } from "react";
 import { Dropdown } from "react-native-element-dropdown";
-import FormField from "./FormField";
-import CustomButton from "./CustomButton";
+import FormField from "../FormField";
+import CustomButton from "../CustomButton";
 
 const data = [
   { label: "Low", value: "1" },

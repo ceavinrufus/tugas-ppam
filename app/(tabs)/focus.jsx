@@ -5,20 +5,17 @@ import { LinearGradient } from "expo-linear-gradient";
 import TabButtons from "../../components/TabButtons";
 import CustomButton from "../../components/CustomButton";
 import { FontAwesome } from "@expo/vector-icons";
-import TasksContainer from "../../components/TasksContainer";
+import TasksContainer from "../../components/Focus/TasksContainer";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const Focus = () => {
   const [selectedTab1, setSelectedTab1] = useState(0);
-  const [selectedTab2, setSelectedTab2] = useState(0);
 
   const buttons1 = [
     { title: "Pomodoro" },
     { title: "Short Break" },
     { title: "Long Break" },
   ];
-
-  const buttons2 = [{ title: "Today" }, { title: "Calendar" }];
 
   function getDayName(date) {
     const days = [

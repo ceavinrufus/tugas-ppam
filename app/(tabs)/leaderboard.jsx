@@ -28,7 +28,7 @@ const Leaderboard = () => {
   return (
     <SafeAreaView>
       <View className="self-center px-4 w-[95%] h-full">
-        <View className="flex-1 flex-col my-6">
+        <View className="mt-[34px]">
           {/* User Leaderboard Card */}
           <ProfileCard user={user} />
           <SearchBar

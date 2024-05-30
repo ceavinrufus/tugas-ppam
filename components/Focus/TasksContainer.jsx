@@ -1,8 +1,8 @@
 import { View, Text, ScrollView } from "react-native";
 import React, { useRef, useState } from "react";
-import { tasks } from "../mocks/tasks";
+import { tasks } from "../../mocks/tasks";
 import MovableTask from "./Task";
-import CustomButton from "./CustomButton";
+import CustomButton from "../CustomButton";
 import { MaterialIcons } from "@expo/vector-icons";
 import TaskModal from "./TaskModal";
 import Animated, {
@@ -77,7 +77,7 @@ export default function TasksContainer() {
       <CustomButton
         title={"Add Task"}
         containerStyles="bg-primary flex-row space-x-2"
-        icon={<MaterialIcons name="add-circle" size={20} color="white" />}
+        leftIcon={<MaterialIcons name="add-circle" size={20} color="white" />}
         textStyles={"font-ProximaNovaBold"}
         handlePress={() => setModalVisible(true)}
       />
