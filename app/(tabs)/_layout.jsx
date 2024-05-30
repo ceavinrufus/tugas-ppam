@@ -75,7 +75,7 @@ const TabsLayout = () => {
             name="spaces"
             options={{
               title: "Spaces",
-              headerShown: false,
+              headerShown: true,
               tabBarIcon: ({ color, focused }) => (
                 <TabIcon
                   icon={
@@ -89,6 +89,11 @@ const TabsLayout = () => {
                   name={"Spaces"}
                   focused={focused}
                 />
+              ),
+              headerRight: () => (
+                <View className="py-[10px] mr-4 bg-gray-100 rounded-md">
+                  <HamburgerButton onPress={handleMenuPress} />
+                </View>
               ),
             }}
           />

@@ -20,7 +20,7 @@ const RankingCard = ({ rank, user }) => {
   }
   return (
     <LinearGradient
-      className={`flex flex-row mb-2 rounded-xl border ${rankBorder} overflow-hidden`}
+      className={`flex-row mb-2 rounded-xl border ${rankBorder} overflow-hidden`}
       colors={
         user.name == loggedInUser.name
           ? ["#C2D9FF", "#DFEBFF", "#FFFFFF"]
@@ -47,17 +47,17 @@ const RankingCard = ({ rank, user }) => {
       </View>
 
       {/* Info */}
-      <View className="justify-center ml-4">
-        <Text className="text-sm font-bold mb-1">{user.name}</Text>
-        <View className="flex flex-row items-center">
+      <View className="justify-center ml-4 flex-1">
+        <Text className="text-sm font-ProximaNovaBold mb-1">{user.name}</Text>
+        <View className="flex-row items-center">
           <Foundation size={12} name="sheriff-badge" color="black" />
-          <Text className="ml-1 text-xs">
+          <Text className="ml-2 text-xs font-ProximaNovaMedium">
             {user.badges} {user.badges > 1 ? "badges" : "badge"}
           </Text>
         </View>
-        <View className="flex flex-row items-center">
+        <View className="flex-row items-center">
           <FontAwesome6 size={10} name="bolt" color="black" />
-          <Text className="ml-1 text-xs">
+          <Text className="ml-2 text-xs font-ProximaNovaMedium">
             {user.sessions} {user.sessions > 1 ? "sessions" : "session"}
           </Text>
         </View>
