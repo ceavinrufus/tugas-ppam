@@ -63,6 +63,12 @@ const TabsLayout = () => {
             headerStyle: {
               backgroundColor: "#C2D9FF",
             },
+            headerLeftContainerStyle: {
+              paddingLeft: 6,
+            },
+            headerRightContainerStyle: {
+              paddingRight: 6,
+            },
           }}
         >
           <Tabs.Screen
@@ -127,7 +133,9 @@ const TabsLayout = () => {
                 />
               ),
               headerRight: () => (
-                <HamburgerButton onPress={handleMenuPress} /> // Menu
+                <View className="py-[10px] mr-4 bg-gray-100 rounded-md">
+                  <HamburgerButton onPress={handleMenuPress} />
+                </View>
               ),
             }}
           />
@@ -135,7 +143,7 @@ const TabsLayout = () => {
             name="leaderboard"
             options={{
               title: "Leaderboard",
-              headerShown: false,
+              headerShown: true,
               tabBarIcon: ({ color, focused }) => (
                 <TabIcon
                   icon={
@@ -145,6 +153,11 @@ const TabsLayout = () => {
                   name={"Leaderboard"}
                   focused={focused}
                 />
+              ),
+              headerRight: () => (
+                <View className="py-[10px] mr-4 bg-gray-100 rounded-md">
+                  <HamburgerButton onPress={handleMenuPress} />
+                </View>
               ),
             }}
           />
