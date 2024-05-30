@@ -1,17 +1,13 @@
 import { Text, View, Image } from "react-native";
-import React from "react";
-import { Tabs, Redirect } from "expo-router";
+import React, { useEffect } from "react";
+import { SplashScreen, Tabs, Redirect } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
-
-import spaces from "../../assets/icons/spaces.png";
-import analytics from "../../assets/icons/analytics.png";
-import focus from "../../assets/icons/focus.png";
-import leaderboard from "../../assets/icons/leaderboard.png";
-import profile from "../../assets/icons/profile.png";
+import { useFonts, Raleway_700Bold } from "@expo-google-fonts/raleway";
 import HamburgerButton from "../../components/HamburgerButton";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
+
 const TabIcon = ({ icon, color, name, focused }) => {
   return (
     <View
@@ -28,7 +24,25 @@ const TabIcon = ({ icon, color, name, focused }) => {
 };
 
 const TabsLayout = () => {
+  let [fontsLoaded, error] = useFonts({
+    Raleway_700Bold,
+    ProximaNovaReg: require("../../assets/fonts/Proxima Nova Regular.otf"),
+    ProximaNovaBold: require("../../assets/fonts/Proxima Nova Bold.otf"),
+    ProximaNovaMedium: require("../../assets/fonts/Proxima Nova Semibold.otf"),
+  });
+
+  useEffect(() => {
+    if (error) {
+      throw error;
+    }
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, error]);
+
   const handleMenuPress = () => {};
+
+  if (!fontsLoaded && !error) return null;
   return (
     <>
       <LinearGradient
