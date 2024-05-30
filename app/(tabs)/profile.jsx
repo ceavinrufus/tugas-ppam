@@ -12,22 +12,19 @@ const Profile = () => {
       <ScrollView>
         <View className="self-center px-4 w-[95%] h-full">
           <ProfileCard />
-          <Text className="text-2xl font-RalewayBold color-[#190482] my-2">
+          <Text className="text-2xl font-RalewayBold color-[#190482] mb-1">
             Account Settings
           </Text>
           <Menu />
-        </View>
-        <View className="mt-2">
           <CustomButton
             title={"Sign Out"}
             handlePress={() => {
               router.push("/");
             }}
-            containerStyles="mt-1 h-[40px] rounded-md"
+            containerStyles="mt-4 h-[40px] rounded-md"
             textStyles={"font-RalewayBold text-2xs"}
           />
         </View>
-        <View className="mt-4" />
       </ScrollView>
     </SafeAreaView>
   );

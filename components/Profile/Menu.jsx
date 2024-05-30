@@ -8,8 +8,8 @@ function MenuBox({ title, handlePress }) {
     <CustomButton
       title={title}
       handlePress={handlePress}
-      containerStyles="mt-1 h-[60px] flex-row rounded-md bg-[#FFFFFF] border border-[#D9D9D9] justify-between px-5"
-      textStyles={"font-ProximaNovaMedium text-2xs color-[#222222]"}
+      containerStyles="mt-2 h-[60px] flex-row rounded-xl border border-[#D9D9D9] bg-[#FFFFFF] justify-between px-5"
+      textStyles={"font-ProximaNovaMedium text-black"}
       rightIcon={
         <View className="justify-center">
           <TouchableOpacity onPress={handlePress}>
@@ -17,6 +17,13 @@ function MenuBox({ title, handlePress }) {
           </TouchableOpacity>
         </View>
       }
+      style={{
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+        elevation: 1,
+      }}
     />
   );
 }

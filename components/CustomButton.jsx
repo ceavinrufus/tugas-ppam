@@ -9,6 +9,7 @@ export default function CustomButton({
   isLoading,
   leftIcon,
   rightIcon,
+  style,
 }) {
   return (
     <TouchableOpacity
@@ -18,6 +19,7 @@ export default function CustomButton({
         isLoading && "opacity-50"
       }`}
       disabled={isLoading}
+      style={style}
     >
       {leftIcon}
       <Text className={`text-white font-RalewayBold ${textStyles}`}>
