@@ -1,25 +1,25 @@
-import { TextInput, View, Image, SafeAreaView, ScrollView } from "react-native";
+import { View, SafeAreaView, ScrollView } from "react-native";
 import React, { useState } from "react";
 import RankingCard from "../../components/Leaderboard/RankingCard";
 import ProfileCard from "../../components/Leaderboard/ProfileCard";
 import { user } from "../../mocks/user";
 import { globalRank } from "../../mocks/leaderboard";
-import { FontAwesome } from "@expo/vector-icons";
+import SearchBar from "../../components/SearchBar";
 
 const Leaderboard = () => {
   const [searchText, setSearchText] = useState("");
-  const [defaultRank, setDefaultRank] = useState(
+  const [defaultRanks, setDefaultRanks] = useState(
     globalRank.map((person, index) => ({
       ...person,
       rank: index + 1,
     }))
   );
-  const [rank, setRank] = useState(defaultRank);
+  const [ranks, setRanks] = useState(defaultRanks);
 
   const handleChangeText = (text) => {
     setSearchText(text);
-    setRank(
-      defaultRank.filter((person) =>
+    setRanks(
+      defaultRanks.filter((person) =>
         person.name.toLowerCase().includes(text.toLowerCase())
       )
     );
@@ -31,20 +31,14 @@ const Leaderboard = () => {
         <View className="flex-1 flex-col my-6">
           {/* User Leaderboard Card */}
           <ProfileCard user={user} />
-          <View className="w-full h-11 px-4 bg-[#E8E8E8] border border-lightgrey rounded-lg focus:border-yellow flex-row items-center">
-            <FontAwesome name="search" size={16} color="black" />
-            <TextInput
-              className="flex-1 font-ProximaNovaReg ml-2"
-              value={searchText}
-              selectionColor={"black"}
-              placeholder={"Search for users"}
-              placeholderTextColor={"#807E78"}
-              onChangeText={(text) => handleChangeText(text)}
-            />
-          </View>
+          <SearchBar
+            value={searchText}
+            placeholder={"Search for users"}
+            onChangeText={(text) => handleChangeText(text)}
+          />
           {/* Ranking */}
           <ScrollView style={{ marginTop: 16 }}>
-            {rank.map((user, index) => (
+            {ranks.map((user, index) => (
               <RankingCard key={index} rank={user.rank} user={user} />
             ))}
           </ScrollView>

@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { Dropdown } from "react-native-element-dropdown";
 import FormField from "./FormField";
 import CustomButton from "./CustomButton";
-// import { ModalContent, ModalTitle, SlideAnimation } from "react-native-modals";
 
 const data = [
   { label: "Low", value: "1" },
@@ -15,17 +14,22 @@ export default function TaskModal({ modalVisible, setModalVisible }) {
   const [value, setValue] = useState(null);
   return (
     <Modal
+      animationType="fade"
       onRequestClose={() => {
-        Alert.alert("Modal has been closed.");
         setModalVisible(!modalVisible);
       }}
       transparent={true}
       visible={modalVisible}
     >
-      <View className="flex-1 justify-center">
+      <View
+        className="flex-1 justify-center"
+        style={{
+          backgroundColor: "rgba(0,0,0,0.5)",
+        }}
+      >
         <View
           style={styles.modalView}
-          className="bg-white border border-primary mx-[30px] rounded-xl px-5 py-10"
+          className="bg-white border-2 border-primary mx-[30px] rounded-xl px-5 py-10"
         >
           <FormField title={"Task Name"} placeholder={"Ex: Math Project"} />
           {/* Numeric input with up and down button on the right */}
