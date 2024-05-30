@@ -12,7 +12,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
@@ -29,9 +31,13 @@
     },
     "extra": {
       "eas": {
-        "projectId": "8f85afb5-ff80-4283-a219-0165bc17d513"
+        "projectId": "d2a0cd73-e12f-4ff3-82f6-787480845e05"
       }
     },
-    "plugins": ["expo-router", "expo-font"]
+    "plugins": [
+      "expo-router",
+      "expo-font"
+    ],
+    "owner": "usopp-ppam"
   }
 }
