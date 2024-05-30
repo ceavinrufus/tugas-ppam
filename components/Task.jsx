@@ -45,7 +45,13 @@ function objectMove(object, from, to) {
   return newObject;
 }
 
-export default function MovableTask({ task, tasksCount, positions, scrollY }) {
+export default function MovableTask({
+  task,
+  tasksCount,
+  positions,
+  scrollY,
+  yPositionPage,
+}) {
   const dimensions = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const [moving, setMoving] = useState(false);
@@ -74,7 +80,11 @@ export default function MovableTask({ task, tasksCount, positions, scrollY }) {
       }
     },
     onActive(event) {
-      const positionY = event.absoluteY + scrollY.value;
+      const positionY =
+        event.absoluteY +
+        scrollY.value -
+        yPositionPage +
+        SCROLL_HEIGHT_THRESHOLD / 2;
 
       if (positionY <= scrollY.value + SCROLL_HEIGHT_THRESHOLD) {
         // Scroll up
@@ -120,17 +130,20 @@ export default function MovableTask({ task, tasksCount, positions, scrollY }) {
       left: 0,
       right: 0,
       top: top.value,
+      borderRadius: 12,
       zIndex: moving ? 1 : 0,
+      backgroundColor: "transparent",
       shadowColor: "black",
-      //   shadowOffset: { height: 0, width: 0 },
       shadowOpacity: withSpring(moving ? 0.2 : 0),
       shadowRadius: 10,
     };
   }, [moving]);
 
   return (
-    <Animated.View style={animatedStyle}>
-      <BlurView intensity={moving ? 100 : 0} tint="light">
+    <Animated.View
+      style={[animatedStyle, { shadowOffset: { height: 0, width: 0 } }]}
+    >
+      <BlurView intensity={moving ? 200 : 0}>
         <View className="flex-row items-center justify-between border-secondary border-2 px-4 rounded-xl h-[60px]">
           <Task task={task} />
           <PanGestureHandler onGestureEvent={gestureHandler}>

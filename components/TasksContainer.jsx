@@ -30,6 +30,7 @@ export default function TasksContainer() {
   const positions = useSharedValue(listToObject(tasks));
   const scrollViewRef = useAnimatedRef();
   const scrollY = useSharedValue(0);
+  const [yPositionPage, setYPositionPage] = useState(0);
 
   useAnimatedReaction(
     () => scrollY.value,
@@ -41,13 +42,20 @@ export default function TasksContainer() {
   });
 
   return (
-    <>
+    <View
+      onLayout={(event) => {
+        event.target.measure((x, y, width, height, pageX, pageY) => {
+          setYPositionPage(pageY);
+        });
+      }}
+      className="flex-1"
+    >
       <Animated.ScrollView
         ref={scrollViewRef}
         onScroll={handleScroll}
         scrollEventThrottle={16}
         style={{
-          flex: 1,
+          // flex: 1,
           position: "relative",
           backgroundColor: "transparent",
         }}
@@ -62,6 +70,7 @@ export default function TasksContainer() {
             tasksCount={tasks.length}
             positions={positions}
             scrollY={scrollY}
+            yPositionPage={yPositionPage}
           />
         ))}
       </Animated.ScrollView>
@@ -83,6 +92,6 @@ export default function TasksContainer() {
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
       />
-    </>
+    </View>
   );
 }
