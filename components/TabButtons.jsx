@@ -7,7 +7,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-const TabButtons = ({ buttons, setSelectedTab }) => {
+const TabButtons = ({ buttons, setSelectedTab, otherTextStyles }) => {
   const [dimensions, setDimensions] = useState({ height: 30, width: 300 });
 
   const buttonWidth = dimensions.width / buttons.length;
@@ -55,7 +55,7 @@ const TabButtons = ({ buttons, setSelectedTab }) => {
               className="flex-1 py-3"
             >
               <Text
-                className={`font-ProximaNovaMedium text-black text-center text-[10px]`}
+                className={`font-ProximaNovaMedium text-black text-center text-[10px] ${otherTextStyles}`}
               >
                 {button.title}
               </Text>

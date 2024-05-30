@@ -22,14 +22,16 @@ const FormField = ({
         {required && <Text className="text-[#FF3528]">*</Text>}
       </Text>
 
-      <View className="w-full h-11 px-4 bg-black-100 border border-lightgrey rounded-xl focus:border-yellow flex-row items-center">
+      <View className="w-full h-11 px-4 bg-black-100 border border-lightgrey rounded-lg focus:border-yellow flex-row items-center">
         <TextInput
           className="flex-1 font-ProximaNovaReg"
+          selectionColor={"black"}
           value={value}
           placeholder={placeholder}
           placeholderTextColor={"#807E78"}
           onChangeText={handleChangeText}
           secureTextEntry={title === "Password" && !showPassword}
+          {...props}
         />
         {title === "Password" && (
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>

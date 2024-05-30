@@ -1,17 +1,13 @@
 import { Text, View, Image } from "react-native";
-import React from "react";
-import { Tabs, Redirect } from "expo-router";
+import React, { useEffect } from "react";
+import { SplashScreen, Tabs, Redirect } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
-
-import spaces from "../../assets/icons/spaces.png";
-import analytics from "../../assets/icons/analytics.png";
-import focus from "../../assets/icons/focus.png";
-import leaderboard from "../../assets/icons/leaderboard.png";
-import profile from "../../assets/icons/profile.png";
+import { useFonts, Raleway_700Bold } from "@expo-google-fonts/raleway";
 import HamburgerButton from "../../components/HamburgerButton";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
+
 const TabIcon = ({ icon, color, name, focused }) => {
   return (
     <View
@@ -28,7 +24,25 @@ const TabIcon = ({ icon, color, name, focused }) => {
 };
 
 const TabsLayout = () => {
+  let [fontsLoaded, error] = useFonts({
+    Raleway_700Bold,
+    ProximaNovaReg: require("../../assets/fonts/ProximaNovaRegular.otf"),
+    ProximaNovaBold: require("../../assets/fonts/ProximaNovaBold.otf"),
+    ProximaNovaMedium: require("../../assets/fonts/ProximaNovaSemibold.otf"),
+  });
+
+  useEffect(() => {
+    if (error) {
+      throw error;
+    }
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, error]);
+
   const handleMenuPress = () => {};
+
+  if (!fontsLoaded && !error) return null;
   return (
     <>
       <LinearGradient
@@ -48,6 +62,12 @@ const TabsLayout = () => {
             },
             headerStyle: {
               backgroundColor: "#C2D9FF",
+            },
+            headerLeftContainerStyle: {
+              paddingLeft: 6,
+            },
+            headerRightContainerStyle: {
+              paddingRight: 6,
             },
           }}
         >
@@ -113,7 +133,9 @@ const TabsLayout = () => {
                 />
               ),
               headerRight: () => (
-                <HamburgerButton onPress={handleMenuPress} /> // Menu
+                <View className="py-[10px] mr-4 bg-gray-100 rounded-md">
+                  <HamburgerButton onPress={handleMenuPress} />
+                </View>
               ),
             }}
           />
@@ -121,7 +143,7 @@ const TabsLayout = () => {
             name="leaderboard"
             options={{
               title: "Leaderboard",
-              headerShown: false,
+              headerShown: true,
               tabBarIcon: ({ color, focused }) => (
                 <TabIcon
                   icon={
@@ -131,6 +153,11 @@ const TabsLayout = () => {
                   name={"Leaderboard"}
                   focused={focused}
                 />
+              ),
+              headerRight: () => (
+                <View className="py-[10px] mr-4 bg-gray-100 rounded-md">
+                  <HamburgerButton onPress={handleMenuPress} />
+                </View>
               ),
             }}
           />
