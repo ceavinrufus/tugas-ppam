@@ -43,8 +43,8 @@ export const globalRank = [
   },
   {
     name: "Risol",
-    badges: 10,
-    sessions: 87,
+    badges: 1,
+    sessions: 1,
     image:
       "https://lh3.googleusercontent.com/drive-viewer/AKGpihZG5YcjJHrCeypFrC0wmB5yZQAgy5uOdzgwWR3cKMZqV-KZx5yMKl_6Nc9X40e-SBy-dKrI8QQQtQyCxIdSc7TamkNU3eJlNQs=s2560",
   },

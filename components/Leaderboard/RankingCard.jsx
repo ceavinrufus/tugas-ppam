@@ -51,11 +51,15 @@ const RankingCard = ({ rank, user }) => {
         <Text className="text-sm font-bold mb-1">{user.name}</Text>
         <View className="flex flex-row items-center">
           <Foundation size={12} name="sheriff-badge" color="black" />
-          <Text className="ml-1 text-xs">{user.badges} badges</Text>
+          <Text className="ml-1 text-xs">
+            {user.badges} {user.badges > 1 ? "badges" : "badge"}
+          </Text>
         </View>
         <View className="flex flex-row items-center">
           <FontAwesome6 size={10} name="bolt" color="black" />
-          <Text className="ml-1 text-xs">{user.sessions} sessions</Text>
+          <Text className="ml-1 text-xs">
+            {user.sessions} {user.sessions > 1 ? "sessions" : "session"}
+          </Text>
         </View>
       </View>
     </LinearGradient>

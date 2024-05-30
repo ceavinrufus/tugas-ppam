@@ -51,7 +51,7 @@ export default function ProfileCard({ user }) {
         <View className="flex flex-row justify-between mt-2">
           <StatCard otherClassName={"px-5"}>
             <Text className="text-xs">Daily Rank</Text>
-            <Text className="text-sm font-bold">10</Text>
+            <Text className="text-sm font-bold">1</Text>
           </StatCard>
           <StatCard otherClassName={"px-4"}>
             <Text className="text-xs">Weekly Rank</Text>
