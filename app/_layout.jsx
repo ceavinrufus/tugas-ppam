@@ -44,6 +44,12 @@ const RootLayout = () => {
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        name="(focus)"
+        options={{
+          headerShown: false,
+        }}
+      />
     </Stack>
   );
 };

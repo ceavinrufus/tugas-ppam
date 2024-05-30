@@ -1,13 +1,13 @@
-import { Text, View, Image } from "react-native";
-import React, { useEffect } from "react";
-import { SplashScreen, Tabs, Redirect } from "expo-router";
+import { Text, View, Pressable } from "react-native";
+import React, { useState, useEffect } from "react";
+import { SplashScreen, Tabs, useSegments } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { useFonts, Raleway_700Bold } from "@expo-google-fonts/raleway";
 import HamburgerButton from "../../components/HamburgerButton";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { MaterialIcons, AntDesign } from "@expo/vector-icons";
-import CustomButton from "../../components/CustomButton";
+import { MaterialIcons } from "@expo/vector-icons";
+import { router } from "expo-router";
 
 const TabIcon = ({ icon, color, name, focused }) => {
   return (
@@ -25,6 +25,9 @@ const TabIcon = ({ icon, color, name, focused }) => {
 };
 
 const TabsLayout = () => {
+  const [menuVisible, setMenuVisible] = useState(false);
+  const segments = useSegments();
+
   let [fontsLoaded, error] = useFonts({
     Raleway_700Bold,
     ProximaNovaReg: require("../../assets/fonts/ProximaNovaRegular.otf"),
@@ -41,7 +44,13 @@ const TabsLayout = () => {
     }
   }, [fontsLoaded, error]);
 
-  const handleMenuPress = () => {};
+  const handleMenuPress = () => {
+    setMenuVisible((prev) => !prev);
+  };
+
+  useEffect(() => {
+    setMenuVisible(false);
+  }, [segments]);
 
   if (!fontsLoaded && !error) return null;
   return (
@@ -98,6 +107,22 @@ const TabsLayout = () => {
               headerRight: () => (
                 <View className="py-[10px] mr-4 bg-gray-100 rounded-md">
                   <HamburgerButton onPress={handleMenuPress} />
+                  {menuVisible && (
+                    <View className="absolute top-12 right-0 bg-white rounded-md shadow-lg">
+                      <Pressable
+                        className="px-4 py-2"
+                        onPress={() => console.log("Settings Pressed")}
+                      >
+                        <Text>Explore Spaces</Text>
+                      </Pressable>
+                      <Pressable
+                        className="px-4 py-2"
+                        onPress={() => console.log("Music Pressed")}
+                      >
+                        <Text>Joined Spaces</Text>
+                      </Pressable>
+                    </View>
+                  )}
                 </View>
               ),
             }}
@@ -145,6 +170,24 @@ const TabsLayout = () => {
               headerRight: () => (
                 <View className="py-[10px] mr-4 bg-gray-100 rounded-md">
                   <HamburgerButton onPress={handleMenuPress} />
+                  {menuVisible && (
+                    <View className="absolute top-12 right-0 bg-white rounded-md shadow-lg">
+                      <Pressable
+                        className="px-4 py-2"
+                        onPress={() => {
+                          router.push("/settings");
+                        }}
+                      >
+                        <Text>Settings</Text>
+                      </Pressable>
+                      <Pressable
+                        className="px-4 py-2"
+                        onPress={() => console.log("Music Pressed")}
+                      >
+                        <Text>Music</Text>
+                      </Pressable>
+                    </View>
+                  )}
                 </View>
               ),
             }}
@@ -167,6 +210,22 @@ const TabsLayout = () => {
               headerRight: () => (
                 <View className="py-[10px] mr-4 bg-gray-100 rounded-md">
                   <HamburgerButton onPress={handleMenuPress} />
+                  {menuVisible && (
+                    <View className="absolute top-12 right-0 bg-white rounded-md shadow-lg">
+                      <Pressable
+                        className="px-4 py-2"
+                        onPress={() => console.log("Settings Pressed")}
+                      >
+                        <Text>Global Leaderboard</Text>
+                      </Pressable>
+                      <Pressable
+                        className="px-4 py-2"
+                        onPress={() => console.log("Music Pressed")}
+                      >
+                        <Text>Spaces Leaderboard</Text>
+                      </Pressable>
+                    </View>
+                  )}
                 </View>
               ),
             }}

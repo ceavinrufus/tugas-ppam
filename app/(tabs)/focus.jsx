@@ -1,5 +1,5 @@
 import { ScrollView, Text, View, Pressable } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import TabButtons from "../../components/TabButtons";
@@ -10,12 +10,54 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const Focus = () => {
   const [selectedTab1, setSelectedTab1] = useState(0);
+  const [timer, setTimer] = useState(25 * 60); // 25 minutes in seconds
+  const [isRunning, setIsRunning] = useState(false);
+  const timerRef = useRef(null);
 
   const buttons1 = [
     { title: "Pomodoro" },
     { title: "Short Break" },
     { title: "Long Break" },
   ];
+
+  useEffect(() => {
+    if (isRunning) {
+      timerRef.current = setInterval(() => {
+        setTimer((prevTimer) => {
+          if (prevTimer <= 1) {
+            clearInterval(timerRef.current);
+            return 0;
+          }
+          return prevTimer - 1;
+        });
+      }, 1000);
+    } else {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    }
+    return () => clearInterval(timerRef.current);
+  }, [isRunning]);
+
+  const startTimer = () => {
+    setIsRunning(true);
+  };
+
+  const formatTime = (timeInSeconds) => {
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = timeInSeconds % 60;
+    return `${minutes.toString().padStart(2, "0")}:${seconds
+      .toString()
+      .padStart(2, "0")}`;
+  };
+
+  const handleTabChange = (index) => {
+    setSelectedTab1(index);
+    if (index === 0) setTimer(25 * 60); // 25 minutes
+    if (index === 1) setTimer(5 * 60); // 5 minutes
+    if (index === 2) setTimer(20 * 60); // 20 minutes
+    setIsRunning(false); // Stop the timer when changing tabs
+  };
 
   function getDayName(date) {
     const days = [
@@ -40,7 +82,6 @@ const Focus = () => {
   return (
     <SafeAreaView>
       <GestureHandlerRootView className="justify-center self-center h-full w-full">
-        {/* <ScrollView> */}
         <View className="self-center px-4 w-[95%] h-full">
           <LinearGradient
             className="rounded-lg border-[#FACC2D] border"
@@ -48,40 +89,30 @@ const Focus = () => {
             locations={[0, 0, 0, 1]}
             style={{ padding: 20 }}
           >
-            <TabButtons buttons={buttons1} setSelectedTab={setSelectedTab1} />
+            <TabButtons buttons={buttons1} setSelectedTab={handleTabChange} />
 
             <View className="mt-7 items-center">
-              {selectedTab1 === 0 ? (
-                <Text className="text-6xl font-ProximaNovaBold">25:00</Text>
-              ) : selectedTab1 === 1 ? (
-                <Text className="text-6xl font-ProximaNovaBold">5:00</Text>
-              ) : (
-                <Text className="text-6xl font-ProximaNovaBold">20:00</Text>
-              )}
+              <Text className="text-6xl font-ProximaNovaBold">
+                {formatTime(timer)}
+              </Text>
               <LinearGradient
                 className="mt-5 rounded-md border-yellow border w-full"
                 colors={["#FCE07F", "#FACC2D", "#FFF"]}
                 locations={[0.5, 1, 1]}
               >
-                <Text className="font-ProximaNovaMedium bg-gradient-to-b from-[#FCE07F] to-yellow  p-1 text-[10px]  text-center ">
+                <Text className="font-ProximaNovaMedium bg-gradient-to-b from-[#FCE07F] to-yellow p-1 text-[10px] text-center">
                   No selected task
                 </Text>
               </LinearGradient>
               <CustomButton
                 title={"Start Session"}
-                handlePress={null}
+                handlePress={startTimer}
                 containerStyles="mt-2 h-[30px] rounded-md"
                 textStyles={"font-ProximaNovaBold text-xs"}
               />
             </View>
           </LinearGradient>
           <View className="flex-1 mt-2">
-            {/* <TabButtons
-              buttons={buttons2}
-              setSelectedTab={setSelectedTab2}
-              otherTextStyles={"text-sm"}
-            /> */}
-            {/* <CalendarComponent /> */}
             <View className="flex-row gap-2 mt-2">
               <View className="flex-1 items-center justify-center rounded-md h-[45px] bg-secondary">
                 <Text className="font-ProximaNovaMedium">{formattedDate}</Text>
@@ -94,7 +125,6 @@ const Focus = () => {
             <TasksContainer />
           </View>
         </View>
-        {/* </ScrollView> */}
       </GestureHandlerRootView>
     </SafeAreaView>
   );

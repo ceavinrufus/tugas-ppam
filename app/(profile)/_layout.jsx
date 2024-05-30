@@ -56,18 +56,11 @@ const ProfileLayout = () => {
             headerShown: true,
             headerStyle: { backgroundColor: "#C2D9FF" },
             headerTitle: "Change Password",
-            headerLeft: () => (
-              <CustomButton
-                title={""}
-                handlePress={() => {
-                  router.push("/edit");
-                }}
-                leftIcon={
-                  <AntDesign name="arrowleft" size={25} color="black" />
-                }
-                containerStyles="mt-3 h-[30px] w-[40px] rounded-md bg-[#C2D9FF]"
-              />
-            ),
+            headerBackVisible: true,
+            headerTitleStyle: {
+              fontFamily: "ProximaNovaBold",
+              fontSize: 24,
+            },
           }}
         />
       </Stack>
