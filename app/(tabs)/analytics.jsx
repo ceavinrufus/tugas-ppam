@@ -40,6 +40,29 @@ const Analytics = () => {
     {value: 4, label: 'Sun', frontColor: '#C2D9FF'},
   ];
 
+  const monthlyData = [
+    {value: 80, color: '#C2D9FF', text: 'Focus'},
+    {value: 12, color: '#190482', text: 'Productive Break'},
+    {value: 8, color: '#FACC2D', text: 'Not Focus'},
+  ];
+
+  const renderLegend = (text, color) => {
+    return (
+      <View className="flex-row">
+        <View 
+          style={{
+            height: 18,
+            width: 18,
+            marginRight: 10,
+            borderRadius: 4,
+            backgroundColor: color
+          }}
+        />
+        <Text className="font-ProximaNova text-xs color-[#222222]">{text || ''}</Text>
+      </View>
+    )
+  }
+
   return (
     <SafeAreaView>
       <ScrollView>
@@ -102,8 +125,18 @@ const Analytics = () => {
               />
             </View>
           </View>
-          <View className="mt-2 flex-row items-center justify-center bg-white border-secondary border-2 px-1 py-2.5 rounded-xl">
-            <Text>a</Text>
+          <View className="flex-column items-center justify-center bg-white border-secondary border-2 px-1 py-2.5 rounded-xl">
+            <PieChart
+              donut
+              innerRadius={50}
+              radius={90}
+              data={monthlyData}
+            />
+            <View className="w-100 flex-row justify-evenly py-3 gap-5">
+              {renderLegend('Focus', '#C2D9FF')}
+              {renderLegend('Break', '#190482')}
+              {renderLegend('Not Focus', '#FACC2D')}
+            </View>
           </View>
           <View className="mt-7"></View>
         </View>
