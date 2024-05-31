@@ -1,4 +1,4 @@
-import { ScrollView, Text, View } from "react-native";
+import { Alert, ScrollView, Text, View } from "react-native";
 import React, { useState } from "react";
 import { Redirect, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -16,14 +16,6 @@ const Profile = () => {
             Account Settings
           </Text>
           <Menu />
-          <CustomButton
-            title={"Sign Out"}
-            handlePress={() => {
-              router.push("/");
-            }}
-            containerStyles="mt-4 h-[40px] rounded-md"
-            textStyles={"font-RalewayBold text-2xs"}
-          />
         </View>
       </ScrollView>
     </SafeAreaView>

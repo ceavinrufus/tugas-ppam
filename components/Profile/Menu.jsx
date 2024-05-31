@@ -30,12 +30,12 @@ function MenuBox({ title, handlePress }) {
 
 export default function Menu({ children }) {
   return (
-    <>
+    <View className="flex-1 pb-2">
       <MenuBox title={"Subscription"} handlePress={null} />
       <MenuBox title={"Preferences"} handlePress={null} />
       <MenuBox title={"Notifications"} handlePress={null} />
       <MenuBox title={"Privacy Settings"} handlePress={null} />
       <MenuBox title={"Help Center"} handlePress={null} />
-    </>
+    </View>
   );
 }

@@ -8,6 +8,7 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { supabase } from "../../lib/supabase";
 
 const TabIcon = ({ icon, color, name, focused }) => {
   return (
@@ -46,6 +47,25 @@ const TabsLayout = () => {
 
   const handleMenuPress = () => {
     setMenuVisible((prev) => !prev);
+  };
+
+  const doLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      Alert.alert(
+        "Logout failed!",
+        error.message,
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
+          },
+        ],
+        {
+          cancelable: true,
+        }
+      );
+    }
   };
 
   useEffect(() => {
@@ -244,6 +264,16 @@ const TabsLayout = () => {
                   name={"Profile"}
                   focused={focused}
                 />
+              ),
+              headerRight: () => (
+                <View className="p-[10px] mr-4 bg-gray-100 rounded-md">
+                  <MaterialIcons
+                    name="logout"
+                    size={24}
+                    color="black"
+                    onPress={doLogout}
+                  />
+                </View>
               ),
             }}
           />

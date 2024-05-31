@@ -1,29 +1,19 @@
 import { ScrollView, Text, View, Image } from "react-native";
 import { Redirect, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { supabase } from "../lib/supabase";
-import onboarding from "../assets/onboarding.png";
-import CustomButton from "../components/CustomButton";
+import onboarding from "../../assets/onboarding.png";
+import CustomButton from "../../components/CustomButton";
 import { StatusBar } from "expo-status-bar";
-import { useEffect } from "react";
+import React, { useLayoutEffect } from "react";
+import { useNavigation } from "expo-router";
 
-export default function App() {
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        router.replace("/(tabs)/focus/");
-      } else {
-      }
+export default function AuthPage() {
+  const navigation = useNavigation();
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: false,
     });
-
-    supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) {
-        router.replace("/(tabs)/focus/");
-      } else {
-        router.replace("/auth");
-      }
-    });
-  }, []);
+  }, [navigation]);
 
   return (
     <SafeAreaView className="bg-white h-full">

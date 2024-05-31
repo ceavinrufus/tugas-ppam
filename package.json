@@ -16,6 +16,7 @@
     "@supabase/supabase-js": "^2.43.4",
     "expo": "^51.0.5",
     "expo-app-loading": "^2.1.1",
+    "expo-auth-session": "~5.5.2",
     "expo-blur": "^13.0.2",
     "expo-constants": "~16.0.1",
     "expo-dev-client": "~4.0.14",
@@ -43,8 +44,7 @@
     "react-native-svg": "^15.3.0",
     "react-native-url-polyfill": "^2.0.0",
     "react-native-vector-icons": "^10.1.0",
-    "react-native-web": "~0.19.10",
-    "expo-auth-session": "~5.5.2"
+    "react-native-web": "~0.19.10"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
