@@ -1,4 +1,10 @@
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
+  Text,
+  View,
+} from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import FormField from "../../components/FormField";
@@ -6,24 +12,69 @@ import CustomButton from "../../components/CustomButton";
 import { Link } from "expo-router";
 import TextProximaNovaReg from "../../components/TextProximaNovaReg";
 import { router } from "expo-router";
+import { supabase } from "../../lib/supabase"; // Assuming you have a supabase.js file where Supabase client is initialized
 
 const Login = () => {
   const [form, setForm] = useState({ email: "", password: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState({ email: "", password: "" });
 
-  const submit = () => {
-    router.push("/focus");
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   };
+
+  const validatePassword = (password) => {
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    return passwordRegex.test(password);
+  };
+
+  const submit = async () => {
+    const errorOccured = { email: "", password: "" };
+
+    if (!form.email || !form.password) {
+      errorOccured.email = form.email ? "" : "Email is required";
+      errorOccured.password = form.password ? "" : "Password is required";
+    }
+
+    if (!errorOccured.email && !validateEmail(form.email)) {
+      errorOccured.email = "Invalid email format";
+    }
+
+    if (!errorOccured.password && !validatePassword(form.password)) {
+      errorOccured.password =
+        "Password must be at least 8 characters long and contain both letters and numbers";
+    }
+
+    setError(errorOccured);
+    if (errorOccured.email || errorOccured.password) {
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: form.email,
+      password: form.password,
+    });
+
+    if (error) {
+      setError({ email: "", password: error.message });
+      setIsSubmitting(false);
+    } else {
+      setIsSubmitting(false);
+      setForm({ email: "", password: "" });
+      router.push("/focus");
+    }
+  };
+
   return (
     <SafeAreaView className="">
-      <ScrollView
-      // contentContainerStyle={{
-      //   height: "100%",
-      //   justifyContent: "center",
-      //   alignItems: "center",
-      // }}
-      >
-        <View className="justify-center self-center h-full px-4 w-[90%]">
+      <ScrollView>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          className="justify-center self-center h-full px-4 w-[90%]"
+        >
           <Text className="font-RalewayBold text-primary text-2xl">Hello!</Text>
           <TextProximaNovaReg className="text-sm">
             Welcome back to Virtuoso! Ready to boost your productivity with us?
@@ -37,13 +88,24 @@ const Login = () => {
             otherStyles="mt-7"
             keyboardType="email"
           />
+          {error.email ? (
+            <TextProximaNovaReg className="text-red-500">
+              {error.email}
+            </TextProximaNovaReg>
+          ) : null}
+
           <FormField
             title="Password"
-            placeholder={"Must consists of letters and numbers"}
+            placeholder={"Must consist of letters and numbers"}
             value={form.password}
             handleChangeText={(e) => setForm({ ...form, password: e })}
             otherStyles="mt-4"
           />
+          {error.password ? (
+            <TextProximaNovaReg className="text-red-500">
+              {error.password}
+            </TextProximaNovaReg>
+          ) : null}
 
           <CustomButton
             title={"Login"}
@@ -61,7 +123,7 @@ const Login = () => {
               Register
             </Link>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </ScrollView>
     </SafeAreaView>
   );
