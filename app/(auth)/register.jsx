@@ -13,7 +13,6 @@ import CustomButton from "../../components/CustomButton";
 import { Link, router } from "expo-router";
 import TextProximaNovaReg from "../../components/TextProximaNovaReg";
 import { supabase } from "../../lib/supabase";
-import { makeRedirectUri } from "expo-auth-session";
 
 const Register = () => {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
@@ -25,8 +24,6 @@ const Register = () => {
     password: "",
     passwordConfirm: "",
   });
-
-  const redirectTo = makeRedirectUri();
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -79,12 +76,12 @@ const Register = () => {
     }
     setIsSubmitting(true);
 
-    const { data, error } = await supabase.auth.signUp({
+    const {
+      data: { session },
+      error,
+    } = await supabase.auth.signUp({
       email: form.email,
       password: form.password,
-      options: {
-        emailRedirectTo: redirectTo,
-      },
     });
 
     if (error) {
@@ -103,10 +100,22 @@ const Register = () => {
       );
       setIsSubmitting(false);
     } else {
+      if (!session)
+        Alert.alert(
+          "Login success!",
+          "Please check your inbox for email verification",
+          [
+            {
+              text: "OK",
+              onPress: () => {
+                router.push("/login");
+                setForm({ name: "", email: "", password: "" });
+                setPasswordConfirm("");
+              },
+            },
+          ]
+        );
       setIsSubmitting(false);
-      setForm({ name: "", email: "", password: "" });
-      setPasswordConfirm("");
-      router.push("/login");
     }
   };
 
