@@ -28,7 +28,7 @@ const Leaderboard = () => {
   return (
     <SafeAreaView>
       <View className="self-center px-4 w-[95%] h-full">
-        <View className="mt-[34px]">
+        <View className="mt-[34px] flex-1">
           {/* User Leaderboard Card */}
           <ProfileCard user={user} />
           <SearchBar
@@ -37,7 +37,7 @@ const Leaderboard = () => {
             onChangeText={(text) => handleChangeText(text)}
           />
           {/* Ranking */}
-          <ScrollView style={{ marginTop: 16 }}>
+          <ScrollView style={{ marginVertical: 16 }}>
             {ranks.map((user, index) => (
               <RankingCard key={index} rank={user.rank} user={user} />
             ))}
