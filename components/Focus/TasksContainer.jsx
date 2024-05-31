@@ -55,8 +55,7 @@ export default function TasksContainer() {
         onScroll={handleScroll}
         scrollEventThrottle={16}
         style={{
-          // flex: 1,
-          position: "relative",
+          marginVertical: 4,
           backgroundColor: "transparent",
         }}
         contentContainerStyle={{
@@ -76,7 +75,7 @@ export default function TasksContainer() {
       </Animated.ScrollView>
       <CustomButton
         title={"Add Task"}
-        containerStyles="bg-primary flex-row space-x-2"
+        containerStyles="bg-primary flex-row space-x-2 mt-3"
         leftIcon={<MaterialIcons name="add-circle" size={20} color="white" />}
         textStyles={"font-ProximaNovaBold"}
         handlePress={() => setModalVisible(true)}
