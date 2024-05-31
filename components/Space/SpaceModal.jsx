@@ -1,11 +1,69 @@
 import { View, Text, Modal, StyleSheet, Image } from "react-native";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import CustomButton from "../CustomButton";
 import { LinearGradient } from "expo-linear-gradient";
 import { FontAwesome6, FontAwesome5 } from "@expo/vector-icons";
 import TextProximaNovaReg from "../TextProximaNovaReg";
+import { supabase } from "../../lib/supabase"; // Import Supabase client
+import { Alert } from "react-native";
 
 export default function SpaceModal({ space, modalVisible, setModalVisible }) {
+  const [isJoined, setIsJoined] = useState(false);
+  const [userId, setUserId] = useState("");
+
+  const handleJoinSpace = async () => {
+    if (userId) return;
+
+    const { error } = await supabase
+      .from("space_members")
+      .insert({ space_id: space.id, user_id: userId });
+
+    if (error) {
+      Alert.alert(
+        "Failed to join the space",
+        error.message,
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
+          },
+        ],
+        {
+          cancelable: true,
+        }
+      );
+    } else {
+      setModalVisible(false);
+    }
+  };
+
+  useEffect(() => {
+    const getUserId = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setUserId(user.id);
+    };
+
+    const checkIfJoined = async () => {
+      if (!userId) return;
+
+      const { data, error } = await supabase
+        .from("space_members")
+        .select()
+        .eq("space_id", space.id)
+        .eq("user_id", userId);
+
+      if (error) {
+        console.error("Error checking membership:", error);
+      } else {
+        setIsJoined(data.length > 0);
+      }
+    };
+    getUserId();
+    checkIfJoined();
+  }, [space, userId]);
+
   return (
     <Modal
       animationType="fade"
@@ -60,10 +118,7 @@ export default function SpaceModal({ space, modalVisible, setModalVisible }) {
 
           {/* Description */}
           <TextProximaNovaReg className="text-justify my-2 text-xs">
-            Space Tergacor Lorem ipsum dolor sit amet, consectetur adipiscing
-            elit, sed do eiusmod tempor incididunt ut labore et dolore magna
-            aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-            laboris nisi ut aliquip ex ea commodo consequat.
+            {space.description}
           </TextProximaNovaReg>
 
           <View className="flex-row justify-between items-center">
@@ -74,9 +129,12 @@ export default function SpaceModal({ space, modalVisible, setModalVisible }) {
               handlePress={() => setModalVisible(!modalVisible)}
             />
             <CustomButton
-              containerStyles={"mt-2 w-[49%] border-primary border"}
+              containerStyles={`mt-2 w-[49%] border-primary border ${
+                isJoined ? "opacity-50" : ""
+              }`}
               title={"Join"}
-              handlePress={() => setModalVisible(!modalVisible)}
+              handlePress={handleJoinSpace}
+              disabled={isJoined}
             />
           </View>
         </LinearGradient>
