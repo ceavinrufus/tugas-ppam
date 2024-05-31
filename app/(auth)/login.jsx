@@ -4,6 +4,7 @@ import {
   Platform,
   Text,
   View,
+  Alert,
 } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -17,7 +18,7 @@ import { supabase } from "../../lib/supabase"; // Assuming you have a supabase.j
 const Login = () => {
   const [form, setForm] = useState({ email: "", password: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState({ email: "", password: "" });
+  const [errors, setErrors] = useState({ email: "", password: "" });
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -46,7 +47,7 @@ const Login = () => {
         "Password must be at least 8 characters long and contain both letters and numbers";
     }
 
-    setError(errorOccured);
+    setErrors(errorOccured);
     if (errorOccured.email || errorOccured.password) {
       return;
     }
@@ -59,7 +60,19 @@ const Login = () => {
     });
 
     if (error) {
-      setError({ email: "", password: error.message });
+      Alert.alert(
+        "Login failed!",
+        error.message,
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
+          },
+        ],
+        {
+          cancelable: true,
+        }
+      );
       setIsSubmitting(false);
     } else {
       setIsSubmitting(false);
@@ -88,9 +101,9 @@ const Login = () => {
             otherStyles="mt-7"
             keyboardType="email"
           />
-          {error.email ? (
+          {errors.email ? (
             <TextProximaNovaReg className="text-red-500">
-              {error.email}
+              {errors.email}
             </TextProximaNovaReg>
           ) : null}
 
@@ -101,9 +114,9 @@ const Login = () => {
             handleChangeText={(e) => setForm({ ...form, password: e })}
             otherStyles="mt-4"
           />
-          {error.password ? (
+          {errors.password ? (
             <TextProximaNovaReg className="text-red-500">
-              {error.password}
+              {errors.password}
             </TextProximaNovaReg>
           ) : null}
 

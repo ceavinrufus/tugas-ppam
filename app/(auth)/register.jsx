@@ -4,6 +4,7 @@ import {
   Text,
   View,
   Platform,
+  Alert,
 } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -18,7 +19,7 @@ const Register = () => {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState({
+  const [errors, setErrors] = useState({
     name: "",
     email: "",
     password: "",
@@ -67,7 +68,7 @@ const Register = () => {
       errorOccured.passwordConfirm = "Passwords do not match";
     }
 
-    setError(errorOccured);
+    setErrors(errorOccured);
     if (
       errorOccured.name ||
       errorOccured.email ||
@@ -87,12 +88,19 @@ const Register = () => {
     });
 
     if (error) {
-      setError({
-        name: "",
-        email: "",
-        password: error.message,
-        passwordConfirm: "",
-      });
+      Alert.alert(
+        "Register failed!",
+        error.message,
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
+          },
+        ],
+        {
+          cancelable: true,
+        }
+      );
       setIsSubmitting(false);
     } else {
       setIsSubmitting(false);
@@ -122,9 +130,9 @@ const Register = () => {
             otherStyles="mt-7"
             keyboardType="name"
           />
-          {error.name ? (
+          {errors.name ? (
             <TextProximaNovaReg className="text-red-500">
-              {error.name}
+              {errors.name}
             </TextProximaNovaReg>
           ) : null}
 
@@ -136,9 +144,9 @@ const Register = () => {
             otherStyles="mt-4"
             keyboardType="email"
           />
-          {error.email ? (
+          {errors.email ? (
             <TextProximaNovaReg className="text-red-500">
-              {error.email}
+              {errors.email}
             </TextProximaNovaReg>
           ) : null}
 
@@ -149,9 +157,9 @@ const Register = () => {
             handleChangeText={(e) => setForm({ ...form, password: e })}
             otherStyles="mt-4"
           />
-          {error.password ? (
+          {errors.password ? (
             <TextProximaNovaReg className="text-red-500">
-              {error.password}
+              {errors.password}
             </TextProximaNovaReg>
           ) : null}
 
@@ -162,9 +170,9 @@ const Register = () => {
             handleChangeText={(e) => setPasswordConfirm(e)}
             otherStyles="mt-4"
           />
-          {error.passwordConfirm ? (
+          {errors.passwordConfirm ? (
             <TextProximaNovaReg className="text-red-500">
-              {error.passwordConfirm}
+              {errors.passwordConfirm}
             </TextProximaNovaReg>
           ) : null}
 
