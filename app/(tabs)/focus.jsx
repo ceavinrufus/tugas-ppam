@@ -9,12 +9,12 @@ import TasksContainer from "../../components/Focus/TasksContainer";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const Focus = () => {
-  const [selectedTab1, setSelectedTab1] = useState(0);
+  const [selectedTab, setSelectedTab] = useState(0);
   const [timer, setTimer] = useState(25 * 60); // 25 minutes in seconds
   const [isRunning, setIsRunning] = useState(false);
   const timerRef = useRef(null);
 
-  const buttons1 = [
+  const buttons = [
     { title: "Pomodoro" },
     { title: "Short Break" },
     { title: "Long Break" },
@@ -52,7 +52,7 @@ const Focus = () => {
   };
 
   const handleTabChange = (index) => {
-    setSelectedTab1(index);
+    setSelectedTab(index);
     if (index === 0) setTimer(25 * 60); // 25 minutes
     if (index === 1) setTimer(5 * 60); // 5 minutes
     if (index === 2) setTimer(20 * 60); // 20 minutes
@@ -89,7 +89,7 @@ const Focus = () => {
             locations={[0, 0, 0, 1]}
             style={{ padding: 20 }}
           >
-            <TabButtons buttons={buttons1} setSelectedTab={handleTabChange} />
+            <TabButtons buttons={buttons} setSelectedTab={handleTabChange} />
 
             <View className="mt-7 items-center">
               <Text className="text-6xl font-ProximaNovaBold">

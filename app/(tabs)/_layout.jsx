@@ -124,27 +124,6 @@ const TabsLayout = () => {
                   focused={focused}
                 />
               ),
-              headerRight: () => (
-                <View className="py-[10px] mr-4 bg-gray-100 rounded-md">
-                  <HamburgerButton onPress={handleMenuPress} />
-                  {menuVisible && (
-                    <View className="absolute top-12 right-0 bg-white rounded-md shadow-lg">
-                      <Pressable
-                        className="px-4 py-2"
-                        onPress={() => console.log("Settings Pressed")}
-                      >
-                        <Text>Explore Spaces</Text>
-                      </Pressable>
-                      <Pressable
-                        className="px-4 py-2"
-                        onPress={() => console.log("Music Pressed")}
-                      >
-                        <Text>Joined Spaces</Text>
-                      </Pressable>
-                    </View>
-                  )}
-                </View>
-              ),
             }}
           />
           <Tabs.Screen
