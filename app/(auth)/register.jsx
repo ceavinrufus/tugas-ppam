@@ -102,7 +102,7 @@ const Register = () => {
     } else {
       if (!session)
         Alert.alert(
-          "Login success!",
+          "Register success!",
           "Please check your inbox for email verification",
           [
             {
