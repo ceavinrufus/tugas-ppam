@@ -1,14 +1,13 @@
 import {
   Text,
   Platform,
-  StatusBar,
   View,
   Pressable,
   useWindowDimensions,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import React, { useState } from "react";
-import { MaterialIcons } from "@expo/vector-icons";
+import React, { useState, useEffect } from "react";
+import { MaterialIcons } from "react-native-vector-icons";
 import Animated, {
   cancelAnimation,
   runOnJS,
@@ -22,6 +21,8 @@ import Animated, {
 import { PanGestureHandler } from "react-native-gesture-handler";
 import * as Haptics from "expo-haptics";
 import { BlurView } from "expo-blur";
+import { useTask } from "../../context/TaskContext";
+import { useSchedule } from "../../context/ScheduleContext";
 
 function clamp(value, lowerBound, upperBound) {
   "worklet";
@@ -55,9 +56,21 @@ export default function MovableTask({
   const dimensions = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const [moving, setMoving] = useState(false);
-  const top = useSharedValue(positions.value[task.id] * 72);
+  const top = useSharedValue(
+    positions.value[task.id]
+      ? positions.value[task.id] * 72
+      : (tasksCount - 1) * 72
+  );
 
-  const SCROLL_HEIGHT_THRESHOLD = 72;
+  const SCROLL_HEIGHT_THRESHOLD = dimensions.height / 10;
+
+  useEffect(() => {
+    if (positions.value[task.id] !== undefined) {
+      top.value = positions.value[task.id] * 72;
+    } else {
+      top.value = (tasksCount - 1) * 72;
+    }
+  }, [positions.value, task.id, tasksCount]);
 
   useAnimatedReaction(
     () => positions.value[task.id],
@@ -158,16 +171,65 @@ export default function MovableTask({
 }
 
 export function Task({ task }) {
+  const { currentTask, startTask, pauseTask, isRunning, elapsedTime } =
+    useTask();
+  const isTaskRunning = currentTask && currentTask.id === task.id && isRunning;
+  const [ela, setEla] = useState(task.elapsedTime);
+
+  const formatTime = (timeInSeconds) => {
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = timeInSeconds % 60;
+    return `${minutes.toString().padStart(2, "0")}:${seconds
+      .toString()
+      .padStart(2, "0")}`;
+  };
+
+  const handlePlayPause = () => {
+    if (currentTask) {
+      if (currentTask.id === task.id) {
+        setEla(ela + elapsedTime);
+        pauseTask();
+      } else {
+        startTask(task);
+      }
+    } else {
+      startTask(task);
+    }
+  };
+
   return (
     <>
       <View className="flex-row items-center gap-2">
-        <Pressable>
-          <MaterialIcons name="play-circle-filled" size={32} color="#190482" />
+        <Pressable onPress={handlePlayPause}>
+          <MaterialIcons
+            name={isTaskRunning ? "pause-circle-filled" : "play-circle-filled"}
+            size={32}
+            color="#190482"
+          />
         </Pressable>
-        <Text className="font-ProximaNovaMedium">{task.name}</Text>
+        <View>
+          <Text className="font-ProximaNovaBold">{task.name}</Text>
+          <Text className="font-ProximaNovaMedium">{formatTime(ela)}</Text>
+          {/* {isTaskRunning && ( */}
+          <View className="h-2 w-full bg-gray-300 rounded-full">
+            <View
+              style={{
+                width: `${
+                  task.estimated_pomodoro != 0
+                    ? (ela / (task.estimated_pomodoro * 60)) * 100
+                    : 0
+                }%`,
+              }}
+              className="h-full bg-primary rounded-full"
+            />
+          </View>
+          {/* )} */}
+        </View>
       </View>
       <View className="flex-row items-center gap-2 mr-[10px]">
-        <Text className="font-ProximaNovaMedium text-grey">0/2</Text>
+        <Text className="font-ProximaNovaMedium text-grey">
+          0/{task.estimated_pomodoro}
+        </Text>
         <View className="bg-secondary rounded-sm flex items-center justify-center h-[30px] w-[30px]">
           <MaterialIcons name="more-vert" size={24} color="#190482" />
         </View>

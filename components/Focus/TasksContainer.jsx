@@ -1,6 +1,6 @@
-import { View, Text, ScrollView } from "react-native";
-import React, { useRef, useState } from "react";
-import { tasks } from "../../mocks/tasks";
+import { View, Text } from "react-native";
+import React, { useEffect, useState } from "react";
+import { tasks as t } from "../../mocks/tasks";
 import MovableTask from "./Task";
 import CustomButton from "../CustomButton";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -13,24 +13,28 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { useSchedule } from "../../context/ScheduleContext";
 
 function listToObject(list) {
   const values = Object.values(list);
   const object = {};
-
   for (let i = 0; i < values.length; i++) {
     object[values[i].id] = i;
   }
-
   return object;
 }
 
 export default function TasksContainer() {
+  const { tasks } = useSchedule(); // Use the tasks from context
   const [modalVisible, setModalVisible] = useState(false);
   const positions = useSharedValue(listToObject(tasks));
   const scrollViewRef = useAnimatedRef();
   const scrollY = useSharedValue(0);
   const [yPositionPage, setYPositionPage] = useState(0);
+
+  useEffect(() => {
+    positions.value = listToObject(tasks);
+  }, [tasks]);
 
   useAnimatedReaction(
     () => scrollY.value,
@@ -40,6 +44,8 @@ export default function TasksContainer() {
   const handleScroll = useAnimatedScrollHandler((event) => {
     scrollY.value = event.contentOffset.y;
   });
+
+  if (!positions) return null;
 
   return (
     <View
@@ -62,16 +68,17 @@ export default function TasksContainer() {
           height: tasks.length * 72,
         }}
       >
-        {tasks.map((task) => (
-          <MovableTask
-            key={task.id}
-            task={task}
-            tasksCount={tasks.length}
-            positions={positions}
-            scrollY={scrollY}
-            yPositionPage={yPositionPage}
-          />
-        ))}
+        {tasks &&
+          tasks.map((task) => (
+            <MovableTask
+              key={task.id}
+              task={task}
+              tasksCount={tasks.length}
+              positions={positions}
+              scrollY={scrollY}
+              yPositionPage={yPositionPage}
+            />
+          ))}
       </Animated.ScrollView>
       <CustomButton
         title={"Add Task"}
@@ -88,6 +95,7 @@ export default function TasksContainer() {
         </Text>
       </View>
       <TaskModal
+        positions={positions}
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
       />

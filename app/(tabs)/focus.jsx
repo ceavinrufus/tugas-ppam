@@ -1,5 +1,5 @@
 import { ScrollView, Text, View, Pressable } from "react-native";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import TabButtons from "../../components/TabButtons";
@@ -7,41 +7,52 @@ import CustomButton from "../../components/CustomButton";
 import { FontAwesome } from "@expo/vector-icons";
 import TasksContainer from "../../components/Focus/TasksContainer";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { useTask } from "../../context/TaskContext"; // Import the useTask hook
+import { supabase } from "../../lib/supabase";
+import { useSchedule } from "../../context/ScheduleContext";
 
 const Focus = () => {
   const [selectedTab, setSelectedTab] = useState(0);
-  const [timer, setTimer] = useState(25 * 60); // 25 minutes in seconds
-  const [isRunning, setIsRunning] = useState(false);
-  const timerRef = useRef(null);
+  const { tasks, setTasks } = useSchedule();
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      let data, error;
+      ({
+        data: { user },
+      } = await supabase.auth.getUser());
+
+      if (user) {
+        ({ data, error } = await supabase
+          .from("tasks")
+          .select()
+          .eq("user_id", user.id)
+          .eq("date", "2024-06-02"));
+
+        if (error) {
+          console.error("Error fetching tasks:", error);
+        } else {
+          setTasks(data);
+        }
+      }
+    };
+
+    fetchTasks();
+  }, []);
+
+  const {
+    centralTimer,
+    setCentralTimer,
+    isCentralTimerRunning,
+    setIsCentralTimerRunning,
+    currentTask,
+  } = useTask(); // Use the useTask hook
 
   const buttons = [
     { title: "Pomodoro" },
     { title: "Short Break" },
     { title: "Long Break" },
   ];
-
-  useEffect(() => {
-    if (isRunning) {
-      timerRef.current = setInterval(() => {
-        setTimer((prevTimer) => {
-          if (prevTimer <= 1) {
-            clearInterval(timerRef.current);
-            return 0;
-          }
-          return prevTimer - 1;
-        });
-      }, 1000);
-    } else {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-      }
-    }
-    return () => clearInterval(timerRef.current);
-  }, [isRunning]);
-
-  const startTimer = () => {
-    setIsRunning(true);
-  };
 
   const formatTime = (timeInSeconds) => {
     const minutes = Math.floor(timeInSeconds / 60);
@@ -53,10 +64,10 @@ const Focus = () => {
 
   const handleTabChange = (index) => {
     setSelectedTab(index);
-    if (index === 0) setTimer(25 * 60); // 25 minutes
-    if (index === 1) setTimer(5 * 60); // 5 minutes
-    if (index === 2) setTimer(20 * 60); // 20 minutes
-    setIsRunning(false); // Stop the timer when changing tabs
+    if (index === 0) setCentralTimer(25 * 60); // 25 minutes
+    if (index === 1) setCentralTimer(5 * 60); // 5 minutes
+    if (index === 2) setCentralTimer(20 * 60); // 20 minutes
+    setIsCentralTimerRunning(false); // Stop the timer when changing tabs
   };
 
   function getDayName(date) {
@@ -79,6 +90,29 @@ const Focus = () => {
     month: "long",
   })} ${targetDate.getFullYear()}`;
 
+  useEffect(() => {
+    const fetchTasks = async () => {
+      let data, error;
+      ({
+        data: { user },
+      } = await supabase.auth.getUser());
+
+      ({ data, error } = await supabase
+        .from("tasks")
+        .select()
+        .eq("user_id", user.id)
+        .eq("date", "2024-06-02"));
+
+      if (error) {
+        console.error("Error fetching tasks:", error);
+      } else {
+        setTasks(data);
+      }
+    };
+
+    fetchTasks();
+  }, []);
+
   return (
     <SafeAreaView>
       <GestureHandlerRootView className="justify-center self-center h-full w-full">
@@ -93,7 +127,7 @@ const Focus = () => {
 
             <View className="mt-7 items-center">
               <Text className="text-6xl font-ProximaNovaBold">
-                {formatTime(timer)}
+                {formatTime(centralTimer)}
               </Text>
               <LinearGradient
                 className="mt-5 rounded-md border-yellow border w-full"
@@ -101,12 +135,14 @@ const Focus = () => {
                 locations={[0.5, 1, 1]}
               >
                 <Text className="font-ProximaNovaMedium bg-gradient-to-b from-[#FCE07F] to-yellow p-1 text-[10px] text-center">
-                  No selected task
+                  {currentTask ? currentTask.name : "No selected task"}
                 </Text>
               </LinearGradient>
               <CustomButton
-                title={"Start Session"}
-                handlePress={startTimer}
+                title={isCentralTimerRunning ? "Pause" : "Start"}
+                handlePress={() =>
+                  setIsCentralTimerRunning(!isCentralTimerRunning)
+                }
                 containerStyles="mt-2 h-[30px] rounded-md"
                 textStyles={"font-ProximaNovaBold text-xs"}
               />
@@ -121,8 +157,9 @@ const Focus = () => {
                 <FontAwesome name="sort-amount-asc" size={20} color="black" />
               </Pressable>
             </View>
-            <View className="border-t border-primary my-3"></View>
-            <TasksContainer />
+            <View className="mt-4 flex-1">
+              {tasks && <TasksContainer tasks={tasks} />}
+            </View>
           </View>
         </View>
       </GestureHandlerRootView>
