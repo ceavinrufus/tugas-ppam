@@ -33,6 +33,12 @@ const AuthLayout = () => {
             },
           }}
         />
+        <Stack.Screen
+          name="verify"
+          options={{
+            headerShown: false,
+          }}
+        />
       </Stack>
     </>
   );
