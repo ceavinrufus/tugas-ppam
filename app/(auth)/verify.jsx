@@ -6,7 +6,7 @@ import { router } from "expo-router";
 
 const Verify = () => {
   const handleLogin = () => {
-    router.push("/login"); // Ganti dengan rute yang sesuai untuk halaman login
+    router.navigate("/login"); // Ganti dengan rute yang sesuai untuk halaman login
   };
 
   return (
