@@ -15,6 +15,8 @@ const Focus = () => {
   const [selectedTab, setSelectedTab] = useState(0);
   const { tasks, setTasks } = useSchedule();
   const [modalVisible, setModalVisible] = useState(false);
+  const [shortBreak, setShortBreak] = useState(5 * 60);
+  const [longBreak, setLongBreak] = useState(20 * 60);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -42,9 +44,9 @@ const Focus = () => {
   }, []);
 
   const {
-    centralTimer,
-    setCentralTimer,
-    isCentralTimerRunning,
+    pomodoroTimer,
+    setPomodoroTimer,
+    isPomodoroTimerRunning,
     startTask,
     pauseTask,
     currentTask,
@@ -62,14 +64,6 @@ const Focus = () => {
     return `${minutes.toString().padStart(2, "0")}:${seconds
       .toString()
       .padStart(2, "0")}`;
-  };
-
-  const handleTabChange = (index) => {
-    setSelectedTab(index);
-    if (index === 0) setCentralTimer(25 * 60); // 25 minutes
-    if (index === 1) setCentralTimer(5 * 60); // 5 minutes
-    if (index === 2) setCentralTimer(20 * 60); // 20 minutes
-    // setIsCentralTimerRunning(false);
   };
 
   function getDayName(date) {
@@ -125,12 +119,19 @@ const Focus = () => {
             locations={[0, 0, 0, 1]}
             style={{ padding: 20 }}
           >
-            <TabButtons buttons={buttons} setSelectedTab={handleTabChange} />
+            <TabButtons
+              buttons={buttons}
+              setSelectedTab={(index) => setSelectedTab(index)}
+            />
 
             <View className="mt-7 items-center">
               {/* Pomodoro Timer */}
               <Text className="text-6xl font-ProximaNovaBold">
-                {formatTime(centralTimer)}
+                {selectedTab === 0
+                  ? formatTime(pomodoroTimer)
+                  : selectedTab === 1
+                  ? formatTime(shortBreak)
+                  : formatTime(longBreak)}
               </Text>
               {/* Task selected */}
               <LinearGradient
@@ -145,9 +146,13 @@ const Focus = () => {
               {/* Start button */}
               {/* Todo: Click start auto start first task */}
               <CustomButton
-                title={isCentralTimerRunning ? "Pause" : "Start"}
+                title={isPomodoroTimerRunning ? "Pause" : "Start"}
                 handlePress={() => {
-                  isCentralTimerRunning ? pauseTask() : startTask(currentTask);
+                  isPomodoroTimerRunning
+                    ? pauseTask()
+                    : currentTask
+                    ? startTask(currentTask)
+                    : startTask(tasks[0]);
                 }}
                 containerStyles="mt-2 h-[30px] rounded-md"
                 textStyles={"font-ProximaNovaBold text-xs"}

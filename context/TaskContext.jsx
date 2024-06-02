@@ -17,9 +17,9 @@ export const TaskProvider = ({ children }) => {
   const [taskStartTime, setTaskStartTime] = useState(null);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
-  const [centralTimer, setCentralTimer] = useState(25 * 60); // 25 minutes in seconds
-  const [isCentralTimerRunning, setIsCentralTimerRunning] = useState(false);
-  const centralTimerRef = useRef(null);
+  const [pomodoroTimer, setPomodoroTimer] = useState(25 * 60); // 25 minutes in seconds
+  const [isPomodoroTimerRunning, setIsPomodoroTimerRunning] = useState(false);
+  const pomodoroTimerRef = useRef(null);
 
   //   useEffect(() => {
   //     const loadTaskState = async () => {
@@ -86,23 +86,23 @@ export const TaskProvider = ({ children }) => {
   }, [isRunning, currentTask, taskStartTime]);
 
   useEffect(() => {
-    if (isCentralTimerRunning) {
-      centralTimerRef.current = setInterval(() => {
-        setCentralTimer((prevTimer) => {
+    if (isPomodoroTimerRunning) {
+      pomodoroTimerRef.current = setInterval(() => {
+        setPomodoroTimer((prevTimer) => {
           if (prevTimer <= 1) {
-            clearInterval(centralTimerRef.current);
+            clearInterval(pomodoroTimerRef.current);
             return 0;
           }
           return prevTimer - 1;
         });
       }, 1000);
     } else {
-      if (centralTimerRef.current) {
-        clearInterval(centralTimerRef.current);
+      if (pomodoroTimerRef.current) {
+        clearInterval(pomodoroTimerRef.current);
       }
     }
-    return () => clearInterval(centralTimerRef.current);
-  }, [isCentralTimerRunning]);
+    return () => clearInterval(pomodoroTimerRef.current);
+  }, [isPomodoroTimerRunning]);
 
   const startTask = async (task) => {
     setCurrentTask(task);
@@ -110,7 +110,7 @@ export const TaskProvider = ({ children }) => {
     setTaskStartTime(now);
     // setElapsedTime(0);
     setIsRunning(true);
-    setIsCentralTimerRunning(true); // Start central timer
+    setIsPomodoroTimerRunning(true); // Start central timer
     try {
       await AsyncStorage.setItem("currentTask", JSON.stringify(task));
       await AsyncStorage.setItem("taskStartTime", now.toString());
@@ -121,7 +121,7 @@ export const TaskProvider = ({ children }) => {
 
   const pauseTask = async () => {
     setIsRunning(false);
-    setIsCentralTimerRunning(false); // Pause central timer
+    setIsPomodoroTimerRunning(false); // Pause central timer
     // setCurrentTask(null);
     setTaskStartTime(null);
     // setElapsedTime(0);
@@ -141,10 +141,10 @@ export const TaskProvider = ({ children }) => {
         pauseTask,
         elapsedTime,
         isRunning,
-        centralTimer,
-        setCentralTimer,
-        isCentralTimerRunning,
-        setIsCentralTimerRunning,
+        pomodoroTimer,
+        setPomodoroTimer,
+        isPomodoroTimerRunning,
+        setIsPomodoroTimerRunning,
       }}
     >
       {children}
