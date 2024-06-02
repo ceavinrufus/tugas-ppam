@@ -27,10 +27,6 @@ export default function TasksContainer({ modalVisible, setModalVisible }) {
   const scrollY = useSharedValue(0);
   const [yPositionPage, setYPositionPage] = useState(0);
 
-  useEffect(() => {
-    positions.value = listToObject(tasks);
-  }, [tasks]);
-
   useAnimatedReaction(
     () => scrollY.value,
     (scrolling) => scrollTo(scrollViewRef, 0, scrolling, false)

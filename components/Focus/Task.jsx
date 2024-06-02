@@ -173,7 +173,7 @@ export default function MovableTask({
 export function Task({ task }) {
   const { currentTask, startTask, pauseTask, isRunning, elapsedTime } =
     useTask();
-  const isTaskRunning = currentTask && currentTask.id === task.id && isRunning;
+  const isCurrentTask = currentTask && currentTask.id === task.id;
   const [ela, setEla] = useState(task.elapsedTime);
 
   const formatTime = (timeInSeconds) => {
@@ -186,7 +186,7 @@ export function Task({ task }) {
 
   const handlePlayPause = () => {
     if (currentTask) {
-      if (currentTask.id === task.id) {
+      if (currentTask.id === task.id && isRunning) {
         pauseTask();
       } else {
         startTask(task);
@@ -209,7 +209,11 @@ export function Task({ task }) {
       <View className="flex-row items-center gap-2">
         <Pressable onPress={handlePlayPause}>
           <MaterialIcons
-            name={isTaskRunning ? "pause-circle-filled" : "play-circle-filled"}
+            name={
+              isCurrentTask && isRunning
+                ? "pause-circle-filled"
+                : "play-circle-filled"
+            }
             size={32}
             color="#190482"
           />
@@ -217,7 +221,7 @@ export function Task({ task }) {
         <View className="flex-1">
           <View className="w-full">
             <Text className="font-ProximaNovaBold">{task.name}</Text>
-            {isTaskRunning && (
+            {isCurrentTask && (
               <>
                 <Text className="font-ProximaNovaMedium">
                   {formatTime(ela)}

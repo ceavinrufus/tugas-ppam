@@ -45,7 +45,8 @@ const Focus = () => {
     centralTimer,
     setCentralTimer,
     isCentralTimerRunning,
-    setIsCentralTimerRunning,
+    startTask,
+    pauseTask,
     currentTask,
   } = useTask(); // Use the useTask hook
 
@@ -68,7 +69,7 @@ const Focus = () => {
     if (index === 0) setCentralTimer(25 * 60); // 25 minutes
     if (index === 1) setCentralTimer(5 * 60); // 5 minutes
     if (index === 2) setCentralTimer(20 * 60); // 20 minutes
-    setIsCentralTimerRunning(false); // Stop the timer when changing tabs
+    // setIsCentralTimerRunning(false);
   };
 
   function getDayName(date) {
@@ -145,9 +146,9 @@ const Focus = () => {
               {/* Todo: Click start auto start first task */}
               <CustomButton
                 title={isCentralTimerRunning ? "Pause" : "Start"}
-                handlePress={() =>
-                  setIsCentralTimerRunning(!isCentralTimerRunning)
-                }
+                handlePress={() => {
+                  isCentralTimerRunning ? pauseTask() : startTask(currentTask);
+                }}
                 containerStyles="mt-2 h-[30px] rounded-md"
                 textStyles={"font-ProximaNovaBold text-xs"}
               />

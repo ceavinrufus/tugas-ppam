@@ -122,15 +122,15 @@ export const TaskProvider = ({ children }) => {
   const pauseTask = async () => {
     setIsRunning(false);
     setIsCentralTimerRunning(false); // Pause central timer
-    setCurrentTask(null);
+    // setCurrentTask(null);
     setTaskStartTime(null);
     // setElapsedTime(0);
-    try {
-      await AsyncStorage.removeItem("currentTask");
-      await AsyncStorage.removeItem("taskStartTime");
-    } catch (e) {
-      console.error(e);
-    }
+    // try {
+    //   await AsyncStorage.removeItem("currentTask");
+    //   await AsyncStorage.removeItem("taskStartTime");
+    // } catch (e) {
+    //   console.error(e);
+    // }
   };
 
   return (
