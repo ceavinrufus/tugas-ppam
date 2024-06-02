@@ -19,7 +19,7 @@ export default function TaskModal({
   positions,
 }) {
   const [taskName, setTaskName] = useState("");
-  const [estimatedPomodoro, setEstimatedPomodoro] = useState(0);
+  const [estimatedPomodoro, setEstimatedPomodoro] = useState(1);
   const [priority, setPriority] = useState(null);
   const [notes, setNotes] = useState("");
   const { tasks, addTask } = useSchedule();

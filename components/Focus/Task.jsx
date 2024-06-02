@@ -187,7 +187,6 @@ export function Task({ task }) {
   const handlePlayPause = () => {
     if (currentTask) {
       if (currentTask.id === task.id) {
-        setEla(ela + elapsedTime);
         pauseTask();
       } else {
         startTask(task);
@@ -196,6 +195,14 @@ export function Task({ task }) {
       startTask(task);
     }
   };
+
+  useEffect(() => {
+    if (currentTask) {
+      if (currentTask.id === task.id) {
+        setEla(ela + 1);
+      }
+    }
+  }, [elapsedTime]);
 
   return (
     <>
@@ -207,31 +214,37 @@ export function Task({ task }) {
             color="#190482"
           />
         </Pressable>
-        <View>
-          <Text className="font-ProximaNovaBold">{task.name}</Text>
-          <Text className="font-ProximaNovaMedium">{formatTime(ela)}</Text>
-          {/* {isTaskRunning && ( */}
-          <View className="h-2 w-full bg-gray-300 rounded-full">
-            <View
-              style={{
-                width: `${
-                  task.estimated_pomodoro != 0
-                    ? (ela / (task.estimated_pomodoro * 60)) * 100
-                    : 0
-                }%`,
-              }}
-              className="h-full bg-primary rounded-full"
-            />
+        <View className="flex-1">
+          <View className="w-full">
+            <Text className="font-ProximaNovaBold">{task.name}</Text>
+            {isTaskRunning && (
+              <>
+                <Text className="font-ProximaNovaMedium">
+                  {formatTime(ela)}
+                </Text>
+                <View className="h-2 w-full bg-gray-300 rounded-full">
+                  <View
+                    style={{
+                      width: `${
+                        task.estimated_pomodoro != 0
+                          ? (ela / (task.estimated_pomodoro * 60 * 25)) * 100
+                          : 0
+                      }%`,
+                    }}
+                    className="h-full bg-primary rounded-full"
+                  />
+                </View>
+              </>
+            )}
           </View>
-          {/* )} */}
         </View>
-      </View>
-      <View className="flex-row items-center gap-2 mr-[10px]">
-        <Text className="font-ProximaNovaMedium text-grey">
-          0/{task.estimated_pomodoro}
-        </Text>
-        <View className="bg-secondary rounded-sm flex items-center justify-center h-[30px] w-[30px]">
-          <MaterialIcons name="more-vert" size={24} color="#190482" />
+        <View className="flex-row items-center mr-[10px]">
+          <Text className="font-ProximaNovaMedium mr-2 text-grey w-[40px] text-right">
+            {Math.floor(ela / (60 * 25))}/{task.estimated_pomodoro}
+          </Text>
+          <View className="bg-secondary rounded-sm flex items-center justify-center h-[30px] w-[30px]">
+            <MaterialIcons name="more-vert" size={24} color="#190482" />
+          </View>
         </View>
       </View>
     </>

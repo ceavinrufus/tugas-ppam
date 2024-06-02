@@ -1,19 +1,20 @@
-import { ScrollView, Text, View, Pressable } from "react-native";
+import { Text, View, TouchableOpacity } from "react-native";
 import React, { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import TabButtons from "../../components/TabButtons";
 import CustomButton from "../../components/CustomButton";
-import { FontAwesome } from "@expo/vector-icons";
 import TasksContainer from "../../components/Focus/TasksContainer";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useTask } from "../../context/TaskContext"; // Import the useTask hook
 import { supabase } from "../../lib/supabase";
 import { useSchedule } from "../../context/ScheduleContext";
+import { Entypo } from "@expo/vector-icons";
 
 const Focus = () => {
   const [selectedTab, setSelectedTab] = useState(0);
   const { tasks, setTasks } = useSchedule();
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -126,9 +127,11 @@ const Focus = () => {
             <TabButtons buttons={buttons} setSelectedTab={handleTabChange} />
 
             <View className="mt-7 items-center">
+              {/* Pomodoro Timer */}
               <Text className="text-6xl font-ProximaNovaBold">
                 {formatTime(centralTimer)}
               </Text>
+              {/* Task selected */}
               <LinearGradient
                 className="mt-5 rounded-md border-yellow border w-full"
                 colors={["#FCE07F", "#FACC2D", "#FFF"]}
@@ -138,6 +141,8 @@ const Focus = () => {
                   {currentTask ? currentTask.name : "No selected task"}
                 </Text>
               </LinearGradient>
+              {/* Start button */}
+              {/* Todo: Click start auto start first task */}
               <CustomButton
                 title={isCentralTimerRunning ? "Pause" : "Start"}
                 handlePress={() =>
@@ -148,17 +153,29 @@ const Focus = () => {
               />
             </View>
           </LinearGradient>
+
+          {/* Tanggal */}
           <View className="flex-1 mt-2">
             <View className="flex-row gap-2 mt-2">
               <View className="flex-1 items-center justify-center rounded-md h-[45px] bg-secondary">
                 <Text className="font-ProximaNovaMedium">{formattedDate}</Text>
               </View>
-              <Pressable className="w-1/6 h-[45px] justify-center items-center bg-secondary rounded-md">
-                <FontAwesome name="sort-amount-asc" size={20} color="black" />
-              </Pressable>
+              <TouchableOpacity
+                onPress={() => setModalVisible(true)}
+                className="w-1/6 h-[45px] justify-center bg-secondary items-center rounded-md"
+              >
+                {/* <FontAwesome name="sort-amount-asc" size={20} color="black" /> */}
+                <Entypo name="add-to-list" size={24} color="black" />
+              </TouchableOpacity>
             </View>
             <View className="mt-4 flex-1">
-              {tasks && <TasksContainer tasks={tasks} />}
+              {tasks && (
+                <TasksContainer
+                  tasks={tasks}
+                  modalVisible={modalVisible}
+                  setModalVisible={setModalVisible}
+                />
+              )}
             </View>
           </View>
         </View>

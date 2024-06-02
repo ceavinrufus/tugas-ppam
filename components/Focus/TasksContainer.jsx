@@ -1,9 +1,6 @@
 import { View, Text } from "react-native";
 import React, { useEffect, useState } from "react";
-import { tasks as t } from "../../mocks/tasks";
 import MovableTask from "./Task";
-import CustomButton from "../CustomButton";
-import { MaterialIcons } from "@expo/vector-icons";
 import TaskModal from "./TaskModal";
 import Animated, {
   scrollTo,
@@ -12,7 +9,6 @@ import Animated, {
   useAnimatedScrollHandler,
   useSharedValue,
 } from "react-native-reanimated";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useSchedule } from "../../context/ScheduleContext";
 
 function listToObject(list) {
@@ -24,9 +20,8 @@ function listToObject(list) {
   return object;
 }
 
-export default function TasksContainer() {
+export default function TasksContainer({ modalVisible, setModalVisible }) {
   const { tasks } = useSchedule(); // Use the tasks from context
-  const [modalVisible, setModalVisible] = useState(false);
   const positions = useSharedValue(listToObject(tasks));
   const scrollViewRef = useAnimatedRef();
   const scrollY = useSharedValue(0);
@@ -80,13 +75,6 @@ export default function TasksContainer() {
             />
           ))}
       </Animated.ScrollView>
-      <CustomButton
-        title={"Add Task"}
-        containerStyles="bg-primary flex-row space-x-2 mt-3"
-        leftIcon={<MaterialIcons name="add-circle" size={20} color="white" />}
-        textStyles={"font-ProximaNovaBold"}
-        handlePress={() => setModalVisible(true)}
-      />
       <View className="border-t border-primary my-3"></View>
       <View className="flex-row items-center mb-3 justify-center border-secondary border-2 px-4 rounded-xl h-[40px]">
         <Text className="text-primary font-ProximaNovaReg text-xs">
