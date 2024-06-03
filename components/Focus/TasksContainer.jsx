@@ -26,6 +26,7 @@ export default function TasksContainer({ modalVisible, setModalVisible }) {
   const scrollViewRef = useAnimatedRef();
   const scrollY = useSharedValue(0);
   const [yPositionPage, setYPositionPage] = useState(0);
+  const [menuOpened, setMenuOpened] = useState(null);
 
   useAnimatedReaction(
     () => scrollY.value,
@@ -47,12 +48,12 @@ export default function TasksContainer({ modalVisible, setModalVisible }) {
       }}
       className="flex-1"
     >
+      <View className="border-t border-primary mt-1"></View>
       <Animated.ScrollView
         ref={scrollViewRef}
         onScroll={handleScroll}
         scrollEventThrottle={16}
         style={{
-          marginVertical: 4,
           backgroundColor: "transparent",
         }}
         contentContainerStyle={{
@@ -64,6 +65,8 @@ export default function TasksContainer({ modalVisible, setModalVisible }) {
             <MovableTask
               key={task.id}
               task={task}
+              menuOpened={menuOpened}
+              setMenuOpened={setMenuOpened}
               tasksCount={tasks.length}
               positions={positions}
               scrollY={scrollY}
@@ -71,7 +74,7 @@ export default function TasksContainer({ modalVisible, setModalVisible }) {
             />
           ))}
       </Animated.ScrollView>
-      <View className="border-t border-primary my-3"></View>
+      <View className="border-t border-primary mb-3"></View>
       <View className="flex-row items-center mb-3 justify-center border-secondary border-2 px-4 rounded-xl h-[40px]">
         <Text className="text-primary font-ProximaNovaReg text-xs">
           <Text className="font-ProximaNovaBold">Today's Focus Session: </Text>3

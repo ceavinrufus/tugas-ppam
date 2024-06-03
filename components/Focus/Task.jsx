@@ -4,6 +4,8 @@ import {
   View,
   Pressable,
   useWindowDimensions,
+  TouchableOpacity,
+  Modal,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import React, { useState, useEffect } from "react";
@@ -22,7 +24,6 @@ import { PanGestureHandler } from "react-native-gesture-handler";
 import * as Haptics from "expo-haptics";
 import { BlurView } from "expo-blur";
 import { useTask } from "../../context/TaskContext";
-import { useSchedule } from "../../context/ScheduleContext";
 
 function clamp(value, lowerBound, upperBound) {
   "worklet";
@@ -52,23 +53,25 @@ export default function MovableTask({
   positions,
   scrollY,
   yPositionPage,
+  menuOpened,
+  setMenuOpened,
 }) {
   const dimensions = useWindowDimensions();
+  const SCROLL_HEIGHT_THRESHOLD = dimensions.height / 10;
+  const SCROLL_HEIGHT_WITH_SPACE = 68;
   const insets = useSafeAreaInsets();
   const [moving, setMoving] = useState(false);
   const top = useSharedValue(
     positions.value[task.id]
-      ? positions.value[task.id] * 72
-      : (tasksCount - 1) * 72
+      ? positions.value[task.id] * SCROLL_HEIGHT_WITH_SPACE
+      : (tasksCount - 1) * SCROLL_HEIGHT_WITH_SPACE
   );
-
-  const SCROLL_HEIGHT_THRESHOLD = dimensions.height / 10;
 
   useEffect(() => {
     if (positions.value[task.id] !== undefined) {
-      top.value = positions.value[task.id] * 72;
+      top.value = positions.value[task.id] * SCROLL_HEIGHT_WITH_SPACE;
     } else {
-      top.value = (tasksCount - 1) * 72;
+      top.value = (tasksCount - 1) * SCROLL_HEIGHT_WITH_SPACE;
     }
   }, [positions.value, task.id, tasksCount]);
 
@@ -77,7 +80,7 @@ export default function MovableTask({
     (currentPosition, previousPosition) => {
       if (currentPosition !== previousPosition) {
         if (!moving) {
-          top.value = withSpring(currentPosition * 72);
+          top.value = withSpring(currentPosition * SCROLL_HEIGHT_WITH_SPACE);
         }
       }
     },
@@ -107,7 +110,7 @@ export default function MovableTask({
         scrollY.value + dimensions.height - SCROLL_HEIGHT_THRESHOLD
       ) {
         // Scroll down
-        const contentHeight = tasksCount * 72;
+        const contentHeight = tasksCount * SCROLL_HEIGHT_WITH_SPACE;
         const containerHeight = dimensions.height - insets.top - insets.bottom;
         const maxScroll = Math.max(contentHeight - containerHeight, 0);
         scrollY.value = withTiming(maxScroll, { duration: 1500 });
@@ -115,9 +118,13 @@ export default function MovableTask({
         cancelAnimation(scrollY);
       }
 
-      top.value = positionY - 72;
+      top.value = positionY - SCROLL_HEIGHT_WITH_SPACE;
 
-      const newPosition = clamp(Math.floor(positionY / 72), 0, tasksCount - 1);
+      const newPosition = clamp(
+        Math.floor(positionY / SCROLL_HEIGHT_WITH_SPACE),
+        0,
+        tasksCount - 1
+      );
 
       if (newPosition !== positions.value[task.id]) {
         positions.value = objectMove(
@@ -132,7 +139,9 @@ export default function MovableTask({
       }
     },
     onFinish() {
-      top.value = withSpring(positions.value[task.id] * 72);
+      top.value = withSpring(
+        positions.value[task.id] * SCROLL_HEIGHT_WITH_SPACE
+      );
       runOnJS(setMoving)(false);
     },
   });
@@ -154,11 +163,18 @@ export default function MovableTask({
 
   return (
     <Animated.View
-      style={[animatedStyle, { shadowOffset: { height: 0, width: 0 } }]}
+      style={[
+        animatedStyle,
+        { shadowOffset: { height: 0, width: 0 }, marginTop: 4 },
+      ]}
     >
       <BlurView intensity={moving ? 200 : 0}>
         <View className="flex-row items-center justify-between border-secondary border-2 px-4 rounded-xl h-[60px]">
-          <Task task={task} />
+          <Task
+            task={task}
+            menuOpened={menuOpened}
+            setMenuOpened={setMenuOpened}
+          />
           <PanGestureHandler onGestureEvent={gestureHandler}>
             <Animated.View className="absolute right-0 z-10">
               <MaterialIcons name="drag-indicator" size={20} color="#807E78" />
@@ -170,7 +186,7 @@ export default function MovableTask({
   );
 }
 
-export function Task({ task }) {
+export function Task({ task, menuOpened, setMenuOpened }) {
   const { currentTask, startTask, pauseTask, isRunning, elapsedTime } =
     useTask();
   const isCurrentTask = currentTask && currentTask.id === task.id;
@@ -246,9 +262,60 @@ export function Task({ task }) {
           <Text className="font-ProximaNovaMedium mr-2 text-grey w-[40px] text-right">
             {Math.floor(ela / (60 * 25))}/{task.estimated_pomodoro}
           </Text>
-          <View className="bg-secondary rounded-sm flex items-center justify-center h-[30px] w-[30px]">
-            <MaterialIcons name="more-vert" size={24} color="#190482" />
+
+          {/* More button */}
+          <View className="bg-secondary relative rounded-sm flex items-center justify-center h-[30px] w-[30px]">
+            <TouchableOpacity
+              onPress={() => {
+                if (menuOpened != task.id) {
+                  setMenuOpened(task.id);
+                } else {
+                  setMenuOpened(null);
+                }
+              }}
+            >
+              <MaterialIcons name="more-vert" size={24} color="black" />
+            </TouchableOpacity>
           </View>
+          <Modal
+            transparent={true}
+            visible={task.id == menuOpened}
+            animationType="fade"
+          >
+            <Pressable
+              style={{
+                flex: 1,
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              onPress={() => setMenuOpened(null)}
+            >
+              <View
+                style={{
+                  width: "80%",
+                  backgroundColor: "white",
+                  borderRadius: 10,
+                  padding: 10,
+                  shadowColor: "#000",
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.25,
+                  shadowRadius: 4,
+                  elevation: 5,
+                }}
+              >
+                <Pressable className="px-4 py-2" onPress={() => {}}>
+                  <Text>Edit task</Text>
+                </Pressable>
+                <Pressable
+                  className="px-4 py-2"
+                  onPress={() => console.log("Delete task")}
+                >
+                  <Text>Delete task</Text>
+                </Pressable>
+              </View>
+            </Pressable>
+          </Modal>
         </View>
       </View>
     </>
