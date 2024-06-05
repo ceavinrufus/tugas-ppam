@@ -24,6 +24,7 @@ import { PanGestureHandler } from "react-native-gesture-handler";
 import * as Haptics from "expo-haptics";
 import { BlurView } from "expo-blur";
 import { useTask } from "../../context/TaskContext";
+import { FontAwesome6 } from "@expo/vector-icons";
 
 function clamp(value, lowerBound, upperBound) {
   "worklet";
@@ -304,14 +305,23 @@ export function Task({ task, menuOpened, setMenuOpened }) {
                   elevation: 5,
                 }}
               >
-                <Pressable className="px-4 py-2" onPress={() => {}}>
-                  <Text>Edit task</Text>
+                <Pressable
+                  className="flex-row items-center px-2 py-1"
+                  onPress={() => {}}
+                >
+                  <View className="p-2 bg-secondary rounded-md">
+                    <FontAwesome6 name="trash-can" size={16} color="black" />
+                  </View>
+                  <Text className="ml-2">Edit task</Text>
                 </Pressable>
                 <Pressable
-                  className="px-4 py-2"
+                  className="flex-row items-center px-2 py-1"
                   onPress={() => console.log("Delete task")}
                 >
-                  <Text>Delete task</Text>
+                  <View className="p-2 bg-secondary rounded-md">
+                    <FontAwesome6 name="edit" size={14} color="black" />
+                  </View>
+                  <Text className="ml-2">Delete task</Text>
                 </Pressable>
               </View>
             </Pressable>

@@ -28,6 +28,11 @@ export default function TasksContainer({ modalVisible, setModalVisible }) {
   const [yPositionPage, setYPositionPage] = useState(0);
   const [menuOpened, setMenuOpened] = useState(null);
 
+  // Biar kalo abis add/remove positions juga ikut keupdate
+  useEffect(() => {
+    positions.value = listToObject(tasks);
+  }, [tasks]);
+
   useAnimatedReaction(
     () => scrollY.value,
     (scrolling) => scrollTo(scrollViewRef, 0, scrolling, false)
