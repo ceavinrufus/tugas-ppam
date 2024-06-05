@@ -26,8 +26,12 @@ const Login = () => {
   };
 
   const validatePassword = (password) => {
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-    return passwordRegex.test(password);
+    const passwordRegex = /(?=.*[a-zA-Z])(?=.*[0-9])/; // Lookahead assertions for at least one letter and one number
+    if (passwordRegex.test(password)) {
+      return password.length >= 8;
+    } else {
+      return false;
+    }
   };
 
   const submit = async () => {
@@ -44,7 +48,7 @@ const Login = () => {
 
     if (!errorOccured.password && !validatePassword(form.password)) {
       errorOccured.password =
-        "Password must be at least 8 characters long and contain both letters and numbers";
+        "Password must be at least 8 characters and contain at least one letter and number.";
     }
 
     setErrors(errorOccured);

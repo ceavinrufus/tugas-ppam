@@ -31,8 +31,12 @@ const Register = () => {
   };
 
   const validatePassword = (password) => {
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-    return passwordRegex.test(password);
+    const passwordRegex = /(?=.*[a-zA-Z])(?=.*[0-9])/; // Lookahead assertions for at least one letter and one number
+    if (passwordRegex.test(password)) {
+      return password.length >= 8;
+    } else {
+      return false;
+    }
   };
 
   const submit = async () => {
