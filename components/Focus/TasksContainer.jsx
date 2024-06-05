@@ -1,6 +1,6 @@
 import { View, Text } from "react-native";
 import React, { useEffect, useState } from "react";
-import MovableTask from "./Task";
+import MovableTask from "./MovableTask";
 import TaskModal from "./TaskModal";
 import Animated, {
   scrollTo,

@@ -22,7 +22,7 @@ export default function TaskModal({
   const [estimatedPomodoro, setEstimatedPomodoro] = useState(1);
   const [priority, setPriority] = useState(null);
   const [notes, setNotes] = useState("");
-  const { tasks, addTask } = useSchedule();
+  const { addTask } = useSchedule();
 
   async function insertOrUpdateSchedule(uid, date) {
     const { error } = await supabase.rpc("insert_schedule", {
@@ -70,7 +70,7 @@ export default function TaskModal({
         Alert.alert("Error", error.message);
       } else {
         Alert.alert("Success", "Task created successfully");
-        addTask(data[0]); // Ensure you are adding the task correctly
+        addTask(data[0]);
 
         setModalVisible(false);
       }
