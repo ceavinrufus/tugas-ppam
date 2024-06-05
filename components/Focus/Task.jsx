@@ -25,6 +25,7 @@ import * as Haptics from "expo-haptics";
 import { BlurView } from "expo-blur";
 import { useTask } from "../../context/TaskContext";
 import { FontAwesome6 } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 
 function clamp(value, lowerBound, upperBound) {
   "worklet";
@@ -59,7 +60,7 @@ export default function MovableTask({
 }) {
   const dimensions = useWindowDimensions();
   const SCROLL_HEIGHT_THRESHOLD = dimensions.height / 10;
-  const SCROLL_HEIGHT_WITH_SPACE = 68;
+  const SCROLL_HEIGHT_WITH_SPACE = 64;
   const insets = useSafeAreaInsets();
   const [moving, setMoving] = useState(false);
   const top = useSharedValue(
@@ -166,10 +167,18 @@ export default function MovableTask({
     <Animated.View
       style={[
         animatedStyle,
-        { shadowOffset: { height: 0, width: 0 }, marginTop: 4 },
+        { shadowOffset: { height: 0, width: 0 }, marginTop: 2 },
       ]}
     >
-      <BlurView intensity={moving ? 200 : 0}>
+      <LinearGradient
+        colors={
+          moving
+            ? ["#C2D9FF", "#DFEBFF", "#FFFFFF"]
+            : ["#FFFFFF", "#FFFFFF", "#FFFFFF"]
+        }
+        locations={[0, 1, 1]}
+        className="rounded-xl"
+      >
         <View className="flex-row items-center justify-between border-secondary border-2 px-4 rounded-xl h-[60px]">
           <Task
             task={task}
@@ -182,7 +191,7 @@ export default function MovableTask({
             </Animated.View>
           </PanGestureHandler>
         </View>
-      </BlurView>
+      </LinearGradient>
     </Animated.View>
   );
 }

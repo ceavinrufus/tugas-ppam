@@ -62,7 +62,7 @@ export default function TasksContainer({ modalVisible, setModalVisible }) {
           backgroundColor: "transparent",
         }}
         contentContainerStyle={{
-          height: tasks.length * 72,
+          height: tasks.length * 64,
         }}
       >
         {tasks &&
