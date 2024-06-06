@@ -3,6 +3,7 @@ import { Slot, SplashScreen, Stack } from "expo-router";
 import { useFonts, Raleway_700Bold } from "@expo-google-fonts/raleway";
 import { TaskProvider } from "../context/TaskContext";
 import { ScheduleProvider } from "../context/ScheduleContext";
+import { SpaceProvider } from "../context/SpaceContext";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -27,35 +28,37 @@ const RootLayout = () => {
 
   return (
     <ScheduleProvider>
-      <TaskProvider>
-        <Stack>
-          <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen
-            name="(auth)"
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="(tabs)"
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="(profile)"
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="(focus)"
-            options={{
-              headerShown: false,
-            }}
-          />
-        </Stack>
-      </TaskProvider>
+      <SpaceProvider>
+        <TaskProvider>
+          <Stack>
+            <Stack.Screen name="index" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="(auth)"
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="(tabs)"
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="(profile)"
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="(focus)"
+              options={{
+                headerShown: false,
+              }}
+            />
+          </Stack>
+        </TaskProvider>
+      </SpaceProvider>
     </ScheduleProvider>
   );
 };

@@ -1,5 +1,5 @@
 import { View, Text, Pressable } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Animated, {
   runOnJS,
   useAnimatedStyle,
@@ -7,7 +7,12 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-const TabButtons = ({ buttons, setSelectedTab, otherTextStyles }) => {
+const TabButtons = ({
+  buttons,
+  triggerReset,
+  setSelectedTab,
+  otherTextStyles,
+}) => {
   const [dimensions, setDimensions] = useState({ height: 30, width: 300 });
 
   const buttonWidth = dimensions.width / buttons.length;
@@ -24,6 +29,12 @@ const TabButtons = ({ buttons, setSelectedTab, otherTextStyles }) => {
   const handlePress = (index) => {
     setSelectedTab(index);
   };
+
+  useEffect(() => {
+    tabPositionX.value = withTiming(buttonWidth * 0, {}, () => {
+      runOnJS(handlePress)(0);
+    });
+  }, [triggerReset]);
 
   const onTabPress = (index) => {
     tabPositionX.value = withTiming(buttonWidth * index, {}, () => {
