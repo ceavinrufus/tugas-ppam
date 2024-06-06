@@ -1,137 +1,171 @@
-import { View, Text, Modal, StyleSheet, Image, Pressable } from "react-native";
-import React, { useState, useEffect } from "react";
+import { StyleSheet, Text, View, Modal, Alert } from "react-native";
+import React, { useState } from "react";
+import FormField from "../FormField";
 import CustomButton from "../CustomButton";
-import { LinearGradient } from "expo-linear-gradient";
-import { FontAwesome6, FontAwesome5 } from "@expo/vector-icons";
+import Slider from "@react-native-community/slider";
+import { supabase } from "../../lib/supabase";
+import { useSpace } from "../../context/SpaceContext";
 import TextProximaNovaReg from "../TextProximaNovaReg";
-import { supabase } from "../../lib/supabase"; // Import Supabase client
-import { Alert } from "react-native";
 
 export default function SpaceModal({ space, modalVisible, setModalVisible }) {
-  const [isJoined, setIsJoined] = useState(false);
-  const [userId, setUserId] = useState("");
+  const [spaceName, setSpaceName] = useState(space ? space.name : "");
+  const [sessionGoal, setEstimatedPomodoro] = useState(
+    space ? space.sessions : 1
+  );
+  const [description, setDescription] = useState(
+    space ? space.description : ""
+  );
+  const { addSpace, updateSpace } = useSpace();
+  const [errors, setErrors] = useState({
+    name: "",
+    session_goal: "",
+  });
 
-  const handleJoinSpace = async () => {
-    if (userId) return;
+  const isInputNotValid = () => {
+    const errorOccured = {
+      name: "",
+      session_goal: "",
+    };
 
-    const { error } = await supabase
-      .from("space_members")
-      .insert({ space_id: space.id, user_id: userId });
+    if (!spaceName) {
+      errorOccured.name = spaceName ? "" : "Name is required";
+    }
+
+    if (sessionGoal <= 0) {
+      errorOccured.session_goal = "Minimum 1";
+    }
+    setErrors(errorOccured);
+
+    return errorOccured.name || errorOccured.session_goal;
+  };
+
+  const handleUpdateSpace = async () => {
+    if (isInputNotValid()) return;
+
+    const { data, error } = await supabase
+      .from("spaces")
+      .update({
+        name: spaceName,
+        sessions: sessionGoal,
+        description,
+      })
+      .eq("id", space.id)
+      .select();
 
     if (error) {
-      Alert.alert(
-        "Failed to join the space",
-        error.message,
-        [
-          {
-            text: "Cancel",
-            style: "cancel",
-          },
-        ],
-        {
-          cancelable: true,
-        }
-      );
+      Alert.alert("Error", error.message);
     } else {
+      Alert.alert("Success", "Space updated!");
+      updateSpace(space.id, data[0]);
+
       setModalVisible(false);
     }
   };
 
-  useEffect(() => {
-    const getUserId = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      setUserId(user.id);
-    };
-    getUserId();
+  const handleCreateSpace = async () => {
+    if (isInputNotValid()) return;
 
-    if (space.members.includes(userId)) {
-      setIsJoined(true);
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    const { data, error } = await supabase
+      .from("spaces")
+      .insert([
+        {
+          name: spaceName,
+          sessions: sessionGoal,
+          description,
+          members: [user.id],
+          created_by: user.id,
+        },
+      ])
+      .select();
+
+    if (error) {
+      Alert.alert("Error", error.message);
+    } else {
+      Alert.alert("Success", "Space created successfully");
+      addSpace(data[0]);
+
+      setModalVisible(false);
     }
-  }, [space, userId]);
+  };
 
   return (
     <Modal
       animationType="fade"
-      transparent={true}
-      visible={modalVisible}
       onRequestClose={() => {
         setModalVisible(!modalVisible);
       }}
+      transparent={true}
+      visible={modalVisible}
     >
-      <Pressable
+      <View
+        className="flex-1 justify-center"
         style={{
-          flex: 1,
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
-          justifyContent: "center",
-          alignItems: "center",
+          backgroundColor: "rgba(0,0,0,0.5)",
         }}
-        onPress={() => setModalVisible(false)}
       >
-        <LinearGradient
-          colors={["#FACC2D", "#FBDB6A", "#FDEAA7", "#FFFFFF"]}
-          locations={[0, 0, 0, 1]}
+        <View
           style={styles.modalView}
-          className="bg-white rounded-xl border-yellow border-2 mx-[30px] px-5 py-4"
+          className="bg-white border-2 border-primary mx-[30px] rounded-xl px-5 py-10"
         >
-          <View className="flex-row">
-            {/* Image */}
-            <View className={`border-yellow border rounded-xl overflow-hidden`}>
-              <Image
-                resizeMode="cover"
-                source={{ uri: space.image }}
-                className="w-20 h-20"
-              />
-            </View>
+          <FormField
+            title={"Space Name"}
+            placeholder={"Ex: Math Project"}
+            value={spaceName}
+            onChangeText={setSpaceName}
+          />
+          {errors.name ? (
+            <TextProximaNovaReg className="text-red-500">
+              {errors.name}
+            </TextProximaNovaReg>
+          ) : null}
+          {/* Estimated Pomodoro */}
+          <Text className="text-base font-ProximaNovaMedium mt-4">
+            Session Goal
+          </Text>
+          <Slider
+            style={{ width: "100%", height: 40 }}
+            minimumValue={0}
+            maximumValue={16}
+            step={1}
+            value={sessionGoal}
+            onValueChange={setEstimatedPomodoro}
+            minimumTrackTintColor="#1EB1FC"
+            maximumTrackTintColor="#d3d3d3"
+          />
+          <Text className="self-center">
+            {sessionGoal} pomodoro session/day
+          </Text>
+          {errors.session_goal ? (
+            <TextProximaNovaReg className="text-red-500">
+              {errors.session_goal}
+            </TextProximaNovaReg>
+          ) : null}
 
-            {/* Info */}
-            <View className="justify-center ml-4 flex-1">
-              <Text className="text-sm font-ProximaNovaBold mb-1 text-primary">
-                {space.name}
-              </Text>
-
-              <View className="flex-row items-center">
-                <FontAwesome5 name="user-friends" size={10} color="black" />
-                <Text className="ml-1 text-xs font-ProximaNovaMedium">
-                  {space.members && space.members.length}{" "}
-                  {space.members && space.members.length > 1
-                    ? "members"
-                    : "member"}
-                </Text>
-              </View>
-              <View className="flex-row items-center">
-                <FontAwesome6 size={10} name="bolt" color="black" />
-                <Text className="ml-2 text-xs font-ProximaNovaMedium">
-                  {space.sessions} {space.sessions > 1 ? "sessions" : "session"}
-                </Text>
-              </View>
-            </View>
-          </View>
-
-          {/* Description */}
-          <TextProximaNovaReg className="text-justify my-2 text-xs">
-            {space.description}
-          </TextProximaNovaReg>
-
-          <View className="flex-row justify-between items-center">
-            <CustomButton
-              containerStyles={"bg-white w-[49%] mt-2 border-primary border"}
-              textStyles={"text-primary"}
-              title={"Cancel"}
-              handlePress={() => setModalVisible(!modalVisible)}
-            />
-            <CustomButton
-              containerStyles={`mt-2 w-[49%] border-primary border ${
-                isJoined ? "opacity-50" : ""
-              }`}
-              title={"Join"}
-              handlePress={handleJoinSpace}
-              disabled={isJoined}
-            />
-          </View>
-        </LinearGradient>
-      </Pressable>
+          <FormField
+            title={"Description"}
+            required={false}
+            otherStyles="mt-4"
+            placeholder={"Add description about the space"}
+            value={description}
+            onChangeText={setDescription}
+          />
+          <CustomButton
+            containerStyles={"mt-6 border-primary border"}
+            title={space ? "Save Changes" : "Create Space"}
+            handlePress={space ? handleUpdateSpace : handleCreateSpace}
+          />
+          <CustomButton
+            containerStyles={"bg-white mt-2 border-primary border"}
+            textStyles={"text-primary"}
+            title={"Cancel"}
+            handlePress={() => setModalVisible(!modalVisible)}
+          />
+        </View>
+      </View>
     </Modal>
   );
 }
@@ -146,5 +180,24 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+  },
+  placeholderStyle: {
+    color: "#807E78",
+    fontSize: 14,
+    fontFamily: "ProximaNovaReg",
+  },
+  selectedText: {
+    fontSize: 14,
+    fontFamily: "ProximaNovaReg",
+  },
+  itemContainer: {
+    height: 50,
+  },
+  itemText: {
+    fontSize: 14,
+    fontFamily: "ProximaNovaReg",
+  },
+  container: {
+    borderRadius: 8,
   },
 });

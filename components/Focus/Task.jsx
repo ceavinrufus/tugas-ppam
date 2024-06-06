@@ -1,10 +1,10 @@
 import {
   Text,
   View,
-  Pressable,
   TouchableOpacity,
   Modal,
   Alert,
+  Pressable,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { MaterialIcons } from "react-native-vector-icons";
@@ -69,7 +69,7 @@ export function Task({ task, menuOpened, setMenuOpened }) {
 
   return (
     <View className="flex-row items-center gap-2">
-      <Pressable onPress={handlePlayPause}>
+      <TouchableOpacity onPress={handlePlayPause}>
         <MaterialIcons
           name={
             isCurrentTask && isRunning
@@ -79,7 +79,7 @@ export function Task({ task, menuOpened, setMenuOpened }) {
           size={32}
           color="#190482"
         />
-      </Pressable>
+      </TouchableOpacity>
       <View className="flex-1">
         <View className="w-full">
           <Text className="font-ProximaNovaBold">{task.name}</Text>
@@ -148,7 +148,7 @@ export function Task({ task, menuOpened, setMenuOpened }) {
                 elevation: 5,
               }}
             >
-              <Pressable
+              <TouchableOpacity
                 className="flex-row items-center px-2 py-1"
                 onPress={() => setModalVisible(true)}
               >
@@ -156,8 +156,8 @@ export function Task({ task, menuOpened, setMenuOpened }) {
                   <FontAwesome6 name="edit" size={14} color="black" />
                 </View>
                 <Text className="ml-2">Edit task</Text>
-              </Pressable>
-              <Pressable
+              </TouchableOpacity>
+              <TouchableOpacity
                 className="flex-row items-center px-2 py-1"
                 onPress={handleDeleteTask}
               >
@@ -165,16 +165,16 @@ export function Task({ task, menuOpened, setMenuOpened }) {
                   <FontAwesome6 name="trash-can" size={16} color="black" />
                 </View>
                 <Text className="ml-2">Delete task</Text>
-              </Pressable>
+              </TouchableOpacity>
             </View>
           </Pressable>
         </Modal>
+        <TaskModal
+          task={task}
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+        />
       </View>
-      <TaskModal
-        task={task}
-        modalVisible={modalVisible}
-        setModalVisible={setModalVisible}
-      />
     </View>
   );
 }

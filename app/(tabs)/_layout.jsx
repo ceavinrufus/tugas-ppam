@@ -9,7 +9,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { supabase } from "../../lib/supabase";
-import AddSpaceModal from "../../components/Space/AddSpaceModal";
+import SpaceModal from "../../components/Space/SpaceModal";
 
 const TabIcon = ({ icon, color, name, focused }) => {
   return (
@@ -134,7 +134,7 @@ const TabsLayout = () => {
                     color="black"
                     onPress={() => setModalVisible(true)}
                   />
-                  <AddSpaceModal
+                  <SpaceModal
                     modalVisible={modalVisible}
                     setModalVisible={setModalVisible}
                   />

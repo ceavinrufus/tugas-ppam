@@ -23,7 +23,35 @@ const Spaces = () => {
 
   useEffect(() => {
     setTriggerResetTab(!triggerResetTab);
-  }, [spaces]);
+  }, [spaces.length]);
+
+  useEffect(() => {
+    const generateTabContent = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (selectedTab === 0) {
+        setFilteredSpaces(spaces);
+        setSearchedSpaces(spaces);
+      } else if (selectedTab === 1 && user.id) {
+        setFilteredSpaces(
+          spaces.filter((space) => space.members.includes(user.id))
+        );
+        setSearchedSpaces(
+          spaces.filter((space) => space.members.includes(user.id))
+        );
+      } else if (selectedTab === 2 && user.id) {
+        setFilteredSpaces(
+          spaces.filter((space) => space.created_by.includes(user.id))
+        );
+        setSearchedSpaces(
+          spaces.filter((space) => space.created_by.includes(user.id))
+        );
+      }
+    };
+    generateTabContent();
+  }, [selectedTab]);
 
   useEffect(() => {
     const fetchSpaces = async () => {
@@ -58,31 +86,8 @@ const Spaces = () => {
     );
   };
 
-  const handleTabChange = async (index) => {
+  const handleTabChange = (index) => {
     setSelectedTab(index);
-
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (index === 0) {
-      setFilteredSpaces(spaces);
-      setSearchedSpaces(spaces);
-    } else if (index === 1 && user.id) {
-      setFilteredSpaces(
-        spaces.filter((space) => space.members.includes(user.id))
-      );
-      setSearchedSpaces(
-        spaces.filter((space) => space.members.includes(user.id))
-      );
-    } else if (index === 2 && user.id) {
-      setFilteredSpaces(
-        spaces.filter((space) => space.created_by.includes(user.id))
-      );
-      setFilteredSpaces(
-        spaces.filter((space) => space.created_by.includes(user.id))
-      );
-    }
   };
 
   return (
@@ -105,7 +110,11 @@ const Spaces = () => {
           <ScrollView style={{ marginTop: 16 }}>
             {searchedSpaces &&
               searchedSpaces.map((space) => (
-                <SpaceCard key={space.id} space={space} />
+                <SpaceCard
+                  canEdit={selectedTab == 2}
+                  key={space.id}
+                  space={space}
+                />
               ))}
           </ScrollView>
         </View>
