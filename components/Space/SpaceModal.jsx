@@ -1,4 +1,4 @@
-import { View, Text, Modal, StyleSheet, Image } from "react-native";
+import { View, Text, Modal, StyleSheet, Image, Pressable } from "react-native";
 import React, { useState, useEffect } from "react";
 import CustomButton from "../CustomButton";
 import { LinearGradient } from "expo-linear-gradient";
@@ -73,11 +73,14 @@ export default function SpaceModal({ space, modalVisible, setModalVisible }) {
         setModalVisible(!modalVisible);
       }}
     >
-      <View
-        className="flex-1 justify-center"
+      <Pressable
         style={{
-          backgroundColor: "rgba(0,0,0,0.5)",
+          flex: 1,
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          justifyContent: "center",
+          alignItems: "center",
         }}
+        onPress={() => setModalVisible(false)}
       >
         <LinearGradient
           colors={["#FACC2D", "#FBDB6A", "#FDEAA7", "#FFFFFF"]}
@@ -138,7 +141,7 @@ export default function SpaceModal({ space, modalVisible, setModalVisible }) {
             />
           </View>
         </LinearGradient>
-      </View>
+      </Pressable>
     </Modal>
   );
 }

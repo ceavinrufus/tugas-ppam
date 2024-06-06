@@ -9,6 +9,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { supabase } from "../../lib/supabase";
+import AddSpaceModal from "../../components/Space/AddSpaceModal";
 
 const TabIcon = ({ icon, color, name, focused }) => {
   return (
@@ -27,6 +28,7 @@ const TabIcon = ({ icon, color, name, focused }) => {
 
 const TabsLayout = () => {
   const [menuVisible, setMenuVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
   const segments = useSegments();
 
   let [fontsLoaded, error] = useFonts({
@@ -123,6 +125,20 @@ const TabsLayout = () => {
                   name={"Spaces"}
                   focused={focused}
                 />
+              ),
+              headerRight: () => (
+                <View className="p-[10px] mr-4 bg-gray-100 rounded-md">
+                  <MaterialIcons
+                    name="group-add"
+                    size={24}
+                    color="black"
+                    onPress={() => setModalVisible(true)}
+                  />
+                  <AddSpaceModal
+                    modalVisible={modalVisible}
+                    setModalVisible={setModalVisible}
+                  />
+                </View>
               ),
             }}
           />
