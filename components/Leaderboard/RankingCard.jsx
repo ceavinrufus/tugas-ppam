@@ -36,16 +36,24 @@ const RankingCard = ({ rank, user }) => {
       >
         <Text className="text-md font-bold px-4">{rank}</Text>
         {/* Foto */}
-        <View className="overflow-hidden my-1 mr-2 rounded-full">
-          <Image
-            source={{
-              uri: user.avatar
-                ? user.avatar
-                : `https://avatar.iran.liara.run/public/boy?username=${user.nickname}`,
-            }}
-            resizeMode="cover"
-            className="h-20 w-20"
-          />
+        <View className="h-20 w-20 overflow-hidden my-1 mr-2 rounded-full">
+          {user.avatar || user.gender ? (
+            <Image
+              source={{
+                uri: user.avatar
+                  ? user.avatar
+                  : `https://avatar.iran.liara.run/public/${user.gender}?username=${user.nickname}`,
+              }}
+              resizeMode="cover"
+              className="h-20 w-20"
+            />
+          ) : (
+            <Image
+              source={require("../../assets/img/profpic_placeholder.jpg")}
+              resizeMode="cover"
+              className="h-full w-full"
+            />
+          )}
         </View>
       </LinearGradient>
 

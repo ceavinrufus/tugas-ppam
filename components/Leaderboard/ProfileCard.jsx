@@ -53,16 +53,24 @@ export default function ProfileCard() {
     >
       <View className="flex flex-col border rounded-lg border-[#FACC2D] p-3">
         <View className="flex-row justify-start">
-          <View className="border-primary border overflow-hidden mr-4 rounded-full">
-            <Image
-              source={{
-                uri: profile.avatar
-                  ? profile.avatar
-                  : `https://avatar.iran.liara.run/public/boy?username=${user.nickname}`,
-              }}
-              resizeMode="cover"
-              className="h-[50px] w-[50px]"
-            />
+          <View className="h-[50px] w-[50px] border-primary border overflow-hidden mr-4 rounded-full">
+            {profile.avatar || profile.gender ? (
+              <Image
+                source={{
+                  uri: profile.avatar
+                    ? profile.avatar
+                    : `https://avatar.iran.liara.run/public/${profile.gender}?username=${profile.nickname}`,
+                }}
+                resizeMode="cover"
+                className="h-[50px] w-[50px]"
+              />
+            ) : (
+              <Image
+                source={require("../../assets/img/profpic_placeholder.jpg")}
+                resizeMode="cover"
+                className="h-full w-full"
+              />
+            )}
           </View>
           <View className="flex flex-col">
             <Text className="text-[14px] font-ProximaNovaBold text-primary">
