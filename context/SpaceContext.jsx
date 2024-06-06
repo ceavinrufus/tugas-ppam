@@ -2,17 +2,17 @@ import React, { createContext, useContext, useState } from "react";
 
 const SpaceContext = createContext();
 
-export const useSpaces = () => useContext(SpaceContext);
+export const useSpace = () => useContext(SpaceContext);
 
-const SpaceProvider = ({ children }) => {
-  const [spaces, setSpaces] = useState(null);
+export const SpaceProvider = ({ children }) => {
+  const [spaces, setSpaces] = useState([]);
 
   const addSpace = (space) => {
     const newSpaces = [...spaces, space];
     setSpaces(newSpaces);
   };
 
-  const updateSpace = (spaceId) => {
+  const updateSpace = (spaceId, updatedSpace) => {
     const newSpaces = spaces.map((space) =>
       space.id === spaceId ? { ...space, ...updatedSpace } : space
     );

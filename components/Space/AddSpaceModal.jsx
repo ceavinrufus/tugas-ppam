@@ -1,64 +1,98 @@
 import { StyleSheet, Text, View, Modal, Alert } from "react-native";
 import React, { useState } from "react";
-import { Dropdown } from "react-native-element-dropdown";
 import FormField from "../FormField";
 import CustomButton from "../CustomButton";
 import Slider from "@react-native-community/slider";
 import { supabase } from "../../lib/supabase";
-import { useSchedule } from "../../context/ScheduleContext";
+import { useSpace } from "../../context/SpaceContext";
+import TextProximaNovaReg from "../../components/TextProximaNovaReg";
 
-const data = [
-  { label: "Low", value: 1 },
-  { label: "Medium", value: 2 },
-  { label: "High", value: 3 },
-];
+export default function AddSpaceModal({
+  space,
+  modalVisible,
+  setModalVisible,
+}) {
+  const [spaceName, setSpaceName] = useState(space ? space.name : "");
+  const [sessionGoal, setEstimatedPomodoro] = useState(
+    space ? space.session_goal : 1
+  );
+  const [description, setDescription] = useState(
+    space ? space.description : ""
+  );
+  const { addSpace, updateSpace } = useSpace();
+  const [errors, setErrors] = useState({
+    name: "",
+    session_goal: "",
+  });
 
-export default function AddSpaceModal({ modalVisible, setModalVisible }) {
-  const [spaceName, setSpaceName] = useState("");
-  const [estimatedPomodoro, setEstimatedPomodoro] = useState(1);
-  const [priority, setPriority] = useState(null);
-  const [description, setDescription] = useState("");
-  const { spaces, addSpaces } = useSchedule();
+  const isInputNotValid = () => {
+    const errorOccured = {
+      name: "",
+      session_goal: "",
+    };
 
-  async function insertOrUpdateSchedule(uid, date) {
-    const { error } = await supabase.rpc("insert_schedule", {
-      uid,
-      d: date,
-    });
+    if (!spaceName) {
+      errorOccured.name = spaceName ? "" : "Name is required";
+    }
+
+    if (sessionGoal <= 0) {
+      errorOccured.session_goal = "Minimum 1";
+    }
+    setErrors(errorOccured);
+
+    return errorOccured.name || errorOccured.session_goal;
+  };
+
+  const handleUpdateSpace = async () => {
+    if (isInputNotValid()) return;
+
+    const { data, error } = await supabase
+      .from("spaces")
+      .update({
+        name: spaceName,
+        sessions: sessionGoal,
+        description,
+      })
+      .eq("id", space.id)
+      .select();
 
     if (error) {
-      Alert.alert("Error inserting or updating schedule:", error.message);
-      return error;
+      Alert.alert("Error", error.message);
     } else {
-      return null;
+      Alert.alert("Success", "Space updated!");
+      updateSpace(space.id, data[0]);
+
+      setModalVisible(false);
     }
-  }
+  };
 
   const handleCreateSpace = async () => {
-    if (!spaceName || !description) {
-      Alert.alert("Error", "Space name and description are required.");
-      return;
-    }
+    if (isInputNotValid()) return;
 
-    if (!isError) {
-      const { data, error } = await supabase
-        .from("spaces")
-        .insert([
-          {
-            name: spaceName,
-            description,
-          },
-        ])
-        .select();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
-      if (error) {
-        Alert.alert("Error", error.message);
-      } else {
-        Alert.alert("Success", "Space created successfully");
-        addSpace(data[0]);
+    const { data, error } = await supabase
+      .from("spaces")
+      .insert([
+        {
+          name: spaceName,
+          sessions: sessionGoal,
+          description,
+          members: [user.id],
+          created_by: user.id,
+        },
+      ])
+      .select();
 
-        setModalVisible(false);
-      }
+    if (error) {
+      Alert.alert("Error", error.message);
+    } else {
+      Alert.alert("Success", "Space created successfully");
+      addSpace(data[0]);
+
+      setModalVisible(false);
     }
   };
 
@@ -83,13 +117,40 @@ export default function AddSpaceModal({ modalVisible, setModalVisible }) {
         >
           <FormField
             title={"Space Name"}
-            placeholder={"Ex: PT. Valt Akasa Jaya"}
+            placeholder={"Ex: Math Project"}
             value={spaceName}
             onChangeText={setSpaceName}
           />
+          {errors.name ? (
+            <TextProximaNovaReg className="text-red-500">
+              {errors.name}
+            </TextProximaNovaReg>
+          ) : null}
+          {/* Estimated Pomodoro */}
+          <Text className="text-base font-ProximaNovaMedium mt-4">
+            Session Goal
+          </Text>
+          <Slider
+            style={{ width: "100%", height: 40 }}
+            minimumValue={0}
+            maximumValue={16}
+            step={1}
+            value={sessionGoal}
+            onValueChange={setEstimatedPomodoro}
+            minimumTrackTintColor="#1EB1FC"
+            maximumTrackTintColor="#d3d3d3"
+          />
+          <Text className="self-center">
+            {sessionGoal} pomodoro session/day
+          </Text>
+          {errors.session_goal ? (
+            <TextProximaNovaReg className="text-red-500">
+              {errors.session_goal}
+            </TextProximaNovaReg>
+          ) : null}
 
           <FormField
-            title={"Space Description"}
+            title={"Description"}
             required={false}
             otherStyles="mt-4"
             placeholder={"Add description about the space"}
@@ -98,8 +159,8 @@ export default function AddSpaceModal({ modalVisible, setModalVisible }) {
           />
           <CustomButton
             containerStyles={"mt-6 border-primary border"}
-            title={"Create Space"}
-            handlePress={handleCreateSpace}
+            title={space ? "Save Changes" : "Create Space"}
+            handlePress={space ? handleUpdateSpace : handleCreateSpace}
           />
           <CustomButton
             containerStyles={"bg-white mt-2 border-primary border"}

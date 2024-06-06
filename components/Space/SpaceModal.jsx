@@ -44,24 +44,11 @@ export default function SpaceModal({ space, modalVisible, setModalVisible }) {
       } = await supabase.auth.getUser();
       setUserId(user.id);
     };
-
-    const checkIfJoined = async () => {
-      if (!userId) return;
-
-      const { data, error } = await supabase
-        .from("space_members")
-        .select()
-        .eq("space_id", space.id)
-        .eq("user_id", userId);
-
-      if (error) {
-        console.error("Error checking membership:", error);
-      } else {
-        setIsJoined(data.length > 0);
-      }
-    };
     getUserId();
-    checkIfJoined();
+
+    if (space.members.includes(userId)) {
+      setIsJoined(true);
+    }
   }, [space, userId]);
 
   return (
@@ -107,7 +94,10 @@ export default function SpaceModal({ space, modalVisible, setModalVisible }) {
               <View className="flex-row items-center">
                 <FontAwesome5 name="user-friends" size={10} color="black" />
                 <Text className="ml-1 text-xs font-ProximaNovaMedium">
-                  {space.members} {space.members > 1 ? "members" : "member"}
+                  {space.members && space.members.length}{" "}
+                  {space.members && space.members.length > 1
+                    ? "members"
+                    : "member"}
                 </Text>
               </View>
               <View className="flex-row items-center">

@@ -24,7 +24,8 @@ export default function SpaceCard({ space }) {
         <View className="flex-row items-center">
           <FontAwesome5 name="user-friends" size={10} color="black" />
           <Text className="ml-1 text-xs font-ProximaNovaMedium">
-            {space.members} {space.members > 1 ? "members" : "member"}
+            {space.members && space.members.length}{" "}
+            {space.members && space.members.length > 1 ? "members" : "member"}
           </Text>
         </View>
         <View className="flex-row items-center">
