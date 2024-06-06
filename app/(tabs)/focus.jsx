@@ -110,7 +110,7 @@ const Focus = () => {
   }, []);
 
   return (
-    <SafeAreaView>
+    <SafeAreaView className="bg-white">
       <GestureHandlerRootView className="justify-center self-center h-full w-full">
         <View className="self-center px-4 w-[95%] h-full">
           <LinearGradient
