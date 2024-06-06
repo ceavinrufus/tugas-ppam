@@ -6,6 +6,7 @@ import CustomButton from "../CustomButton";
 import Slider from "@react-native-community/slider";
 import { supabase } from "../../lib/supabase";
 import { useSchedule } from "../../context/ScheduleContext";
+import TextProximaNovaReg from "../../components/TextProximaNovaReg";
 
 const data = [
   { label: "Low", value: 1 },
@@ -13,16 +14,19 @@ const data = [
   { label: "High", value: 3 },
 ];
 
-export default function TaskModal({
-  modalVisible,
-  setModalVisible,
-  positions,
-}) {
-  const [taskName, setTaskName] = useState("");
-  const [estimatedPomodoro, setEstimatedPomodoro] = useState(1);
-  const [priority, setPriority] = useState(null);
-  const [notes, setNotes] = useState("");
-  const { addTask } = useSchedule();
+export default function TaskModal({ task, modalVisible, setModalVisible }) {
+  const [taskName, setTaskName] = useState(task ? task.name : "");
+  const [estimatedPomodoro, setEstimatedPomodoro] = useState(
+    task ? task.estimated_pomodoro : 1
+  );
+  const [priority, setPriority] = useState(task ? task.priority : null);
+  const [notes, setNotes] = useState(task ? task.notes : "");
+  const { addTask, updateTask } = useSchedule();
+  const [errors, setErrors] = useState({
+    name: "",
+    estimated_pomodoro: "",
+    priority: "",
+  });
 
   async function insertOrUpdateSchedule(uid, date) {
     const { error } = await supabase.rpc("insert_schedule", {
@@ -38,15 +42,60 @@ export default function TaskModal({
     }
   }
 
-  const handleCreateTask = async () => {
+  const isInputNotValid = () => {
+    const errorOccured = {
+      name: "",
+      estimated_pomodoro: "",
+      priority: "",
+    };
+
     if (!taskName || !priority) {
-      Alert.alert("Error", "Task name and priority are required.");
-      return;
+      errorOccured.name = taskName ? "" : "Name is required";
+      errorOccured.priority = priority ? "" : "Priority is required";
     }
 
-    ({
+    if (estimatedPomodoro <= 0) {
+      errorOccured.estimated_pomodoro = "Minimum 1";
+    }
+    setErrors(errorOccured);
+
+    return (
+      errorOccured.name ||
+      errorOccured.estimated_pomodoro ||
+      errorOccured.priority
+    );
+  };
+
+  const handleUpdateTask = async () => {
+    if (isInputNotValid()) return;
+
+    const { data, error } = await supabase
+      .from("tasks")
+      .update({
+        name: taskName,
+        estimated_pomodoro: estimatedPomodoro,
+        priority,
+        notes,
+      })
+      .eq("id", task.id)
+      .select();
+
+    if (error) {
+      Alert.alert("Error", error.message);
+    } else {
+      Alert.alert("Success", "Task updated!");
+      updateTask(task.id, data[0]);
+
+      setModalVisible(false);
+    }
+  };
+
+  const handleCreateTask = async () => {
+    if (isInputNotValid()) return;
+
+    const {
       data: { user },
-    } = await supabase.auth.getUser());
+    } = await supabase.auth.getUser();
 
     const date = new Date().toISOString().split("T")[0];
     const isError = await insertOrUpdateSchedule(user.id, date);
@@ -102,6 +151,11 @@ export default function TaskModal({
             value={taskName}
             onChangeText={setTaskName}
           />
+          {errors.name ? (
+            <TextProximaNovaReg className="text-red-500">
+              {errors.name}
+            </TextProximaNovaReg>
+          ) : null}
           {/* Estimated Pomodoro */}
           <Text className="text-base font-ProximaNovaMedium mt-4">
             Estimated Pomodoro
@@ -116,7 +170,12 @@ export default function TaskModal({
             minimumTrackTintColor="#1EB1FC"
             maximumTrackTintColor="#d3d3d3"
           />
-          <Text>{estimatedPomodoro}</Text>
+          <Text className="self-center">{estimatedPomodoro}</Text>
+          {errors.estimated_pomodoro ? (
+            <TextProximaNovaReg className="text-red-500">
+              {errors.estimated_pomodoro}
+            </TextProximaNovaReg>
+          ) : null}
           {/* Dropdown */}
           <View className="space-y-2 mt-4">
             <Text className="text-base font-ProximaNovaMedium">
@@ -140,6 +199,11 @@ export default function TaskModal({
                 setPriority(item.value);
               }}
             />
+            {errors.priority ? (
+              <TextProximaNovaReg className="text-red-500">
+                {errors.priority}
+              </TextProximaNovaReg>
+            ) : null}
           </View>
           <FormField
             title={"Notes"}
@@ -151,8 +215,8 @@ export default function TaskModal({
           />
           <CustomButton
             containerStyles={"mt-6 border-primary border"}
-            title={"Create Task"}
-            handlePress={handleCreateTask}
+            title={task ? "Save Changes" : "Create Task"}
+            handlePress={task ? handleUpdateTask : handleCreateTask}
           />
           <CustomButton
             containerStyles={"bg-white mt-2 border-primary border"}

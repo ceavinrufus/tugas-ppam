@@ -87,7 +87,6 @@ export default function TasksContainer({ modalVisible, setModalVisible }) {
         </Text>
       </View>
       <TaskModal
-        positions={positions}
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
       />
