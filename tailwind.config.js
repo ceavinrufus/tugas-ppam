@@ -14,6 +14,7 @@ module.exports = {
         RalewayBold: "Raleway_700Bold",
         ProximaNovaReg: "ProximaNovaReg",
         ProximaNovaBold: "ProximaNovaBold",
+        ProximaNovaItalic: "ProximaNovaItalic",
         ProximaNovaMedium: "ProximaNovaMedium",
       },
     },

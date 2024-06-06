@@ -12,6 +12,7 @@ const RootLayout = () => {
     Raleway_700Bold,
     ProximaNovaReg: require("../assets/fonts/ProximaNovaRegular.otf"),
     ProximaNovaBold: require("../assets/fonts/ProximaNovaBold.otf"),
+    ProximaNovaItalic: require("../assets/fonts/ProximaNovaRegularItalic.otf"),
     ProximaNovaMedium: require("../assets/fonts/ProximaNovaSemibold.otf"),
   });
 

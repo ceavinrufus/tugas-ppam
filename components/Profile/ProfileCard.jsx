@@ -4,11 +4,11 @@ import { LinearGradient } from "expo-linear-gradient";
 import { FontAwesome6 } from "@expo/vector-icons";
 import CustomButton from "../CustomButton";
 import { Foundation } from "@expo/vector-icons";
-import { user } from "../../mocks/user";
+import { user as u } from "../../mocks/user";
 import { router } from "expo-router";
 import TextProximaNovaReg from "../TextProximaNovaReg";
 
-export default function ProfileCard() {
+export default function ProfileCard({ profile }) {
   return (
     <LinearGradient
       className="rounded-lg border-[#FACC2D] border mb-4"
@@ -20,34 +20,42 @@ export default function ProfileCard() {
         <View className="flex-row justify-start">
           <View className="border-primary border overflow-hidden mr-4 rounded-full">
             <Image
-              source={{ uri: user.image }}
+              source={{
+                uri: profile.avatar
+                  ? profile.avatar
+                  : "/assets/img/profpic_placeholder.png",
+              }}
               resizeMode="cover"
               className="h-[50px] w-[50px]"
             />
           </View>
           <View className="flex flex-col">
             <Text className="text-[14px] font-ProximaNovaBold text-primary">
-              {user.name}
+              {profile.full_name}
             </Text>
             <View className="flex flex-row py-1 justify-start">
               <View className="items-center justify-center rounded-md flex-row bg-[#FACC2D] py-1 px-2 mr-2">
                 <Foundation size={12} name="sheriff-badge" color="black" />
                 <TextProximaNovaReg className="ml-1 text-xs">
-                  {user.badges} badges
+                  {profile.badges && profile.badges.length} badges
                 </TextProximaNovaReg>
               </View>
               <View className="items-center justify-center rounded-md flex-row bg-[#FACC2D] py-1 px-2 mr-2">
                 <FontAwesome6 size={10} name="bolt" color="black" />
                 <TextProximaNovaReg className="ml-1 text-xs">
-                  {user.sessions} sessions
+                  {profile.sessions} sessions
                 </TextProximaNovaReg>
               </View>
             </View>
           </View>
         </View>
 
-        <TextProximaNovaReg className="text-xs font-ProximaNova mt-1">
-          {user.description}
+        <TextProximaNovaReg
+          className={`text-xs mt-1 ${
+            profile.bio ? "font-ProximaNovaReg" : "font-ProximaNovaItalic"
+          }`}
+        >
+          {profile.bio ? profile.bio : "You don't specify your bio yet"}
         </TextProximaNovaReg>
 
         <View className="flex-row justify-between mt-1 flex-1">

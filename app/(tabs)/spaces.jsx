@@ -55,17 +55,9 @@ const Spaces = () => {
 
   useEffect(() => {
     const fetchSpaces = async () => {
-      let data, error;
-      ({
-        data: { user },
-      } = await supabase.auth.getUser());
-
-      ({ data, error } = await supabase.from("spaces").select());
+      const { data, error } = await supabase.from("spaces").select();
 
       if (error) {
-        ({
-          data: { user },
-        } = await supabase.auth.getUser());
         console.error("Error fetching spaces:", error);
       } else {
         setSpaces(data);
