@@ -19,7 +19,6 @@ const Edit = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [profile, setProfile] = useState();
   const [email, setEmail] = useState();
   const [avatar, setAvatar] = useState("");
 
@@ -138,7 +137,7 @@ const Edit = () => {
                 source={{
                   uri: avatar
                     ? avatar
-                    : "https://avatar.iran.liara.run/public/7",
+                    : `https://avatar.iran.liara.run/public/boy?username=${user.nickname}`,
                 }}
                 resizeMode="cover"
                 className="h-full w-full"

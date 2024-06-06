@@ -95,19 +95,7 @@ const Register = () => {
     });
 
     if (error) {
-      Alert.alert(
-        "Register failed!",
-        error.message,
-        [
-          {
-            text: "Cancel",
-            style: "cancel",
-          },
-        ],
-        {
-          cancelable: true,
-        }
-      );
+      Alert.alert("Register failed!", error.message);
       setIsSubmitting(false);
     } else {
       if (!session)

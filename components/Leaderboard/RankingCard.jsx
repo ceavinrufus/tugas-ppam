@@ -22,7 +22,7 @@ const RankingCard = ({ rank, user }) => {
     <LinearGradient
       className={`flex-row mb-2 rounded-xl border ${rankBorder} overflow-hidden`}
       colors={
-        user.name == loggedInUser.name
+        user.full_name == loggedInUser.full_name
           ? ["#C2D9FF", "#DFEBFF", "#FFFFFF"]
           : ["#FFFFFF", "#FFFFFF", "#FFFFFF"]
       }
@@ -30,35 +30,41 @@ const RankingCard = ({ rank, user }) => {
     >
       {/* Rank */}
       <LinearGradient
-        className={`flex justify-center px-4`}
+        className={`flex-row justify-center items-center`}
         colors={rankGradientColors}
         locations={[0, 1, 1]}
       >
-        <Text className="text-md font-bold">{rank}</Text>
+        <Text className="text-md font-bold px-4">{rank}</Text>
+        {/* Foto */}
+        <View className="overflow-hidden my-1 mr-2 rounded-full">
+          <Image
+            source={{
+              uri: user.avatar
+                ? user.avatar
+                : `https://avatar.iran.liara.run/public/boy?username=${user.nickname}`,
+            }}
+            resizeMode="cover"
+            className="h-20 w-20"
+          />
+        </View>
       </LinearGradient>
-
-      {/* Foto */}
-      <View className={`overflow-hidden ${rankBorder} border-x`}>
-        <Image
-          resizeMode="cover"
-          source={{ uri: user.image }}
-          className="w-20 h-20"
-        />
-      </View>
 
       {/* Info */}
       <View className="justify-center ml-4 flex-1">
-        <Text className="text-sm font-ProximaNovaBold mb-1">{user.name}</Text>
+        <Text className="text-sm font-ProximaNovaBold mb-1">
+          {user.full_name}
+        </Text>
         <View className="flex-row items-center">
           <Foundation size={12} name="sheriff-badge" color="black" />
           <Text className="ml-2 text-xs font-ProximaNovaMedium">
-            {user.badges} {user.badges > 1 ? "badges" : "badge"}
+            {user.badges && user.badges.length}{" "}
+            {user.badges != 1 ? "badges" : "badge"}
           </Text>
         </View>
         <View className="flex-row items-center">
           <FontAwesome6 size={10} name="bolt" color="black" />
           <Text className="ml-2 text-xs font-ProximaNovaMedium">
-            {user.sessions} {user.sessions > 1 ? "sessions" : "session"}
+            {user.sessions} {user.sessions != 1 ? "sessions" : "session"}
           </Text>
         </View>
       </View>

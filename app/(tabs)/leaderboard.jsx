@@ -1,10 +1,10 @@
 import { View, SafeAreaView, ScrollView } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import RankingCard from "../../components/Leaderboard/RankingCard";
 import ProfileCard from "../../components/Leaderboard/ProfileCard";
-import { user } from "../../mocks/user";
 import { globalRank } from "../../mocks/leaderboard";
 import SearchBar from "../../components/SearchBar";
+import { supabase } from "../../lib/supabase";
 
 const Leaderboard = () => {
   const [searchText, setSearchText] = useState("");
@@ -15,6 +15,27 @@ const Leaderboard = () => {
     }))
   );
   const [ranks, setRanks] = useState(defaultRanks);
+
+  const [users, setUsers] = useState();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      let user, data, error;
+      ({
+        data: { user },
+      } = await supabase.auth.getUser());
+
+      ({ data, error } = await supabase.from("profiles").select());
+
+      if (error) {
+        console.error("Error fetching user data:", error);
+      } else {
+        setUsers(data);
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   const handleChangeText = (text) => {
     setSearchText(text);
@@ -30,7 +51,7 @@ const Leaderboard = () => {
       <View className="self-center px-4 w-[95%] h-full">
         <View className="mt-[34px] flex-1">
           {/* User Leaderboard Card */}
-          <ProfileCard user={user} />
+          <ProfileCard />
           <SearchBar
             value={searchText}
             placeholder={"Search for users"}
@@ -38,9 +59,15 @@ const Leaderboard = () => {
           />
           {/* Ranking */}
           <ScrollView style={{ marginVertical: 16 }}>
-            {ranks.map((user, index) => (
-              <RankingCard key={index} rank={user.rank} user={user} />
-            ))}
+            {users &&
+              users
+                .map((user, index) => ({
+                  ...user,
+                  rank: index + 1,
+                }))
+                .map((user, index) => (
+                  <RankingCard key={index} rank={user.rank} user={user} />
+                ))}
           </ScrollView>
         </View>
       </View>

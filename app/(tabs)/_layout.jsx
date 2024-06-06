@@ -1,4 +1,4 @@
-import { Text, View, Pressable } from "react-native";
+import { Text, Alert, View, Pressable } from "react-native";
 import React, { useState, useEffect } from "react";
 import { SplashScreen, Tabs, useSegments } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
@@ -8,8 +8,8 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { supabase } from "../../lib/supabase";
 import SpaceModal from "../../components/Space/SpaceModal";
+import { useAuth } from "../../context/AuthContext";
 
 const TabIcon = ({ icon, color, name, focused }) => {
   return (
@@ -30,6 +30,7 @@ const TabsLayout = () => {
   const [menuVisible, setMenuVisible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const segments = useSegments();
+  const { signOut } = useAuth();
 
   let [fontsLoaded, error] = useFonts({
     Raleway_700Bold,
@@ -49,25 +50,6 @@ const TabsLayout = () => {
 
   const handleMenuPress = () => {
     setMenuVisible((prev) => !prev);
-  };
-
-  const doLogout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      Alert.alert(
-        "Logout failed!",
-        error.message,
-        [
-          {
-            text: "Cancel",
-            style: "cancel",
-          },
-        ],
-        {
-          cancelable: true,
-        }
-      );
-    }
   };
 
   useEffect(() => {
@@ -266,7 +248,16 @@ const TabsLayout = () => {
                     name="logout"
                     size={24}
                     color="black"
-                    onPress={doLogout}
+                    onPress={() =>
+                      Alert.alert("Exit App", "Do you want to logout?", [
+                        {
+                          text: "Cancel",
+                          onPress: () => null,
+                          style: "cancel",
+                        },
+                        { text: "YES", onPress: () => signOut() },
+                      ])
+                    }
                   />
                 </View>
               ),

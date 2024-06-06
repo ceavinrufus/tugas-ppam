@@ -54,13 +54,13 @@ export default function SpaceCard({ space, canEdit = false }) {
           <FontAwesome5 name="user-friends" size={10} color="black" />
           <Text className="ml-1 text-xs font-ProximaNovaMedium">
             {space.members && space.members.length}{" "}
-            {space.members && space.members.length > 1 ? "members" : "member"}
+            {space.members && space.members.length != 1 ? "members" : "member"}
           </Text>
         </View>
         <View className="flex-row items-center">
           <FontAwesome6 size={10} name="bolt" color="black" />
           <Text className="ml-2 text-xs font-ProximaNovaMedium">
-            {space.sessions} {space.sessions > 1 ? "sessions" : "session"}
+            {space.sessions} {space.sessions != 1 ? "sessions" : "session"}
           </Text>
         </View>
       </View>
