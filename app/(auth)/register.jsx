@@ -86,6 +86,12 @@ const Register = () => {
     } = await supabase.auth.signUp({
       email: form.email,
       password: form.password,
+      options: {
+        data: {
+          full_name: form.name,
+          nickname: form.name.replace(/ .*/, ""),
+        },
+      },
     });
 
     if (error) {
