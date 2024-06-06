@@ -1,11 +1,5 @@
-import { Text, View } from "react-native";
 import React from "react";
 import { Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
-import { Redirect, router } from "expo-router";
-import CustomButton from "../../components/CustomButton";
-import { MaterialIcons, AntDesign } from "@expo/vector-icons";
-import { TouchableOpacity } from "react-native";
 
 const ProfileLayout = () => {
   return (
@@ -22,19 +16,6 @@ const ProfileLayout = () => {
               fontFamily: "ProximaNovaBold",
               fontSize: 24,
             },
-            // headerLeft: () => (
-            //   <CustomButton
-            //     title={"Edit Profile"}
-            //     handlePress={() => {
-            //       router.push("/profile");
-            //     }}
-            //     leftIcon={
-            //       <AntDesign name="arrowleft" size={25} color="black" />
-            //     }
-            //     containerStyles="justify-start bg-transparent flex-row"
-            //     textStyles={"text-black text-2xl ml-3"}
-            //   />
-            // ),
           }}
         />
         <Stack.Screen

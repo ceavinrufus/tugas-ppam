@@ -28,7 +28,7 @@ const Verify = () => {
           <CustomButton
             title={"Go to Login"}
             handlePress={handleLogin}
-            containerStyles="mt-7"
+            containerStyles="mt-7 w-full"
           />
         </View>
       </ScrollView>

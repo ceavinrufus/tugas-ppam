@@ -43,10 +43,10 @@ const Spaces = () => {
         );
       } else if (selectedTab === 2 && user.id) {
         setFilteredSpaces(
-          spaces.filter((space) => space.created_by.includes(user.id))
+          spaces.filter((space) => space.created_by?.includes(user.id))
         );
         setSearchedSpaces(
-          spaces.filter((space) => space.created_by.includes(user.id))
+          spaces.filter((space) => space.created_by?.includes(user.id))
         );
       }
     };

@@ -1,49 +1,36 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, ScrollView, Image } from "react-native";
 import { router } from "expo-router";
+import CustomButton from "../components/CustomButton";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const NotFoundScreen = () => {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>404</Text>
-      <Text style={styles.message}>Page Not Found</Text>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => router.replace("/")}
-      >
-        <Text style={styles.buttonText}>Go to Home</Text>
-      </TouchableOpacity>
-    </View>
+    <SafeAreaView className="bg-white">
+      <ScrollView>
+        <View className="justify-center self-center items-center h-screen px-4 w-[90%]">
+          <View className="flex-row items-center">
+            <Text className="font-RalewayBold text-primary text-6xl mb-1">
+              4
+            </Text>
+            <Image
+              style={{ width: 48, height: 48 }}
+              source={require("../assets/img/logo.png")}
+            ></Image>
+            <Text className="font-RalewayBold text-primary text-6xl mb-1">
+              4
+            </Text>
+          </View>
+          <Text className="text-lg font-ProximaNovaReg">Page Not Found</Text>
+          <CustomButton
+            containerStyles={"w-1/2 mt-7"}
+            title={"Go to Home"}
+            handlePress={() => router.replace("/")}
+          />
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 16,
-  },
-  title: {
-    fontSize: 48,
-    fontWeight: "bold",
-    marginBottom: 16,
-  },
-  message: {
-    fontSize: 18,
-    textAlign: "center",
-    marginBottom: 24,
-  },
-  button: {
-    backgroundColor: "#190482",
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
-  },
-});
 
 export default NotFoundScreen;

@@ -2,19 +2,13 @@ import { View, SafeAreaView, ScrollView } from "react-native";
 import React, { useState, useEffect } from "react";
 import RankingCard from "../../components/Leaderboard/RankingCard";
 import ProfileCard from "../../components/Leaderboard/ProfileCard";
-import { globalRank } from "../../mocks/leaderboard";
 import SearchBar from "../../components/SearchBar";
 import { supabase } from "../../lib/supabase";
 
 const Leaderboard = () => {
   const [searchText, setSearchText] = useState("");
-  const [defaultRanks, setDefaultRanks] = useState(
-    globalRank.map((person, index) => ({
-      ...person,
-      rank: index + 1,
-    }))
-  );
-  const [ranks, setRanks] = useState(defaultRanks);
+
+  const [ranks, setRanks] = useState();
 
   const [users, setUsers] = useState();
 
@@ -30,7 +24,18 @@ const Leaderboard = () => {
       if (error) {
         console.error("Error fetching user data:", error);
       } else {
-        setUsers(data);
+        setUsers(
+          data.map((user, index) => ({
+            ...user,
+            rank: index + 1,
+          }))
+        );
+        setRanks(
+          data.map((user, index) => ({
+            ...user,
+            rank: index + 1,
+          }))
+        );
       }
     };
 
@@ -40,8 +45,8 @@ const Leaderboard = () => {
   const handleChangeText = (text) => {
     setSearchText(text);
     setRanks(
-      defaultRanks.filter((person) =>
-        person.name.toLowerCase().includes(text.toLowerCase())
+      users.filter((user) =>
+        user.full_name.toLowerCase().includes(text.toLowerCase())
       )
     );
   };
@@ -59,15 +64,10 @@ const Leaderboard = () => {
           />
           {/* Ranking */}
           <ScrollView style={{ marginVertical: 16 }}>
-            {users &&
-              users
-                .map((user, index) => ({
-                  ...user,
-                  rank: index + 1,
-                }))
-                .map((user, index) => (
-                  <RankingCard key={index} rank={user.rank} user={user} />
-                ))}
+            {ranks &&
+              ranks.map((user, index) => (
+                <RankingCard key={index} rank={user.rank} user={user} />
+              ))}
           </ScrollView>
         </View>
       </View>

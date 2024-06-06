@@ -1,4 +1,4 @@
-import { Text, Alert, View, Pressable } from "react-native";
+import { Text, Alert, View, Pressable, BackHandler } from "react-native";
 import React, { useState, useEffect } from "react";
 import { SplashScreen, Tabs, useSegments } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
@@ -10,6 +10,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import SpaceModal from "../../components/Space/SpaceModal";
 import { useAuth } from "../../context/AuthContext";
+import { useFocusEffect } from "@react-navigation/native";
 
 const TabIcon = ({ icon, color, name, focused }) => {
   return (
@@ -38,6 +39,27 @@ const TabsLayout = () => {
     ProximaNovaBold: require("../../assets/fonts/ProximaNovaBold.otf"),
     ProximaNovaMedium: require("../../assets/fonts/ProximaNovaSemibold.otf"),
   });
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        Alert.alert("Exit App", "Do you want to exit?", [
+          {
+            text: "Cancel",
+            onPress: () => null,
+            style: "cancel",
+          },
+          { text: "YES", onPress: () => BackHandler.exitApp() },
+        ]);
+        return true;
+      };
+
+      BackHandler.addEventListener("hardwareBackPress", onBackPress);
+
+      return () =>
+        BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+    }, [])
+  );
 
   useEffect(() => {
     if (error) {

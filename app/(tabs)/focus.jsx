@@ -154,7 +154,7 @@ const Focus = () => {
                     ? startTask(currentTask)
                     : startTask(tasks[0]);
                 }}
-                containerStyles="mt-2 h-[30px] rounded-md"
+                containerStyles="mt-2 h-[30px] w-full rounded-md"
                 textStyles={"font-ProximaNovaBold text-xs"}
               />
             </View>

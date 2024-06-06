@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Pressable,
-  Alert
+  Alert,
 } from "react-native";
 import React, { useState } from "react";
 import { Redirect, router } from "expo-router";
@@ -16,14 +16,16 @@ import TabButtons from "../../components/TabButtons";
 import CustomButton from "../../components/CustomButton";
 import { ModalContent, ModalTitle, SlideAnimation } from "react-native-modals";
 import FormField from "../../components/FormField";
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const Badges = () => {
   return (
     <SafeAreaView>
       <ScrollView>
         <View className="justify-center self-center h-full px-4 w-[95%]">
-          <Text className="text-2xl font-RalewayBold color-[#190482] mt-1">Overview</Text>
+          <Text className="text-2xl font-RalewayBold color-[#190482] mt-1">
+            Overview
+          </Text>
           <LinearGradient
             className="mt-2 rounded-lg border-[#FACC2D] border"
             colors={["#FACC2D", "#FBDB6A", "#FDEAA7", "#FFF"]}
@@ -37,8 +39,12 @@ const Badges = () => {
                 locations={[0, 1]}
                 style={{ flex: 1, padding: 10 }}
               >
-                <Text className="text-2xl font-ProximaNovaBold color-[#190482]">2521</Text>
-                <Text className="text-1xl font-ProximaNovaMedium color-black">total sessions</Text>
+                <Text className="text-2xl font-ProximaNovaBold color-[#190482]">
+                  2521
+                </Text>
+                <Text className="text-1xl font-ProximaNovaMedium color-black">
+                  total sessions
+                </Text>
               </LinearGradient>
               <LinearGradient
                 className="mt-2 rounded-lg border-[#FACC2D] border justify-center items-center"
@@ -46,8 +52,12 @@ const Badges = () => {
                 locations={[0, 1]}
                 style={{ flex: 1, padding: 10 }}
               >
-                <Text className="text-2xl font-ProximaNovaBold color-[#190482]">182</Text>
-                <Text className="text-1xl font-ProximaNovaMedium color-black">badges</Text>
+                <Text className="text-2xl font-ProximaNovaBold color-[#190482]">
+                  182
+                </Text>
+                <Text className="text-1xl font-ProximaNovaMedium color-black">
+                  badges
+                </Text>
               </LinearGradient>
             </View>
             <View className="flex-row gap-2 mt-1 flex-1">
@@ -57,8 +67,12 @@ const Badges = () => {
                 locations={[0, 1]}
                 style={{ flex: 1, padding: 10 }}
               >
-                <Text className="text-2xl font-ProximaNovaBold color-[#190482]">9</Text>
-                <Text className="text-1xl font-ProximaNovaMedium color-black">days streak</Text>
+                <Text className="text-2xl font-ProximaNovaBold color-[#190482]">
+                  9
+                </Text>
+                <Text className="text-1xl font-ProximaNovaMedium color-black">
+                  days streak
+                </Text>
               </LinearGradient>
               <LinearGradient
                 className="mt-2 rounded-lg border-[#FACC2D] border justify-center items-center"
@@ -66,12 +80,18 @@ const Badges = () => {
                 locations={[0, 1]}
                 style={{ flex: 1, padding: 10 }}
               >
-                <Text className="text-2xl font-ProximaNovaBold color-[#190482]">2</Text>
-                <Text className="text-1xl font-ProximaNovaMedium color-black">daily rank</Text>
+                <Text className="text-2xl font-ProximaNovaBold color-[#190482]">
+                  2
+                </Text>
+                <Text className="text-1xl font-ProximaNovaMedium color-black">
+                  daily rank
+                </Text>
               </LinearGradient>
             </View>
           </LinearGradient>
-          <Text className="mt-7 text-2xl font-RalewayBold color-[#190482]">Badges</Text>
+          <Text className="mt-7 text-2xl font-RalewayBold color-[#190482]">
+            Badges
+          </Text>
           <LinearGradient
             className="mt-2 rounded-lg border-[#C2D9FF] border"
             colors={["#C2D9FF", "#DFEBFF", "#FFF"]}
@@ -85,13 +105,25 @@ const Badges = () => {
                 locations={[0, 0, 0, 1]}
                 style={{ padding: 10 }}
               >
-                <MaterialCommunityIcons name="police-badge" size={40} color="black" />
-                <Text className="text-black font-ProximaNovaBold mt-2">Level 3</Text>
+                <MaterialCommunityIcons
+                  name="police-badge"
+                  size={40}
+                  color="black"
+                />
+                <Text className="text-black font-ProximaNovaBold mt-2">
+                  Level 3
+                </Text>
               </LinearGradient>
               <View className="justify-center items-start">
-                <Text className="text-black font-ProximaNovaBold text-xl">Pomodoro Hustler</Text>
-                <Text className="text-black font-ProximaNova text-xs mt-1">Complete 10 pomodoro sessions</Text>
-                <Text className="text-[#190482] font-ProximaNovaBold text-xs mt-2">STATUS: ONGOING (5/10)</Text>
+                <Text className="text-black font-ProximaNovaBold text-xl">
+                  Pomodoro Hustler
+                </Text>
+                <Text className="text-black font-ProximaNova text-xs mt-1">
+                  Complete 10 pomodoro sessions
+                </Text>
+                <Text className="text-[#190482] font-ProximaNovaBold text-xs mt-2">
+                  STATUS: ONGOING (5/10)
+                </Text>
               </View>
             </View>
           </LinearGradient>
@@ -108,13 +140,25 @@ const Badges = () => {
                 locations={[0, 0, 0, 1]}
                 style={{ padding: 10 }}
               >
-                <MaterialCommunityIcons name="police-badge" size={40} color="black" />
-                <Text className="text-black font-ProximaNovaBold mt-2">Level 3</Text>
+                <MaterialCommunityIcons
+                  name="police-badge"
+                  size={40}
+                  color="black"
+                />
+                <Text className="text-black font-ProximaNovaBold mt-2">
+                  Level 3
+                </Text>
               </LinearGradient>
               <View className="justify-center items-start">
-                <Text className="text-black font-ProximaNovaBold text-xl">Pomodoro Hustler</Text>
-                <Text className="text-black font-ProximaNova text-xs mt-1">Complete 10 pomodoro sessions</Text>
-                <Text className="text-[#190482] font-ProximaNovaBold text-xs mt-2">STATUS: ONGOING (5/10)</Text>
+                <Text className="text-black font-ProximaNovaBold text-xl">
+                  Pomodoro Hustler
+                </Text>
+                <Text className="text-black font-ProximaNova text-xs mt-1">
+                  Complete 10 pomodoro sessions
+                </Text>
+                <Text className="text-[#190482] font-ProximaNovaBold text-xs mt-2">
+                  STATUS: ONGOING (5/10)
+                </Text>
               </View>
             </View>
           </LinearGradient>
@@ -131,22 +175,34 @@ const Badges = () => {
                 locations={[0, 0, 0, 1]}
                 style={{ padding: 10 }}
               >
-                <MaterialCommunityIcons name="police-badge" size={40} color="black" />
-                <Text className="text-black font-ProximaNovaBold mt-2">Level 3</Text>
+                <MaterialCommunityIcons
+                  name="police-badge"
+                  size={40}
+                  color="black"
+                />
+                <Text className="text-black font-ProximaNovaBold mt-2">
+                  Level 3
+                </Text>
               </LinearGradient>
               <View className="justify-center items-start">
-                <Text className="text-black font-ProximaNovaBold text-xl">Pomodoro Hustler</Text>
-                <Text className="text-black font-ProximaNova text-xs mt-1">Complete 10 pomodoro sessions</Text>
-                <Text className="text-[#190482] font-ProximaNovaBold text-xs mt-2">STATUS: ONGOING (5/10)</Text>
+                <Text className="text-black font-ProximaNovaBold text-xl">
+                  Pomodoro Hustler
+                </Text>
+                <Text className="text-black font-ProximaNova text-xs mt-1">
+                  Complete 10 pomodoro sessions
+                </Text>
+                <Text className="text-[#190482] font-ProximaNovaBold text-xs mt-2">
+                  STATUS: ONGOING (5/10)
+                </Text>
               </View>
             </View>
           </LinearGradient>
           <View className="mt-4">
             <CustomButton
               title={"View All Badges"}
-              containerStyles="bg-primary flex-row space-x-2 h-[45px]"
-              textStyles={"font-ProximaNovaBold text-base"}
-              handlePress={() => {router.push("/profile");}}
+              handlePress={() => {
+                router.push("/profile");
+              }}
             />
           </View>
           <View className="mt-7"></View>
