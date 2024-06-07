@@ -8,6 +8,7 @@ import { supabase } from "../../lib/supabase";
 import { useSchedule } from "../../context/ScheduleContext";
 import TextProximaNovaReg from "../../components/TextProximaNovaReg";
 import { useAuth } from "../../context/AuthContext";
+import { generateLocaleISODate } from "../../utils/dateHelper";
 
 const data = [
   { label: "Low", value: 1 },
@@ -95,7 +96,7 @@ export default function TaskModal({ task, modalVisible, setModalVisible }) {
   const handleCreateTask = async () => {
     if (isInputNotValid()) return;
 
-    const date = new Date().toISOString().split("T")[0];
+    const date = generateLocaleISODate(new Date());
     const isError = await insertOrUpdateSchedule(user.id, date);
 
     if (!isError) {
