@@ -18,6 +18,7 @@ const Focus = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [shortBreak, setShortBreak] = useState(5 * 60);
   const [longBreak, setLongBreak] = useState(20 * 60);
+  const [targetDate, setTargetDate] = useState(new Date());
   const { user } = useAuth();
 
   useEffect(() => {
@@ -27,7 +28,7 @@ const Focus = () => {
           .from("tasks")
           .select()
           .eq("user_id", user.id)
-          .eq("date", "2024-06-07"));
+          .eq("date", targetDate.toISOString().split("T")[0]));
 
         if (error) {
           console.error("Error fetching tasks:", error);
@@ -38,7 +39,7 @@ const Focus = () => {
     };
 
     fetchTasks();
-  }, []);
+  }, [targetDate]);
 
   const {
     pomodoroTimer,
@@ -75,7 +76,18 @@ const Focus = () => {
     return days[date.getDay()];
   }
 
-  const targetDate = new Date();
+  const getPreviousDate = (date) => {
+    const previousDate = new Date(date);
+    previousDate.setDate(previousDate.getDate() - 1);
+    return previousDate;
+  };
+
+  const getNextDate = (date) => {
+    const nextDate = new Date(date);
+    nextDate.setDate(nextDate.getDate() + 1);
+    return nextDate;
+  };
+
   const formattedDate = `${getDayName(
     targetDate
   )}, ${targetDate.getDate()} ${targetDate.toLocaleString("default", {
@@ -136,8 +148,18 @@ const Focus = () => {
           {/* Tanggal */}
           <View className="flex-1 mt-2">
             <View className="flex-row gap-2 mt-2">
-              <View className="flex-1 items-center justify-center rounded-md h-[45px] bg-secondary">
+              <View className="flex-1 flex-row items-center justify-between rounded-md h-[45px] bg-secondary px-3">
+                <TouchableOpacity
+                  onPress={() => setTargetDate(getPreviousDate(targetDate))}
+                >
+                  <Entypo name="chevron-left" size={24} color="black" />
+                </TouchableOpacity>
                 <Text className="font-ProximaNovaMedium">{formattedDate}</Text>
+                <TouchableOpacity
+                  onPress={() => setTargetDate(getNextDate(targetDate))}
+                >
+                  <Entypo name="chevron-right" size={24} color="black" />
+                </TouchableOpacity>
               </View>
               <TouchableOpacity
                 onPress={() => setModalVisible(true)}
