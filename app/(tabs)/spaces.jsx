@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { View, SafeAreaView, ScrollView, Text } from "react-native";
 import { supabase } from "../../lib/supabase";
-
 import SearchBar from "../../components/SearchBar";
 import SpaceCard from "../../components/Space/SpaceCard";
 import TabButtons from "../../components/TabButtons";
 import { useSpace } from "../../context/SpaceContext";
+import { useAuth } from "../../context/AuthContext";
 
 const Spaces = () => {
-  const [triggerResetTab, setTriggerResetTab] = useState(false);
   const [selectedTab, setSelectedTab] = useState(0);
   const [searchText, setSearchText] = useState("");
   const { spaces, setSpaces } = useSpace();
   const [searchedSpaces, setSearchedSpaces] = useState([]);
   const [filteredSpaces, setFilteredSpaces] = useState([]);
+  const { user } = useAuth();
 
   const buttons = [
     { title: "Explore Spaces" },
@@ -22,15 +22,7 @@ const Spaces = () => {
   ];
 
   useEffect(() => {
-    setTriggerResetTab(!triggerResetTab);
-  }, [spaces.length]);
-
-  useEffect(() => {
     const generateTabContent = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
       if (selectedTab === 0) {
         setFilteredSpaces(spaces);
         setSearchedSpaces(spaces);
@@ -51,7 +43,7 @@ const Spaces = () => {
       }
     };
     generateTabContent();
-  }, [selectedTab]);
+  }, [selectedTab, spaces]);
 
   useEffect(() => {
     const fetchSpaces = async () => {
@@ -86,11 +78,7 @@ const Spaces = () => {
     <SafeAreaView>
       <View className="self-center px-4 w-[95%] h-full">
         <View className="flex-1 flex-col my-6">
-          <TabButtons
-            triggerReset={triggerResetTab}
-            buttons={buttons}
-            setSelectedTab={handleTabChange}
-          />
+          <TabButtons buttons={buttons} setSelectedTab={handleTabChange} />
           <Text className="font-RalewayBold text-2xl text-primary my-4">
             {buttons[selectedTab].title}
           </Text>

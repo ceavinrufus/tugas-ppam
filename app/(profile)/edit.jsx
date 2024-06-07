@@ -18,6 +18,7 @@ import * as ImagePicker from "expo-image-picker";
 import { MaterialIcons } from "react-native-vector-icons";
 import * as FileSystem from "expo-file-system";
 import { decode } from "base64-arraybuffer";
+import { useAuth } from "../../context/AuthContext";
 
 const data = [
   { label: "Male", value: "boy" },
@@ -34,18 +35,14 @@ const Edit = () => {
   const [gender, setGender] = useState("");
   const [nickname, setNickname] = useState("");
   const [avatar, setAvatar] = useState("");
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchUser = async () => {
-      let data, error;
-      ({
-        data: { user },
-      } = await supabase.auth.getUser());
-
-      ({ data, error } = await supabase
+      const { data, error } = await supabase
         .from("profiles")
         .select()
-        .eq("id", user.id));
+        .eq("id", user.id);
 
       if (error) {
         console.error("Error fetching user data:", error);
@@ -89,11 +86,6 @@ const Edit = () => {
   const submit = async () => {
     setIsSubmitting(true);
 
-    let data, error;
-    ({
-      data: { user },
-    } = await supabase.auth.getUser());
-
     const updates = {
       id: user.id,
       full_name: form.name,
@@ -109,11 +101,11 @@ const Edit = () => {
       });
       const filePath = user.id + "/" + Date.now() + ".jpg";
 
-      ({ data, error } = await supabase.storage
+      const { data, error } = await supabase.storage
         .from("avatars")
         .upload(filePath, decode(base64img), {
           contentType: "image/jpg",
-        }));
+        });
 
       if (error) {
         Alert.alert("Error uploading avatar!", error);

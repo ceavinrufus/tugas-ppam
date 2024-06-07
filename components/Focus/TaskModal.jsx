@@ -7,6 +7,7 @@ import Slider from "@react-native-community/slider";
 import { supabase } from "../../lib/supabase";
 import { useSchedule } from "../../context/ScheduleContext";
 import TextProximaNovaReg from "../../components/TextProximaNovaReg";
+import { useAuth } from "../../context/AuthContext";
 
 const data = [
   { label: "Low", value: 1 },
@@ -27,6 +28,7 @@ export default function TaskModal({ task, modalVisible, setModalVisible }) {
     estimated_pomodoro: "",
     priority: "",
   });
+  const { user } = useAuth();
 
   async function insertOrUpdateSchedule(uid, date) {
     const { error } = await supabase.rpc("insert_schedule", {
@@ -92,10 +94,6 @@ export default function TaskModal({ task, modalVisible, setModalVisible }) {
 
   const handleCreateTask = async () => {
     if (isInputNotValid()) return;
-
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
 
     const date = new Date().toISOString().split("T")[0];
     const isError = await insertOrUpdateSchedule(user.id, date);

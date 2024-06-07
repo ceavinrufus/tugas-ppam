@@ -6,6 +6,8 @@ import { FontAwesome6, FontAwesome5 } from "@expo/vector-icons";
 import TextProximaNovaReg from "../TextProximaNovaReg";
 import { supabase } from "../../lib/supabase"; // Import Supabase client
 import { Alert } from "react-native";
+import { useAuth } from "../../context/AuthContext";
+import { useSpace } from "../../context/SpaceContext";
 
 export default function SpaceInfoModal({
   space,
@@ -13,14 +15,15 @@ export default function SpaceInfoModal({
   setModalVisible,
 }) {
   const [isJoined, setIsJoined] = useState(false);
-  const [userId, setUserId] = useState("");
+  const { user } = useAuth();
+  const { updateSpace } = useSpace();
 
   const handleJoinSpace = async () => {
-    if (userId) return;
-
-    const { error } = await supabase
-      .from("space_members")
-      .insert({ space_id: space.id, user_id: userId });
+    const { data, error } = await supabase
+      .from("spaces")
+      .update({ members: [...space.members, user.id] })
+      .eq("id", space.id)
+      .select();
 
     if (error) {
       Alert.alert(
@@ -38,22 +41,15 @@ export default function SpaceInfoModal({
       );
     } else {
       setModalVisible(false);
+      updateSpace(space.id, data[0]);
     }
   };
 
   useEffect(() => {
-    const getUserId = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      setUserId(user.id);
-    };
-    getUserId();
-
-    if (space.members.includes(userId)) {
+    if (space.members.includes(user.id)) {
       setIsJoined(true);
     }
-  }, [space, userId]);
+  }, [space, user.id]);
 
   return (
     <Modal

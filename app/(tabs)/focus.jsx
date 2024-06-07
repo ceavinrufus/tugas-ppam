@@ -10,6 +10,7 @@ import { useTask } from "../../context/TaskContext"; // Import the useTask hook
 import { supabase } from "../../lib/supabase";
 import { useSchedule } from "../../context/ScheduleContext";
 import { Entypo } from "@expo/vector-icons";
+import { useAuth } from "../../context/AuthContext";
 
 const Focus = () => {
   const [selectedTab, setSelectedTab] = useState(0);
@@ -17,20 +18,16 @@ const Focus = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [shortBreak, setShortBreak] = useState(5 * 60);
   const [longBreak, setLongBreak] = useState(20 * 60);
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchTasks = async () => {
-      let data, error;
-      ({
-        data: { user },
-      } = await supabase.auth.getUser());
-
       if (user) {
         ({ data, error } = await supabase
           .from("tasks")
           .select()
           .eq("user_id", user.id)
-          .eq("date", "2024-06-02"));
+          .eq("date", "2024-06-07"));
 
         if (error) {
           console.error("Error fetching tasks:", error);
@@ -45,7 +42,6 @@ const Focus = () => {
 
   const {
     pomodoroTimer,
-    setPomodoroTimer,
     isPomodoroTimerRunning,
     startTask,
     pauseTask,
@@ -85,29 +81,6 @@ const Focus = () => {
   )}, ${targetDate.getDate()} ${targetDate.toLocaleString("default", {
     month: "long",
   })} ${targetDate.getFullYear()}`;
-
-  useEffect(() => {
-    const fetchTasks = async () => {
-      let data, error;
-      ({
-        data: { user },
-      } = await supabase.auth.getUser());
-
-      ({ data, error } = await supabase
-        .from("tasks")
-        .select()
-        .eq("user_id", user.id)
-        .eq("date", "2024-06-02"));
-
-      if (error) {
-        console.error("Error fetching tasks:", error);
-      } else {
-        setTasks(data);
-      }
-    };
-
-    fetchTasks();
-  }, []);
 
   return (
     <SafeAreaView className="bg-white">

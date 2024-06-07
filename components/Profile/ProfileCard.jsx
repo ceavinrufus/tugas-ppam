@@ -7,21 +7,18 @@ import { Foundation } from "@expo/vector-icons";
 import { router } from "expo-router";
 import TextProximaNovaReg from "../TextProximaNovaReg";
 import { supabase } from "../../lib/supabase";
+import { useAuth } from "../../context/AuthContext";
 
 export default function ProfileCard() {
   const [profile, setProfile] = useState();
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchUser = async () => {
-      let data, error;
-      ({
-        data: { user },
-      } = await supabase.auth.getUser());
-
-      ({ data, error } = await supabase
+      const { data, error } = await supabase
         .from("profiles")
         .select()
-        .eq("id", user.id));
+        .eq("id", user.id);
 
       if (error) {
         console.error("Error fetching user data:", error);

@@ -6,6 +6,7 @@ import Slider from "@react-native-community/slider";
 import { supabase } from "../../lib/supabase";
 import { useSpace } from "../../context/SpaceContext";
 import TextProximaNovaReg from "../TextProximaNovaReg";
+import { useAuth } from "../../context/AuthContext";
 
 export default function SpaceModal({ space, modalVisible, setModalVisible }) {
   const [spaceName, setSpaceName] = useState(space ? space.name : "");
@@ -15,6 +16,7 @@ export default function SpaceModal({ space, modalVisible, setModalVisible }) {
   const [description, setDescription] = useState(
     space ? space.description : ""
   );
+  const { user } = useAuth();
   const { addSpace, updateSpace } = useSpace();
   const [errors, setErrors] = useState({
     name: "",
@@ -64,10 +66,6 @@ export default function SpaceModal({ space, modalVisible, setModalVisible }) {
 
   const handleCreateSpace = async () => {
     if (isInputNotValid()) return;
-
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
 
     const { data, error } = await supabase
       .from("spaces")

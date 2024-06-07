@@ -3,6 +3,7 @@ import {
   Text,
   View,
   Image,
+  Alert,
   Modal,
   TouchableOpacity,
   Pressable,
@@ -13,6 +14,7 @@ import SpaceInfoModal from "./SpaceInfoModal";
 import { useSpace } from "../../context/SpaceContext";
 import { MaterialIcons } from "react-native-vector-icons";
 import SpaceModal from "./SpaceModal";
+import { supabase } from "../../lib/supabase";
 
 export default function SpaceCard({ space, canEdit = false }) {
   const [modalVisible, setModalVisible] = useState(false);

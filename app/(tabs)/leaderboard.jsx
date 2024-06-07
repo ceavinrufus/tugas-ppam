@@ -14,12 +14,7 @@ const Leaderboard = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      let user, data, error;
-      ({
-        data: { user },
-      } = await supabase.auth.getUser());
-
-      ({ data, error } = await supabase.from("profiles").select());
+      const { data, error } = await supabase.from("profiles").select();
 
       if (error) {
         console.error("Error fetching user data:", error);
