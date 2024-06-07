@@ -1,12 +1,23 @@
-import { Text, Alert, View, Pressable, BackHandler } from "react-native";
+import {
+  Text,
+  Alert,
+  View,
+  Pressable,
+  TouchableOpacity,
+  BackHandler,
+} from "react-native";
 import React, { useState, useEffect } from "react";
 import { SplashScreen, Tabs, useSegments } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { useFonts, Raleway_700Bold } from "@expo-google-fonts/raleway";
 import HamburgerButton from "../../components/HamburgerButton";
-import { FontAwesome5 } from "@expo/vector-icons";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { MaterialIcons } from "@expo/vector-icons";
+import {
+  MaterialIcons,
+  MaterialCommunityIcons,
+  FontAwesome,
+  FontAwesome5,
+  FontAwesome6,
+} from "@expo/vector-icons";
 import { router } from "expo-router";
 import SpaceModal from "../../components/Space/SpaceModal";
 import { useAuth } from "../../context/AuthContext";
@@ -190,21 +201,36 @@ const TabsLayout = () => {
                 <View className="py-[10px] mr-4 bg-gray-100 rounded-md">
                   <HamburgerButton onPress={handleMenuPress} />
                   {menuVisible && (
-                    <View className="absolute top-12 right-0 bg-white rounded-md shadow-lg">
-                      <Pressable
-                        className="px-4 py-2"
+                    <View className="absolute top-12 right-0 border border-grey bg-white rounded-md shadow-lg">
+                      <TouchableOpacity
+                        className="flex-row items-center px-2 py-1"
                         onPress={() => {
                           router.push("/settings");
                         }}
                       >
-                        <Text>Settings</Text>
-                      </Pressable>
-                      <Pressable
-                        className="px-4 py-2"
+                        <View className="p-1 bg-secondary rounded-md mr-2">
+                          <MaterialIcons
+                            name="settings"
+                            size={16}
+                            color="black"
+                          />
+                        </View>
+                        <Text className="text-xs">Settings</Text>
+                      </TouchableOpacity>
+                      <View className="border-t border-grey"></View>
+                      <TouchableOpacity
+                        className="flex-row items-center px-2 py-1"
                         onPress={() => console.log("Music Pressed")}
                       >
-                        <Text>Music</Text>
-                      </Pressable>
+                        <View className="p-1 bg-secondary rounded-md mr-2">
+                          <MaterialIcons
+                            name="music-note"
+                            size={16}
+                            color="black"
+                          />
+                        </View>
+                        <Text className="text-xs">Music</Text>
+                      </TouchableOpacity>
                     </View>
                   )}
                 </View>
@@ -230,19 +256,18 @@ const TabsLayout = () => {
                 <View className="py-[10px] mr-4 bg-gray-100 rounded-md">
                   <HamburgerButton onPress={handleMenuPress} />
                   {menuVisible && (
-                    <View className="absolute top-12 right-0 bg-white rounded-md shadow-lg">
-                      <Pressable
-                        className="px-4 py-2"
-                        onPress={() => console.log("Settings Pressed")}
+                    <View className="absolute top-12 right-0 border border-grey bg-white rounded-md shadow-lg">
+                      <TouchableOpacity
+                        className="flex-row items-center px-2 py-1"
+                        onPress={() =>
+                          console.log("Spaces Leaderboard Pressed")
+                        }
                       >
-                        <Text>Global Leaderboard</Text>
-                      </Pressable>
-                      <Pressable
-                        className="px-4 py-2"
-                        onPress={() => console.log("Music Pressed")}
-                      >
-                        <Text>Spaces Leaderboard</Text>
-                      </Pressable>
+                        <View className="p-1 bg-secondary rounded-md mr-1">
+                          <MaterialIcons name="group" size={16} color="black" />
+                        </View>
+                        <Text className="text-xs">Spaces Leaderboard</Text>
+                      </TouchableOpacity>
                     </View>
                   )}
                 </View>
