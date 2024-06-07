@@ -42,11 +42,19 @@ export default function SpaceCard({ space, canEdit = false }) {
     <View className="flex-row mb-2 rounded-xl border-2 border-secondary overflow-hidden">
       {/* Image */}
       <View className={`border-secondary border-r-2 rounded-l-xl`}>
-        <Image
-          resizeMode="cover"
-          source={{ uri: space.image }}
-          className="w-20 h-20"
-        />
+        {space.image ? (
+          <Image
+            resizeMode="cover"
+            source={{ uri: space.image }}
+            className="w-20 h-20"
+          />
+        ) : (
+          <Image
+            resizeMode="cover"
+            source={require("../../assets/icon.png")}
+            className="w-20 h-20"
+          />
+        )}
       </View>
       {/* Info */}
       <View className="justify-center ml-4 flex-1">

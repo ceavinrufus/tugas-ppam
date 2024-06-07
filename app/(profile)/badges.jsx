@@ -11,7 +11,7 @@ import Badge from "../../components/Profile/Badge";
 const Badges = () => {
   const { user } = useAuth();
   const [badges, setBadges] = useState();
-  const [stats, setStats] = useState("");
+  const [stats, setStats] = useState([]);
 
   useEffect(() => {
     const fetchUser = async () => {

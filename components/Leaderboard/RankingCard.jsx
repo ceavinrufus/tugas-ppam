@@ -1,11 +1,13 @@
 import { Text, View, Image } from "react-native";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { Foundation } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { user as loggedInUser } from "../../mocks/user";
+import { useAuth } from "../../context/AuthContext";
 
 const RankingCard = ({ rank, user }) => {
+  const { user: loggedInUser } = useAuth();
+
   let rankBorder = "border-[#C2D9FF]";
   let rankGradientColors = ["#C2D9FF", "#DFEBFF", "#FFFFFF"];
   if (rank == 1) {
@@ -18,11 +20,12 @@ const RankingCard = ({ rank, user }) => {
     rankBorder = "border-[#FBA034]";
     rankGradientColors = ["#FA9C2D", "#FCD388", "#FDECB2"];
   }
+
   return (
     <LinearGradient
       className={`flex-row mb-2 rounded-xl border ${rankBorder} overflow-hidden`}
       colors={
-        user.full_name == loggedInUser.full_name
+        user.id == loggedInUser.id
           ? ["#C2D9FF", "#DFEBFF", "#FFFFFF"]
           : ["#FFFFFF", "#FFFFFF", "#FFFFFF"]
       }
@@ -62,19 +65,24 @@ const RankingCard = ({ rank, user }) => {
         <Text className="text-sm font-ProximaNovaBold mb-1">
           {user.full_name}
         </Text>
-        <View className="flex-row items-center">
-          <Foundation size={12} name="sheriff-badge" color="black" />
-          <Text className="ml-2 text-xs font-ProximaNovaMedium">
-            {user.badges && user.badges.length}{" "}
-            {user.badges != 1 ? "badges" : "badge"}
-          </Text>
-        </View>
-        <View className="flex-row items-center">
-          <FontAwesome6 size={10} name="bolt" color="black" />
-          <Text className="ml-2 text-xs font-ProximaNovaMedium">
-            {user.sessions} {user.sessions != 1 ? "sessions" : "session"}
-          </Text>
-        </View>
+        {user.badges && (
+          <View className="flex-row items-center">
+            <Foundation size={12} name="sheriff-badge" color="black" />
+            <Text className="ml-2 text-xs font-ProximaNovaMedium">
+              {user.badges && user.badges.length}{" "}
+              {user.badges.length != 1 ? "badges" : "badge"}
+            </Text>
+          </View>
+        )}
+        {user.stats && (
+          <View className="flex-row items-center">
+            <FontAwesome6 size={10} name="bolt" color="black" />
+            <Text className="ml-2 text-xs font-ProximaNovaMedium">
+              {user.stats.sessions}{" "}
+              {user.stats.sessions != 1 ? "sessions" : "session"}
+            </Text>
+          </View>
+        )}
       </View>
     </LinearGradient>
   );

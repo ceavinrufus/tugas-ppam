@@ -9,7 +9,7 @@ import { supabase } from "../lib/supabase";
 export default function Identity({ profile }) {
   const { user } = useAuth();
   const [badges, setBadges] = useState();
-  const [stats, setStats] = useState("");
+  const [stats, setStats] = useState([]);
 
   useEffect(() => {
     const fetchUser = async () => {
