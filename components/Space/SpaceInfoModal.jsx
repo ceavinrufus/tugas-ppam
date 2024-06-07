@@ -45,6 +45,35 @@ export default function SpaceInfoModal({
     }
   };
 
+  const handleLeaveSpace = async () => {
+    const { data, error } = await supabase
+      .from("spaces")
+      .update({
+        members: space.members.filter((member) => member !== user.id),
+      })
+      .eq("id", space.id)
+      .select();
+
+    if (error) {
+      Alert.alert(
+        "Failed to leave the space",
+        error.message,
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
+          },
+        ],
+        {
+          cancelable: true,
+        }
+      );
+    } else {
+      setModalVisible(false);
+      updateSpace(space.id, data[0]);
+    }
+  };
+
   useEffect(() => {
     if (space.members.includes(user.id)) {
       setIsJoined(true);
@@ -124,11 +153,10 @@ export default function SpaceInfoModal({
             />
             <CustomButton
               containerStyles={`mt-2 w-[49%] border-primary border ${
-                isJoined ? "opacity-50" : ""
+                isJoined ? "bg-[#CC0000] border-0" : ""
               }`}
-              title={"Join"}
-              handlePress={handleJoinSpace}
-              disabled={isJoined}
+              title={isJoined ? "Leave" : "Join"}
+              handlePress={isJoined ? handleLeaveSpace : handleJoinSpace}
             />
           </View>
         </LinearGradient>
