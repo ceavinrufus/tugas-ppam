@@ -46,6 +46,12 @@ export default function SpaceInfoModal({
   };
 
   const handleLeaveSpace = async () => {
+    if (space.created_by === user.id) {
+      Alert.alert("Failed to leave the space", "You created this space");
+      setModalVisible(false);
+      return;
+    }
+
     const { data, error } = await supabase
       .from("spaces")
       .update({
@@ -68,6 +74,7 @@ export default function SpaceInfoModal({
           cancelable: true,
         }
       );
+      setModalVisible(false);
     } else {
       setModalVisible(false);
       updateSpace(space.id, data[0]);
