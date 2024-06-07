@@ -296,7 +296,7 @@ const TabsLayout = () => {
                     size={24}
                     color="black"
                     onPress={() =>
-                      Alert.alert("Exit App", "Do you want to logout?", [
+                      Alert.alert("Confirm logout", "Do you want to logout?", [
                         {
                           text: "Cancel",
                           onPress: () => null,

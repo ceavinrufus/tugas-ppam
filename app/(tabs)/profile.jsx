@@ -6,7 +6,7 @@ import Menu from "../../components/Profile/Menu";
 
 const Profile = () => {
   return (
-    <SafeAreaView>
+    <SafeAreaView className="bg-white" style={{ flex: 1 }}>
       <ScrollView>
         <View className="self-center px-4 w-[95%] h-full">
           <ProfileCard />

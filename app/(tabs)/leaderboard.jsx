@@ -82,7 +82,7 @@ const Leaderboard = () => {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView className="bg-white" style={{ flex: 1 }}>
       <View className="self-center px-4 w-[95%] h-full">
         <View className="mt-[34px] flex-1">
           {/* User Leaderboard Card */}

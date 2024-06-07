@@ -10,7 +10,7 @@ export default function App() {
 
   if (session) return <Redirect href="/focus" />;
   return (
-    <SafeAreaView className="bg-white h-full">
+    <SafeAreaView className="bg-white" style={{ flex: 1 }}>
       <ScrollView
         contentContainerStyle={{
           height: "100%",

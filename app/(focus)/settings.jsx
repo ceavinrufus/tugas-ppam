@@ -6,7 +6,7 @@ import TimerInput from "../../components/Focus/TimerInput";
 
 const Settings = () => {
   return (
-    <SafeAreaView>
+    <SafeAreaView className="bg-white" style={{ flex: 1 }}>
       <ScrollView>
         <View className={"self-center px-4 w-[95%] h-full"}>
           <Text className="text-2xl font-RalewayBold color-[#190482] mb-1">

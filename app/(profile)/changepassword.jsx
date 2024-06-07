@@ -23,10 +23,12 @@ const ChangePassword = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const submit = () => {
+    // TODO: Implement change password
     router.push("/profile");
   };
+
   return (
-    <SafeAreaView>
+    <SafeAreaView className="bg-white" style={{ flex: 1 }}>
       <ScrollView>
         <View className="justify-center self-center h-full px-4 w-[90%]">
           <FormField
@@ -34,7 +36,7 @@ const ChangePassword = () => {
             placeholder={"Ex: johndoe@gmail.com"}
             value={form.email}
             handleChangeText={(e) => setForm({ ...form, email: e })}
-            otherStyles="mt-7"
+            otherStyles=""
             keyboardType="email"
           />
           <FormField
@@ -69,7 +71,7 @@ const ChangePassword = () => {
             handlePress={() => {
               router.push("/edit");
             }}
-            containerStyles="mt-4 bg-white border border-primary"
+            containerStyles="mt-2 bg-white border border-primary"
             textStyles={"text-primary"}
           />
         </View>

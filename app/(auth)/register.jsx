@@ -118,7 +118,7 @@ const Register = () => {
   };
 
   return (
-    <SafeAreaView className="">
+    <SafeAreaView className="bg-white" style={{ flex: 1 }}>
       <ScrollView>
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}

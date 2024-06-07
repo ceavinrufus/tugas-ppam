@@ -10,7 +10,7 @@ const Verify = () => {
   };
 
   return (
-    <SafeAreaView className="bg-white">
+    <SafeAreaView className="bg-white" style={{ flex: 1 }}>
       <ScrollView>
         <View className="justify-center self-center items-center h-screen px-4 w-[90%]">
           <Image

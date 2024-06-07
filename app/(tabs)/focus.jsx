@@ -100,7 +100,7 @@ const Focus = () => {
   })} ${convertingDate.getFullYear()}`;
 
   return (
-    <SafeAreaView className="bg-white">
+    <SafeAreaView className="bg-white" style={{ flex: 1 }}>
       <GestureHandlerRootView className="justify-center self-center h-full w-full">
         <View className="self-center px-4 w-[95%] h-full">
           <LinearGradient

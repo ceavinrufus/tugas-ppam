@@ -49,7 +49,7 @@ const Badges = () => {
 
   if (!badges | !stats) return;
   return (
-    <SafeAreaView>
+    <SafeAreaView className="bg-white" style={{ flex: 1 }}>
       <ScrollView>
         <View className="justify-center self-center h-full px-4 w-[95%]">
           <Text className="text-2xl font-RalewayBold text-primary">

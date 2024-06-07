@@ -49,7 +49,7 @@ const TabButtons = ({
   });
 
   return (
-    <View className="bg-white rounded-lg justify-center">
+    <View className="bg-gray-100 rounded-lg justify-center">
       <Animated.View
         className="absolute bg-yellow rounded-lg"
         style={[

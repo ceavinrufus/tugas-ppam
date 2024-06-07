@@ -135,7 +135,7 @@ const Edit = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView className="bg-white" style={{ flex: 1 }}>
       <ScrollView>
         <View className="justify-center self-center h-full px-4 w-[90%]">
           <View className="border-primary w-[100px] self-center rounded-full">
