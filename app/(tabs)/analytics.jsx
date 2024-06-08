@@ -98,12 +98,16 @@ const Analytics = () => {
   const totalAccess = schedule.length;
   const totalStreak = calculateStreak(schedule); // TODO: Change the way to count streak
   const totalFocus = schedule.reduce((acc, item) => acc + item.focus_time, 0);
+  const totalNotFocus = schedule.reduce(
+    (acc, item) => acc + item.not_focus_time,
+    0
+  );
   const totalBreak = schedule.reduce((acc, item) => acc + item.break_time, 0);
 
   const pieData = [
     { value: totalFocus, color: "#190482", text: "Focus", focused: true },
     { value: totalBreak, color: "#C2D9FF", text: "Productive Break" },
-    { value: 8, color: "#FACC2D", text: "Not Focus" },
+    { value: totalNotFocus, color: "#FACC2D", text: "Not Focus" },
   ];
 
   return (

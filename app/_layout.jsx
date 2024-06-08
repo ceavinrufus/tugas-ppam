@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { router, SplashScreen, Stack } from "expo-router";
 import { useFonts, Raleway_700Bold } from "@expo-google-fonts/raleway";
-import { TaskProvider } from "../context/TaskContext";
+import { TimerProvider } from "../context/TimerContext";
 import { ScheduleProvider } from "../context/ScheduleContext";
 import { SpaceProvider } from "../context/SpaceContext";
 import { AuthProvider, useAuth } from "../context/AuthContext";
@@ -84,9 +84,9 @@ const RootLayout = () => {
     <AuthProvider>
       <ScheduleProvider>
         <SpaceProvider>
-          <TaskProvider>
+          <TimerProvider>
             <InitialLayout />
-          </TaskProvider>
+          </TimerProvider>
         </SpaceProvider>
       </ScheduleProvider>
     </AuthProvider>

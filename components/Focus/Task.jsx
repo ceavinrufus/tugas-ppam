@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { MaterialIcons } from "react-native-vector-icons";
-import { useTask } from "../../context/TaskContext";
+import { useTimer } from "../../context/TimerContext";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { useSchedule } from "../../context/ScheduleContext";
 import { supabase } from "../../lib/supabase";
@@ -16,7 +16,7 @@ import TaskModal from "./TaskModal";
 
 export function Task({ task, menuOpened, setMenuOpened }) {
   const { currentTask, startTask, pauseTask, isRunning, elapsedTime } =
-    useTask();
+    useTimer();
   const isCurrentTask = currentTask && currentTask.id === task.id;
   const [ela, setEla] = useState(task.elapsedTime);
   const { removeTask } = useSchedule();

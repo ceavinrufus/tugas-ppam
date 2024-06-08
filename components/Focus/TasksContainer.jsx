@@ -21,7 +21,7 @@ function listToObject(list) {
 }
 
 export default function TasksContainer({ modalVisible, setModalVisible }) {
-  const { tasks } = useSchedule(); // Use the tasks from context
+  const { tasks, schedule } = useSchedule(); // Use the tasks from context
   const positions = useSharedValue(listToObject(tasks));
   const scrollViewRef = useAnimatedRef();
   const scrollY = useSharedValue(0);
@@ -41,6 +41,20 @@ export default function TasksContainer({ modalVisible, setModalVisible }) {
   const handleScroll = useAnimatedScrollHandler((event) => {
     scrollY.value = event.contentOffset.y;
   });
+
+  const convertSecondsToReadableTime = (totalSeconds) => {
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    const hoursDisplay = `${hours}`.padStart(2, 0);
+    const minutesDisplay = `${minutes}`.padStart(2, 0);
+    const secondsDisplay = `${seconds}`.padStart(2, 0);
+
+    return [hoursDisplay, minutesDisplay, secondsDisplay]
+      .filter(Boolean)
+      .join(":");
+  };
 
   if (!positions) return null;
 
@@ -81,10 +95,15 @@ export default function TasksContainer({ modalVisible, setModalVisible }) {
       </Animated.ScrollView>
       <View className="border-t border-primary mb-3"></View>
       <View className="flex-row items-center mb-3 justify-center border-secondary border-2 px-4 rounded-xl h-[40px]">
-        <Text className="text-primary font-ProximaNovaReg text-xs">
-          <Text className="font-ProximaNovaBold">Today's Focus Session: </Text>3
-          sessions / 01 : 15 : 00
-        </Text>
+        {schedule && (
+          <Text className="text-primary font-ProximaNovaReg text-xs">
+            <Text className="font-ProximaNovaBold">
+              Today's Focus Session:{" "}
+            </Text>
+            {schedule.sessions} sessions /{" "}
+            {convertSecondsToReadableTime(schedule.focus_time)}
+          </Text>
+        )}
       </View>
       <TaskModal
         modalVisible={modalVisible}

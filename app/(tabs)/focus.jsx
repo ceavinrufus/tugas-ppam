@@ -6,7 +6,7 @@ import TabButtons from "../../components/TabButtons";
 import CustomButton from "../../components/CustomButton";
 import TasksContainer from "../../components/Focus/TasksContainer";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { useTask } from "../../context/TaskContext"; // Import the useTask hook
+import { useTimer } from "../../context/TimerContext"; // Import the useTimer hook
 import { supabase } from "../../lib/supabase";
 import { useSchedule } from "../../context/ScheduleContext";
 import { Entypo } from "@expo/vector-icons";
@@ -21,8 +21,6 @@ const Focus = () => {
   const [selectedTab, setSelectedTab] = useState(0);
   const { tasks, setTasks } = useSchedule();
   const [modalVisible, setModalVisible] = useState(false);
-  const [shortBreak, setShortBreak] = useState(5 * 60);
-  const [longBreak, setLongBreak] = useState(20 * 60);
   const [targetDate, setTargetDate] = useState(
     generateLocaleISODate(new Date())
   );
@@ -50,11 +48,23 @@ const Focus = () => {
 
   const {
     pomodoroTimer,
+    shortBreakTimer,
+    longBreakTimer,
+    notFocusTimer,
     isPomodoroTimerRunning,
+    isShortBreakTimerRunning,
+    isLongBreakTimerRunning,
+    isNotFocusTimerRunning,
     startTask,
     pauseTask,
+    startShortBreak,
+    startLongBreak,
+    startNotFocus,
+    pauseShortBreak,
+    pauseLongBreak,
+    pauseNotFocus,
     currentTask,
-  } = useTask(); // Use the useTask hook
+  } = useTimer(); // Use the useTimer hook
 
   const buttons = [
     { title: "Pomodoro" },
@@ -73,6 +83,27 @@ const Focus = () => {
   // Format Day, Date Month Year
   const formattedDate = getDayFormattedDate(new Date(targetDate));
 
+  const handleStartPause = () => {
+    if (selectedTab === 0) {
+      isPomodoroTimerRunning ? pauseTask() : startTask(currentTask || tasks[0]);
+    } else if (selectedTab === 1) {
+      isShortBreakTimerRunning ? pauseShortBreak() : startShortBreak();
+    } else if (selectedTab === 2) {
+      isLongBreakTimerRunning ? pauseLongBreak() : startLongBreak();
+    }
+  };
+
+  const getCurrentTimer = () => {
+    if (selectedTab === 0) {
+      return pomodoroTimer;
+    } else if (selectedTab === 1) {
+      return shortBreakTimer;
+    } else if (selectedTab === 2) {
+      return longBreakTimer;
+    }
+    return notFocusTimer;
+  };
+
   return (
     <SafeAreaView className="bg-white" style={{ flex: 1 }}>
       <GestureHandlerRootView className="justify-center self-center h-full w-full">
@@ -89,13 +120,9 @@ const Focus = () => {
             />
 
             <View className="mt-7 items-center">
-              {/* Pomodoro Timer */}
+              {/* Display the appropriate timer */}
               <Text className="text-6xl font-ProximaNovaBold">
-                {selectedTab === 0
-                  ? formatTime(pomodoroTimer)
-                  : selectedTab === 1
-                  ? formatTime(shortBreak)
-                  : formatTime(longBreak)}
+                {formatTime(getCurrentTimer())}
               </Text>
               {/* Task selected */}
               <LinearGradient
@@ -107,17 +134,16 @@ const Focus = () => {
                   {currentTask ? currentTask.name : "No selected task"}
                 </Text>
               </LinearGradient>
-              {/* Start button */}
-              {/* Todo: Click start auto start first task */}
+              {/* Start/Pause button */}
               <CustomButton
-                title={isPomodoroTimerRunning ? "Pause" : "Start"}
-                handlePress={() => {
-                  isPomodoroTimerRunning
-                    ? pauseTask()
-                    : currentTask
-                    ? startTask(currentTask)
-                    : startTask(tasks[0]);
-                }}
+                title={
+                  (selectedTab == 0 && isPomodoroTimerRunning) ||
+                  (selectedTab == 1 && isShortBreakTimerRunning) ||
+                  (selectedTab == 2 && isLongBreakTimerRunning)
+                    ? "Pause"
+                    : "Start"
+                }
+                handlePress={handleStartPause}
                 containerStyles="mt-2 h-[30px] w-full rounded-md"
                 textStyles={"font-ProximaNovaBold text-xs"}
               />
