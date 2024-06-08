@@ -95,15 +95,12 @@ export default function TasksContainer({ modalVisible, setModalVisible }) {
       </Animated.ScrollView>
       <View className="border-t border-primary mb-3"></View>
       <View className="flex-row items-center mb-3 justify-center border-secondary border-2 px-4 rounded-xl h-[40px]">
-        {schedule && (
-          <Text className="text-primary font-ProximaNovaReg text-xs">
-            <Text className="font-ProximaNovaBold">
-              Today's Focus Session:{" "}
-            </Text>
-            {schedule.sessions} sessions /{" "}
-            {convertSecondsToReadableTime(schedule.focus_time)}
-          </Text>
-        )}
+        <Text className="text-primary font-ProximaNovaReg text-xs">
+          <Text className="font-ProximaNovaBold">Today's Focus Session: </Text>
+          {schedule ? schedule.sessions : 0}{" "}
+          {schedule?.sessions != 1 ? "sessions" : "session"} /{" "}
+          {convertSecondsToReadableTime(schedule ? schedule.focus_time : 0)}
+        </Text>
       </View>
       <TaskModal
         modalVisible={modalVisible}
