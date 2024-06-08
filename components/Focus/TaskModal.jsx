@@ -35,7 +35,6 @@ export default function TaskModal({ task, modalVisible, setModalVisible }) {
     const { error } = await supabase.rpc("insert_schedule", {
       uid,
       d: date,
-      day_name: new Date(date).getDay(),
     });
 
     if (error) {
