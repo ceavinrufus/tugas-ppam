@@ -12,9 +12,7 @@ function MenuBox({ title, handlePress }) {
       textStyles={"font-ProximaNovaMedium text-black"}
       rightIcon={
         <View className="justify-center">
-          <TouchableOpacity onPress={handlePress}>
-            <ChevronRightIcon color="#190482" size={24} />
-          </TouchableOpacity>
+          <ChevronRightIcon color="#190482" size={24} />
         </View>
       }
       style={{
@@ -28,7 +26,7 @@ function MenuBox({ title, handlePress }) {
   );
 }
 
-export default function Menu({ children }) {
+export default function Menu() {
   return (
     <View className="flex-1 pb-2">
       <MenuBox title={"Subscription"} handlePress={null} />
