@@ -1,21 +1,8 @@
-import {
-  ScrollView,
-  Text,
-  View,
-  Modal,
-  TouchableOpacity,
-  StyleSheet,
-  Pressable,
-  Alert,
-} from "react-native";
+import { ScrollView, View } from "react-native";
 import React, { useState } from "react";
-import { Redirect, router } from "expo-router";
+import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { LinearGradient } from "expo-linear-gradient";
-import TabButtons from "../../components/TabButtons";
 import CustomButton from "../../components/CustomButton";
-import { ModalContent, ModalTitle, SlideAnimation } from "react-native-modals";
-import { MaterialIcons } from "@expo/vector-icons";
 import FormField from "../../components/FormField";
 
 const ChangePassword = () => {

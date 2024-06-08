@@ -3,21 +3,20 @@ import React from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { badges as b } from "../../mocks/badges";
-import { useAuth } from "../../context/AuthContext";
 
 export default function Badge({ badge, stats }) {
   const criteria = b[badge.badge_id].criteria;
 
   return (
     <LinearGradient
-      className="mt-2 rounded-lg border-[#C2D9FF] border"
+      className="mt-2 rounded-lg border-secondary border"
       colors={["#C2D9FF", "#DFEBFF", "#FFF"]}
       locations={[0, 1, 1]}
       style={{ flex: 1, padding: 15 }}
     >
       <View className="flex-row gap-3 flex-1">
         <LinearGradient
-          className="rounded-lg border-[#FACC2D] border-2 justify-center items-center px-4"
+          className="rounded-lg border-yellow border-2 justify-center items-center px-4"
           colors={["#FACC2D", "#FBDB6A", "#FDEAA7", "#FFF"]}
           locations={[0, 0, 0, 1]}
           style={{ padding: 10 }}

@@ -11,7 +11,11 @@ import { supabase } from "../../lib/supabase";
 import { useSchedule } from "../../context/ScheduleContext";
 import { Entypo } from "@expo/vector-icons";
 import { useAuth } from "../../context/AuthContext";
-import { generateLocaleISODate } from "../../utils/dateHelper";
+import {
+  generateLocaleISODate,
+  getDayFormattedDate,
+} from "../../utils/dateHelper";
+import { getPreviousDate, getNextDate } from "../../utils/dateHelper";
 
 const Focus = () => {
   const [selectedTab, setSelectedTab] = useState(0);
@@ -66,38 +70,8 @@ const Focus = () => {
       .padStart(2, "0")}`;
   };
 
-  function getDayName(date) {
-    const days = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-    ];
-    return days[date.getDay()];
-  }
-
-  const getPreviousDate = (date) => {
-    const previousDate = new Date(date);
-    previousDate.setDate(previousDate.getDate() - 1);
-    return generateLocaleISODate(previousDate);
-  };
-
-  const getNextDate = (date) => {
-    const nextDate = new Date(date);
-    nextDate.setDate(nextDate.getDate() + 1);
-    return generateLocaleISODate(nextDate);
-  };
-
   // Format Day, Date Month Year
-  const convertingDate = new Date(targetDate);
-  const formattedDate = `${getDayName(
-    convertingDate
-  )}, ${convertingDate.getDate()} ${convertingDate.toLocaleString("default", {
-    month: "long",
-  })} ${convertingDate.getFullYear()}`;
+  const formattedDate = getDayFormattedDate(new Date(targetDate));
 
   return (
     <SafeAreaView className="bg-white" style={{ flex: 1 }}>

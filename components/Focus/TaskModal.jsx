@@ -8,7 +8,7 @@ import { supabase } from "../../lib/supabase";
 import { useSchedule } from "../../context/ScheduleContext";
 import TextProximaNovaReg from "../../components/TextProximaNovaReg";
 import { useAuth } from "../../context/AuthContext";
-import { generateLocaleISODate } from "../../utils/dateHelper";
+import { generateLocaleISODate, getDayName } from "../../utils/dateHelper";
 
 const data = [
   { label: "Low", value: 1 },
@@ -35,6 +35,7 @@ export default function TaskModal({ task, modalVisible, setModalVisible }) {
     const { error } = await supabase.rpc("insert_schedule", {
       uid,
       d: date,
+      day_name: new Date(date).getDay(),
     });
 
     if (error) {
