@@ -114,11 +114,19 @@ export default function SpaceInfoModal({
           <View className="flex-row">
             {/* Image */}
             <View className={`border-yellow border rounded-xl overflow-hidden`}>
-              <Image
-                resizeMode="cover"
-                source={{ uri: space.image }}
-                className="w-20 h-20"
-              />
+              {space.image ? (
+                <Image
+                  resizeMode="cover"
+                  source={{ uri: space.image }}
+                  className="w-20 h-20"
+                />
+              ) : (
+                <Image
+                  resizeMode="cover"
+                  source={require("../../assets/icon.png")}
+                  className="w-20 h-20"
+                />
+              )}
             </View>
 
             {/* Info */}
@@ -147,9 +155,15 @@ export default function SpaceInfoModal({
           </View>
 
           {/* Description */}
-          <TextProximaNovaReg className="text-justify my-2 text-xs">
-            {space.description}
-          </TextProximaNovaReg>
+          <Text
+            className={`text-justify my-2 text-xs ${
+              space.description
+                ? "font-ProximaNovaReg"
+                : "font-ProximaNovaItalic"
+            }`}
+          >
+            {space.description ? space.description : "No description yet"}
+          </Text>
 
           <View className="flex-row justify-between items-center">
             <CustomButton

@@ -3,8 +3,11 @@ import React from "react";
 import { ScrollView, View, Text, Switch, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TimerInput from "../../components/Focus/TimerInput";
+import { useTimer } from "../../context/TimerContext";
 
 const Settings = () => {
+  const { pomodoroTimer, shortBreakTimer, longBreakTimer } = useTimer(); // Use the useTimer hook
+
   return (
     <SafeAreaView className="bg-white" style={{ flex: 1 }}>
       <ScrollView>
@@ -28,7 +31,7 @@ const Settings = () => {
                 >
                   Pomodoro
                 </Text>
-                <TimerInput initialValue={"25"} />
+                <TimerInput initialValue={pomodoroTimer / 60} maxValue={25} />
               </View>
               <View className={"items-center"}>
                 <Text
@@ -38,7 +41,7 @@ const Settings = () => {
                 >
                   Short Break
                 </Text>
-                <TimerInput initialValue={"5"} />
+                <TimerInput initialValue={shortBreakTimer / 60} maxValue={5} />
               </View>
               <View className={"items-center"}>
                 <Text
@@ -48,9 +51,13 @@ const Settings = () => {
                 >
                   Long Break
                 </Text>
-                <TimerInput initialValue={"15"} />
+                <TimerInput initialValue={longBreakTimer / 60} minValue={5} />
               </View>
             </View>
+            <Text className="bg-yellow rounded-md px-2 py-1 font-ProximaNovaReg mt-3">
+              <Text className="font-ProximaNovaBold">Tips:</Text> Too much work
+              at once can actually make you less productive overall
+            </Text>
           </LinearGradient>
           {/* <View className={"flex-row justify-between items-center mb-4"}> */}
           <View
@@ -85,7 +92,7 @@ const Settings = () => {
             </Text>
             <Switch />
           </View>
-          <View
+          {/* <View
             style={{
               shadowColor: "#C2D9FF",
               shadowOffset: { width: 0, height: 2 },
@@ -102,21 +109,21 @@ const Settings = () => {
             </Text>
             <TimerInput
               otherContainerStyles={"bg-[#C2D9FF]"}
-              initialValue={"2"}
+              initialValue={2}
             />
-          </View>
+          </View> */}
 
           <Text className="text-2xl font-RalewayBold color-[#190482] mt-5 mb-1">
             Task Settings
           </Text>
-          <View
+          {/* <View
             className={
               "mt-2 h-[60px] flex-row items-center rounded-xl border border-secondary bg-[#FFFFFF] justify-between px-5"
             }
           >
             <Text className={"text-sm text-gray-800"}>Auto Check Tasks</Text>
             <Switch />
-          </View>
+          </View> */}
           <View
             className={
               "mt-2 h-[60px] flex-row items-center rounded-xl border border-secondary bg-[#FFFFFF] justify-between px-5"
