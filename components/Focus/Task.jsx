@@ -79,7 +79,7 @@ export function Task({ task, menuOpened, setMenuOpened }) {
           {isCurrentTask && (
             <>
               <Text className="font-ProximaNovaMedium">{formatTime(ela)}</Text>
-              <View className="h-2 w-full bg-gray-300 rounded-full">
+              <View className="h-2 w-full bg-gray-300 rounded-full overflow-hidden">
                 <View
                   style={{
                     width: `${
