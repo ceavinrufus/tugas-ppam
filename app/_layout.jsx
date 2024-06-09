@@ -5,6 +5,8 @@ import { TimerProvider } from "../context/TimerContext";
 import { ScheduleProvider } from "../context/ScheduleContext";
 import { SpaceProvider } from "../context/SpaceContext";
 import { AuthProvider, useAuth } from "../context/AuthContext";
+import { MusicProvider } from "../context/MusicContext";
+import MusicControl from "../components/Focus/MusicControl";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -82,13 +84,16 @@ const RootLayout = () => {
 
   return (
     <AuthProvider>
-      <ScheduleProvider>
-        <SpaceProvider>
-          <TimerProvider>
-            <InitialLayout />
-          </TimerProvider>
-        </SpaceProvider>
-      </ScheduleProvider>
+      <MusicProvider>
+        <ScheduleProvider>
+          <SpaceProvider>
+            <TimerProvider>
+              <InitialLayout />
+              <MusicControl />
+            </TimerProvider>
+          </SpaceProvider>
+        </ScheduleProvider>
+      </MusicProvider>
     </AuthProvider>
   );
 };

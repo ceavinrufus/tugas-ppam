@@ -13,6 +13,7 @@ import { FontAwesome6 } from "@expo/vector-icons";
 import { useSchedule } from "../../context/ScheduleContext";
 import { supabase } from "../../lib/supabase";
 import TaskModal from "./TaskModal";
+import { formatTime } from "../../utils/timeHelper";
 
 export function Task({ task, menuOpened, setMenuOpened }) {
   const { currentTask, startTask, pauseTask, isRunning, elapsedTime } =
@@ -21,14 +22,6 @@ export function Task({ task, menuOpened, setMenuOpened }) {
   const [ela, setEla] = useState(task.elapsedTime);
   const { removeTask } = useSchedule();
   const [modalVisible, setModalVisible] = useState(false);
-
-  const formatTime = (timeInSeconds) => {
-    const minutes = Math.floor(timeInSeconds / 60);
-    const seconds = timeInSeconds % 60;
-    return `${minutes.toString().padStart(2, "0")}:${seconds
-      .toString()
-      .padStart(2, "0")}`;
-  };
 
   const handlePlayPause = () => {
     if (currentTask) {

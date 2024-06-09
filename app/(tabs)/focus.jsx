@@ -16,6 +16,7 @@ import {
   getDayFormattedDate,
 } from "../../utils/dateHelper";
 import { getPreviousDate, getNextDate } from "../../utils/dateHelper";
+import { formatTime } from "../../utils/timeHelper";
 
 const Focus = () => {
   const [selectedTab, setSelectedTab] = useState(0);
@@ -71,14 +72,6 @@ const Focus = () => {
     { title: "Short Break" },
     { title: "Long Break" },
   ];
-
-  const formatTime = (timeInSeconds) => {
-    const minutes = Math.floor(timeInSeconds / 60);
-    const seconds = timeInSeconds % 60;
-    return `${minutes.toString().padStart(2, "0")}:${seconds
-      .toString()
-      .padStart(2, "0")}`;
-  };
 
   // Format Day, Date Month Year
   const formattedDate = getDayFormattedDate(new Date(targetDate));

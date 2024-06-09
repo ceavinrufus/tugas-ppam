@@ -220,7 +220,9 @@ const TabsLayout = () => {
                       <View className="border-t border-grey"></View>
                       <TouchableOpacity
                         className="flex-row items-center px-2 py-1"
-                        onPress={() => console.log("Music Pressed")}
+                        onPress={() => {
+                          router.push("/music");
+                        }}
                       >
                         <View className="p-1 bg-secondary rounded-md mr-2">
                           <MaterialIcons
