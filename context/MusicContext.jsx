@@ -29,27 +29,7 @@ export const MusicProvider = ({ children }) => {
       duration: 5 * 60 + 6,
       copyright: "Lofium",
       file: require("../assets/songs/Lofi-Relax-Travel-by-Lofium.mp3"),
-    }, // {
-    //   id: 1,
-    //   title: "Clock",
-    //   duration: 3,
-    //   copyright: "Sound Effect",
-    //   file: require("../assets/songs/Clock-Close-Mic.mp3"),
-    // },
-    // {
-    //   id: 2,
-    //   title: "Clock",
-    //   duration: 3,
-    //   copyright: "Sound Effect",
-    //   file: require("../assets/songs/Clock-Close-Mic.mp3"),
-    // },
-    // {
-    //   id: 3,
-    //   title: "Clock",
-    //   duration: 3,
-    //   copyright: "Sound Effect",
-    //   file: require("../assets/songs/Clock-Close-Mic.mp3"),
-    // },
+    },
   ];
 
   const [playing, setPlaying] = useState(songs[0]);
@@ -61,10 +41,15 @@ export const MusicProvider = ({ children }) => {
   const [isLoop, setIsLoop] = useState(false);
   const [playingDuration, setPlayingDuration] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadDelay, setIsLoadDelay] = useState(false); // State untuk delay loading
 
   async function playSound(song) {
     setIsLoading(true);
-    // console.log("Playing Sound " + song.id);
+    setIsLoadDelay(false); // Reset load delay state
+    const loadDelayTimeout = setTimeout(() => {
+      setIsLoadDelay(true); // Tampilkan loading setelah 0.5 detik
+    }, 500);
+
     setPlaying(song);
     setPlayingDuration(0);
     setElapsedTime(0);
@@ -77,14 +62,13 @@ export const MusicProvider = ({ children }) => {
     setIsPlaying(true);
     setIsLoading(false);
 
+    clearTimeout(loadDelayTimeout); // Batalkan timer jika pemutaran dimulai sebelum 0.5 detik
     await newSound.playAsync();
   }
 
   useEffect(() => {
-    // setIsLoading(false);
     return sound
       ? () => {
-          // console.log("Unloading Sound");
           sound.unloadAsync();
         }
       : undefined;
@@ -206,7 +190,7 @@ export const MusicProvider = ({ children }) => {
         isShuffle,
         isRepeat,
         isLoop,
-        isLoading,
+        isLoading: isLoading && isLoadDelay, // Hanya set isLoading jika isLoadDelay true
         songs,
       }}
     >
