@@ -1,26 +1,35 @@
+import { Text, View, Image, TouchableOpacity, Modal, Pressable, Alert } from "react-native";
 import React, { useState } from "react";
-import {
-  Text,
-  View,
-  Image,
-  Alert,
-  Modal,
-  TouchableOpacity,
-  Pressable,
-} from "react-native";
-import { FontAwesome6, FontAwesome5 } from "@expo/vector-icons";
+import { FontAwesome6 } from "@expo/vector-icons";
+import { Foundation } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { ChevronRightIcon } from "react-native-heroicons/outline";
 import SpaceInfoModal from "./SpaceInfoModal";
+import { useAuth } from "../../context/AuthContext";
 import { useSpace } from "../../context/SpaceContext";
+import { supabase } from "../../lib/supabase";
 import { MaterialIcons } from "react-native-vector-icons";
 import SpaceModal from "./SpaceModal";
-import { supabase } from "../../lib/supabase";
 
-export default function SpaceCard({ space, canEdit = false }) {
+const SpaceRank = ({ rank, space, canEdit = false }) => {
+  const { user: loggedInUser } = useAuth();
+  const { removeSpace } = useSpace();
   const [modalVisible, setModalVisible] = useState(false);
   const [menuOpened, setMenuOpened] = useState(false);
-  const { removeSpace } = useSpace();
-  
+
+  let rankBorder = "border-[#C2D9FF]";
+  let rankGradientColors = ["#C2D9FF", "#DFEBFF", "#FFFFFF"];
+  if (rank == 1) {
+    rankBorder = "border-[#FACC2D]";
+    rankGradientColors = ["#FACC2D", "#FCE07F", "#FFFFFF"];
+  } else if (rank == 2) {
+    rankBorder = "border-[#D9D9D9]";
+    rankGradientColors = ["#D9D9D9", "#D9D9D9", "#D9D9D9"];
+  } else if (rank == 3) {
+    rankBorder = "border-[#FBA034]";
+    rankGradientColors = ["#FA9C2D", "#FCD388", "#FDECB2"];
+  }
+
   const handleDeleteSpace = async () => {
     const { data, error } = await supabase
       .from("spaces")
@@ -33,44 +42,51 @@ export default function SpaceCard({ space, canEdit = false }) {
     } else {
       Alert.alert("Success", "Space deleted!");
       removeSpace(data[0].id);
-
       setMenuOpened(null);
     }
   };
 
   return (
-    <View className="flex-row mb-2 rounded-xl border-2 border-secondary overflow-hidden">
-      {/* Image */}
-      <View className={`border-secondary border-r-2 rounded-l-xl`}>
-        {space.image ? (
-          <Image
-            resizeMode="cover"
-            source={{ uri: space.image }}
-            className="w-20 h-20"
-          />
-        ) : (
-          <Image
-            resizeMode="cover"
-            source={require("../../assets/icon.png")}
-            className="w-20 h-20"
-          />
-        )}
+    <LinearGradient
+      className={`flex-row mb-2 rounded-xl border ${rankBorder} overflow-hidden`}
+      colors={rankGradientColors}
+      locations={[0, 1, 1]}
+    >
+      {/* Rank */}
+      <View className="flex-row justify-center items-center bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500">
+        <Text className="text-md font-bold px-4">{rank}</Text>
+        {/* Image */}
+        <View className="h-20 w-20 overflow-hidden my-1 mr-2 rounded-full">
+          {space.image ? (
+            <Image
+              source={{ uri: space.image }}
+              resizeMode="cover"
+              className="h-20 w-20"
+            />
+          ) : (
+            <Image
+              source={require("../../assets/icon.png")}
+              resizeMode="cover"
+              className="h-20 w-20"
+            />
+          )}
+        </View>
       </View>
+
       {/* Info */}
       <View className="justify-center ml-4 flex-1">
         <Text className="text-sm font-ProximaNovaBold mb-1">{space.name}</Text>
-
-        <View className="flex-row items-center">
-          <FontAwesome5 name="user-friends" size={10} color="black" />
-          <Text className="ml-1 text-xs font-ProximaNovaMedium">
-            {space.members && space.members.length}{" "}
-            {space.members && space.members.length != 1 ? "members" : "member"}
-          </Text>
-        </View>
         <View className="flex-row items-center">
           <FontAwesome6 size={10} name="bolt" color="black" />
           <Text className="ml-2 text-xs font-ProximaNovaMedium">
             {space.sessions} {space.sessions != 1 ? "sessions" : "session"}
+          </Text>
+        </View>
+        <View className="flex-row items-center">
+          <FontAwesome6 name="user-friends" size={10} color="black" />
+          <Text className="ml-2 text-xs font-ProximaNovaMedium">
+            {space.members && space.members.length}{" "}
+            {space.members && space.members.length != 1 ? "members" : "member"}
           </Text>
         </View>
       </View>
@@ -83,7 +99,6 @@ export default function SpaceCard({ space, canEdit = false }) {
               <ChevronRightIcon color="black" size={24} />
             </TouchableOpacity>
           </View>
-
           <SpaceInfoModal
             space={space}
             modalVisible={modalVisible}
@@ -93,12 +108,11 @@ export default function SpaceCard({ space, canEdit = false }) {
       ) : (
         <View className="flex-row items-center mr-[10px]">
           {/* More button */}
-          <View className="bg-secondary mr-1 relative rounded-sm flex items-center justify-center h-[30px] w-[30px]">
+          <View className="bg-black mr-1 relative rounded-sm flex items-center justify-center h-[30px] w-[30px]">
             <TouchableOpacity onPress={() => setMenuOpened(true)}>
               <MaterialIcons name="more-vert" size={24} color="black" />
             </TouchableOpacity>
           </View>
-
           <Modal transparent={true} visible={menuOpened} animationType="fade">
             <Pressable
               style={{
@@ -150,6 +164,8 @@ export default function SpaceCard({ space, canEdit = false }) {
           />
         </View>
       )}
-    </View>
+    </LinearGradient>
   );
-}
+};
+
+export default SpaceRank;

@@ -262,7 +262,7 @@ const TabsLayout = () => {
                       <TouchableOpacity
                         className="flex-row items-center px-2 py-1"
                         onPress={() =>
-                          console.log("Spaces Leaderboard Pressed")
+                          router.push("/spacerank")
                         }
                       >
                         <View className="p-1 bg-secondary rounded-md mr-1">
