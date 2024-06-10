@@ -1,12 +1,25 @@
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
-import { ScrollView, View, Text, Switch, Image } from "react-native";
+import { ScrollView, View, Text, Switch } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TimerInput from "../../components/Focus/TimerInput";
 import { useTimer } from "../../context/TimerContext";
 
 const Settings = () => {
-  const { pomodoroTimer, shortBreakTimer, longBreakTimer } = useTimer(); // Use the useTimer hook
+  const {
+    defaultPomodoroTimer,
+    setDefaultPomodoroTimer,
+    defaultShortBreakTimer,
+    setDefaultShortBreakTimer,
+    defaultLongBreakTimer,
+    setDefaultLongBreakTimer,
+    isAutoStartBreaks,
+    setIsAutoStartBreaks,
+    isAutoStartPomodoros,
+    setIsAutoStartPomodoros,
+    isAutoSwitchTasks,
+    setIsAutoSwitchTasks,
+  } = useTimer(); // Use the useTimer hook
 
   return (
     <SafeAreaView className="bg-white" style={{ flex: 1 }}>
@@ -31,7 +44,11 @@ const Settings = () => {
                 >
                   Pomodoro
                 </Text>
-                <TimerInput initialValue={pomodoroTimer / 60} maxValue={25} />
+                <TimerInput
+                  initialValue={defaultPomodoroTimer / 60}
+                  maxValue={25}
+                  onChange={(value) => setDefaultPomodoroTimer(value * 60)}
+                />
               </View>
               <View className={"items-center"}>
                 <Text
@@ -41,7 +58,11 @@ const Settings = () => {
                 >
                   Short Break
                 </Text>
-                <TimerInput initialValue={shortBreakTimer / 60} maxValue={5} />
+                <TimerInput
+                  initialValue={defaultShortBreakTimer / 60}
+                  maxValue={5}
+                  onChange={(value) => setDefaultShortBreakTimer(value * 60)}
+                />
               </View>
               <View className={"items-center"}>
                 <Text
@@ -51,7 +72,11 @@ const Settings = () => {
                 >
                   Long Break
                 </Text>
-                <TimerInput initialValue={longBreakTimer / 60} minValue={5} />
+                <TimerInput
+                  initialValue={defaultLongBreakTimer / 60}
+                  minValue={5}
+                  onChange={(value) => setDefaultLongBreakTimer(value * 60)}
+                />
               </View>
             </View>
             <Text className="bg-yellow rounded-md px-2 py-1 font-ProximaNovaReg mt-3">
@@ -59,7 +84,6 @@ const Settings = () => {
               at once can actually make you less productive overall
             </Text>
           </LinearGradient>
-          {/* <View className={"flex-row justify-between items-center mb-4"}> */}
           <View
             style={{
               shadowColor: "#C2D9FF",
@@ -73,7 +97,12 @@ const Settings = () => {
             }
           >
             <Text className={"text-sm text-gray-800"}>Auto Start Breaks</Text>
-            <Switch />
+            <Switch
+              value={isAutoStartBreaks}
+              onValueChange={setIsAutoStartBreaks}
+              trackColor={{ false: "#767577", true: "#81b0ff" }}
+              thumbColor={isAutoStartBreaks ? "#190482" : "#f4f3f4"}
+            />
           </View>
           <View
             style={{
@@ -90,7 +119,12 @@ const Settings = () => {
             <Text className={"text-sm text-gray-800"}>
               Auto Start Pomodoros
             </Text>
-            <Switch />
+            <Switch
+              value={isAutoStartPomodoros}
+              onValueChange={setIsAutoStartPomodoros}
+              trackColor={{ false: "#767577", true: "#81b0ff" }}
+              thumbColor={isAutoStartPomodoros ? "#190482" : "#f4f3f4"}
+            />
           </View>
           {/* <View
             style={{
@@ -112,25 +146,21 @@ const Settings = () => {
               initialValue={2}
             />
           </View> */}
-
           <Text className="text-2xl font-RalewayBold color-[#190482] mt-5 mb-1">
             Task Settings
           </Text>
-          {/* <View
-            className={
-              "mt-2 h-[60px] flex-row items-center rounded-xl border border-secondary bg-[#FFFFFF] justify-between px-5"
-            }
-          >
-            <Text className={"text-sm text-gray-800"}>Auto Check Tasks</Text>
-            <Switch />
-          </View> */}
           <View
             className={
               "mt-2 h-[60px] flex-row items-center rounded-xl border border-secondary bg-[#FFFFFF] justify-between px-5"
             }
           >
             <Text className={"text-sm text-gray-800"}>Auto Switch Tasks</Text>
-            <Switch />
+            <Switch
+              value={isAutoSwitchTasks}
+              onValueChange={setIsAutoSwitchTasks}
+              trackColor={{ false: "#767577", true: "#81b0ff" }}
+              thumbColor={isAutoSwitchTasks ? "#190482" : "#f4f3f4"}
+            />
           </View>
         </View>
       </ScrollView>

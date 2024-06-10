@@ -12,6 +12,7 @@ const TabButtons = ({
   triggerReset,
   setSelectedTab,
   otherTextStyles,
+  selectedTab, // Add selectedTab to props
 }) => {
   const [dimensions, setDimensions] = useState({ height: 30, width: 300 });
 
@@ -35,6 +36,12 @@ const TabButtons = ({
       runOnJS(handlePress)(0);
     });
   }, [triggerReset]);
+
+  useEffect(() => {
+    tabPositionX.value = withTiming(buttonWidth * selectedTab, {}, () => {
+      runOnJS(handlePress)(selectedTab);
+    });
+  }, [selectedTab]); // Update animation when selectedTab changes
 
   const onTabPress = (index) => {
     tabPositionX.value = withTiming(buttonWidth * index, {}, () => {

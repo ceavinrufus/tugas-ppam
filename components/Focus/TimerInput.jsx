@@ -4,8 +4,9 @@ import React, { useState } from "react";
 export default function TimerInput({
   otherContainerStyles,
   initialValue,
-  minValue,
+  minValue = 0,
   maxValue,
+  onChange,
 }) {
   const [value, setValue] = useState(initialValue.toString());
 
@@ -19,6 +20,7 @@ export default function TimerInput({
         numericValue = minValue;
       }
       setValue(numericValue.toString());
+      if (onChange) onChange(numericValue.toString());
     }
   };
 

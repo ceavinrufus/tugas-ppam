@@ -65,6 +65,9 @@ const Focus = () => {
     pauseLongBreak,
     pauseNotFocus,
     currentTask,
+    isAutoStartBreaks,
+    isAutoStartPomodoros,
+    isAutoSwitchTasks,
   } = useTimer(); // Use the useTimer hook
 
   const buttons = [
@@ -97,6 +100,15 @@ const Focus = () => {
     return notFocusTimer;
   };
 
+  useEffect(() => {
+    if (isAutoStartBreaks && shortBreakTimer == 5 && isShortBreakTimerRunning) {
+      setSelectedTab(1); // Switch to short break tab
+    }
+    if (isAutoStartPomodoros && pomodoroTimer == 5 && isPomodoroTimerRunning) {
+      setSelectedTab(0); // Switch to pomodoro tab
+    }
+  }, [isShortBreakTimerRunning, isPomodoroTimerRunning]);
+
   return (
     <SafeAreaView className="bg-white" style={{ flex: 1 }}>
       <GestureHandlerRootView className="justify-center self-center h-full w-full">
@@ -109,7 +121,8 @@ const Focus = () => {
           >
             <TabButtons
               buttons={buttons}
-              setSelectedTab={(index) => setSelectedTab(index)}
+              setSelectedTab={setSelectedTab}
+              selectedTab={selectedTab} // Pass selectedTab to TabButtons
             />
 
             <View className="mt-7 items-center">
