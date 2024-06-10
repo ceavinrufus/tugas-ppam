@@ -1,5 +1,7 @@
 import { Text, View, TouchableOpacity } from "react-native";
 import React, { useState, useEffect } from "react";
+import { Text, View, TouchableOpacity } from "react-native";
+import React, { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import TabButtons from "../../components/TabButtons";
@@ -131,12 +133,14 @@ const Focus = () => {
                 {formatTime(getCurrentTimer())}
               </Text>
               {/* Task selected */}
+              {/* Task selected */}
               <LinearGradient
                 className="mt-5 rounded-md border-yellow border w-full"
                 colors={["#FCE07F", "#FACC2D", "#FFF"]}
                 locations={[0.5, 1, 1]}
               >
                 <Text className="font-ProximaNovaMedium bg-gradient-to-b from-[#FCE07F] to-yellow p-1 text-[10px] text-center">
+                  {currentTask ? currentTask.name : "No selected task"}
                   {currentTask ? currentTask.name : "No selected task"}
                 </Text>
               </LinearGradient>
@@ -157,6 +161,8 @@ const Focus = () => {
           </LinearGradient>
 
           {/* Tanggal */}
+
+          {/* Tanggal */}
           <View className="flex-1 mt-2">
             <View className="flex-row gap-2 mt-2">
               <View className="flex-1 flex-row items-center justify-between rounded-md h-[45px] bg-secondary px-3">
@@ -172,6 +178,22 @@ const Focus = () => {
                   <Entypo name="chevron-right" size={24} color="black" />
                 </TouchableOpacity>
               </View>
+              <TouchableOpacity
+                onPress={() => setModalVisible(true)}
+                className="w-1/6 h-[45px] justify-center bg-secondary items-center rounded-md"
+              >
+                {/* <FontAwesome name="sort-amount-asc" size={20} color="black" /> */}
+                <Entypo name="add-to-list" size={24} color="black" />
+              </TouchableOpacity>
+            </View>
+            <View className="mt-4 flex-1">
+              {tasks && (
+                <TasksContainer
+                  tasks={tasks}
+                  modalVisible={modalVisible}
+                  setModalVisible={setModalVisible}
+                />
+              )}
               <TouchableOpacity
                 onPress={() => setModalVisible(true)}
                 className="w-1/6 h-[45px] justify-center bg-secondary items-center rounded-md"

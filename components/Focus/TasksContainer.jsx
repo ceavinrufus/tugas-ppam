@@ -1,6 +1,9 @@
 import { View, Text } from "react-native";
 import React, { useEffect, useState } from "react";
 import MovableTask from "./MovableTask";
+import { View, Text } from "react-native";
+import React, { useEffect, useState } from "react";
+import MovableTask from "./MovableTask";
 import TaskModal from "./TaskModal";
 import Animated, {
   scrollTo,
@@ -9,6 +12,7 @@ import Animated, {
   useAnimatedScrollHandler,
   useSharedValue,
 } from "react-native-reanimated";
+import { useSchedule } from "../../context/ScheduleContext";
 import { useSchedule } from "../../context/ScheduleContext";
 
 function listToObject(list) {
@@ -26,6 +30,12 @@ export default function TasksContainer({ modalVisible, setModalVisible }) {
   const scrollViewRef = useAnimatedRef();
   const scrollY = useSharedValue(0);
   const [yPositionPage, setYPositionPage] = useState(0);
+  const [menuOpened, setMenuOpened] = useState(null);
+
+  // Biar kalo abis add/remove positions juga ikut keupdate
+  useEffect(() => {
+    positions.value = listToObject(tasks);
+  }, [tasks]);
   const [menuOpened, setMenuOpened] = useState(null);
 
   // Biar kalo abis add/remove positions juga ikut keupdate
@@ -68,6 +78,7 @@ export default function TasksContainer({ modalVisible, setModalVisible }) {
       className="flex-1"
     >
       <View className="border-t border-primary mt-1"></View>
+      <View className="border-t border-primary mt-1"></View>
       <Animated.ScrollView
         ref={scrollViewRef}
         onScroll={handleScroll}
@@ -76,6 +87,7 @@ export default function TasksContainer({ modalVisible, setModalVisible }) {
           backgroundColor: "transparent",
         }}
         contentContainerStyle={{
+          height: tasks.length * 64,
           height: tasks.length * 64,
         }}
       >
@@ -92,7 +104,21 @@ export default function TasksContainer({ modalVisible, setModalVisible }) {
               yPositionPage={yPositionPage}
             />
           ))}
+        {tasks &&
+          tasks.map((task) => (
+            <MovableTask
+              key={task.id}
+              task={task}
+              menuOpened={menuOpened}
+              setMenuOpened={setMenuOpened}
+              tasksCount={tasks.length}
+              positions={positions}
+              scrollY={scrollY}
+              yPositionPage={yPositionPage}
+            />
+          ))}
       </Animated.ScrollView>
+      <View className="border-t border-primary mb-3"></View>
       <View className="border-t border-primary mb-3"></View>
       <View className="flex-row items-center mb-3 justify-center border-secondary border-2 px-4 rounded-xl h-[40px]">
         <Text className="text-primary font-ProximaNovaReg text-xs">

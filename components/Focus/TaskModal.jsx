@@ -14,6 +14,9 @@ const data = [
   { label: "Low", value: 1 },
   { label: "Medium", value: 2 },
   { label: "High", value: 3 },
+  { label: "Low", value: 1 },
+  { label: "Medium", value: 2 },
+  { label: "High", value: 3 },
 ];
 
 export default function TaskModal({ task, modalVisible, setModalVisible }) {
@@ -175,6 +178,36 @@ export default function TaskModal({ task, modalVisible, setModalVisible }) {
               {errors.estimated_pomodoro}
             </TextProximaNovaReg>
           ) : null}
+            title={"Task Name"}
+            placeholder={"Ex: Math Project"}
+            value={taskName}
+            onChangeText={setTaskName}
+          />
+          {errors.name ? (
+            <TextProximaNovaReg className="text-red-500">
+              {errors.name}
+            </TextProximaNovaReg>
+          ) : null}
+          {/* Estimated Pomodoro */}
+          <Text className="text-base font-ProximaNovaMedium mt-4">
+            Estimated Pomodoro
+          </Text>
+          <Slider
+            style={{ width: "100%", height: 40 }}
+            minimumValue={0}
+            maximumValue={16}
+            step={1}
+            value={estimatedPomodoro}
+            onValueChange={setEstimatedPomodoro}
+            minimumTrackTintColor="#1EB1FC"
+            maximumTrackTintColor="#d3d3d3"
+          />
+          <Text className="self-center">{estimatedPomodoro}</Text>
+          {errors.estimated_pomodoro ? (
+            <TextProximaNovaReg className="text-red-500">
+              {errors.estimated_pomodoro}
+            </TextProximaNovaReg>
+          ) : null}
           {/* Dropdown */}
           <View className="space-y-2 mt-4">
             <Text className="text-base font-ProximaNovaMedium">
@@ -194,10 +227,17 @@ export default function TaskModal({ task, modalVisible, setModalVisible }) {
               valueField="value"
               placeholder="Low / Medium / High"
               value={priority}
+              value={priority}
               onChange={(item) => {
+                setPriority(item.value);
                 setPriority(item.value);
               }}
             />
+            {errors.priority ? (
+              <TextProximaNovaReg className="text-red-500">
+                {errors.priority}
+              </TextProximaNovaReg>
+            ) : null}
             {errors.priority ? (
               <TextProximaNovaReg className="text-red-500">
                 {errors.priority}
@@ -211,9 +251,13 @@ export default function TaskModal({ task, modalVisible, setModalVisible }) {
             placeholder={"Add additional notes about the task"}
             value={notes}
             onChangeText={setNotes}
+            value={notes}
+            onChangeText={setNotes}
           />
           <CustomButton
             containerStyles={"mt-6 border-primary border"}
+            title={task ? "Save Changes" : "Create Task"}
+            handlePress={task ? handleUpdateTask : handleCreateTask}
             title={task ? "Save Changes" : "Create Task"}
             handlePress={task ? handleUpdateTask : handleCreateTask}
           />

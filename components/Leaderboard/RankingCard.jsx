@@ -34,6 +34,7 @@ const RankingCard = ({ rank, user }) => {
       {/* Rank */}
       <LinearGradient
         className={`flex-row justify-center items-center`}
+        className={`flex-row justify-center items-center`}
         colors={rankGradientColors}
         locations={[0, 1, 1]}
       >

@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { router, SplashScreen, Stack } from "expo-router";
+import { router, SplashScreen, Stack } from "expo-router";
 import { useFonts, Raleway_700Bold } from "@expo-google-fonts/raleway";
 import { TimerProvider } from "../context/TimerContext";
 import { ScheduleProvider } from "../context/ScheduleContext";
@@ -12,6 +13,8 @@ SplashScreen.preventAutoHideAsync();
 
 const InitialLayout = () => {
   const { session, initialized } = useAuth();
+const InitialLayout = () => {
+  const { session, initialized } = useAuth();
 
   useEffect(() => {
     if (!initialized) return;
@@ -22,7 +25,16 @@ const InitialLayout = () => {
     } else if (!session) {
       // Redirect unauthenticated users to the login page
       router.replace("/");
+    if (!initialized) return;
+
+    if (session) {
+      // Redirect authenticated users to the focus page
+      router.replace("/(tabs)/focus");
+    } else if (!session) {
+      // Redirect unauthenticated users to the login page
+      router.replace("/");
     }
+  }, [session, initialized]);
   }, [session, initialized]);
 
   return (
@@ -48,6 +60,12 @@ const InitialLayout = () => {
       />
       <Stack.Screen
         name="(focus)"
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="+not-found"
         options={{
           headerShown: false,
         }}

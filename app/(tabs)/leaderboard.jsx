@@ -1,8 +1,10 @@
 import { View, SafeAreaView, ScrollView } from "react-native";
 import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import RankingCard from "../../components/Leaderboard/RankingCard";
 import ProfileCard from "../../components/Leaderboard/ProfileCard";
 import SearchBar from "../../components/SearchBar";
+import { supabase } from "../../lib/supabase";
 import { supabase } from "../../lib/supabase";
 
 const Leaderboard = () => {
@@ -77,6 +79,8 @@ const Leaderboard = () => {
     setRanks(
       users.filter((user) =>
         user.full_name.toLowerCase().includes(text.toLowerCase())
+      users.filter((user) =>
+        user.full_name.toLowerCase().includes(text.toLowerCase())
       )
     );
   };
@@ -87,6 +91,7 @@ const Leaderboard = () => {
         <View className="mt-[34px] flex-1">
           {/* User Leaderboard Card */}
           <ProfileCard />
+          <ProfileCard />
           <SearchBar
             value={searchText}
             placeholder={"Search for users"}
@@ -94,6 +99,10 @@ const Leaderboard = () => {
           />
           {/* Ranking */}
           <ScrollView style={{ marginVertical: 16 }}>
+            {ranks &&
+              ranks.map((user, index) => (
+                <RankingCard key={index} rank={user.rank} user={user} />
+              ))}
             {ranks &&
               ranks.map((user, index) => (
                 <RankingCard key={index} rank={user.rank} user={user} />

@@ -8,6 +8,7 @@ import { useSpace } from "../../context/SpaceContext";
 import { useAuth } from "../../context/AuthContext";
 
 const Spaces = () => {
+  const [triggerResetTab, setTriggerResetTab] = useState(false);
   const [selectedTab, setSelectedTab] = useState(0);
   const [searchText, setSearchText] = useState("");
   const { spaces, setSpaces } = useSpace();
@@ -61,8 +62,22 @@ const Spaces = () => {
     fetchSpaces();
   }, []);
 
+      if (error) {
+        console.error("Error fetching spaces:", error);
+      } else {
+        setSpaces(data);
+        setFilteredSpaces(data);
+        setSearchedSpaces(data);
+      }
+    };
+
+    fetchSpaces();
+  }, []);
+
   const handleChangeText = (text) => {
     setSearchText(text);
+    setSearchedSpaces(
+      filteredSpaces.filter((space) =>
     setSearchedSpaces(
       filteredSpaces.filter((space) =>
         space.name.toLowerCase().includes(text.toLowerCase())
@@ -92,6 +107,14 @@ const Spaces = () => {
             onChangeText={handleChangeText}
           />
           <ScrollView style={{ marginTop: 16 }}>
+            {searchedSpaces &&
+              searchedSpaces.map((space) => (
+                <SpaceCard
+                  canEdit={selectedTab == 2}
+                  key={space.id}
+                  space={space}
+                />
+              ))}
             {searchedSpaces &&
               searchedSpaces.map((space) => (
                 <SpaceCard

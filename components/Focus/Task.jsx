@@ -4,6 +4,9 @@ import {
   TouchableOpacity,
   Modal,
   Alert,
+  TouchableOpacity,
+  Modal,
+  Alert,
   Pressable,
 } from "react-native";
 import React, { useState, useEffect } from "react";
@@ -29,7 +32,37 @@ export function Task({ task, menuOpened, setMenuOpened }) {
         pauseTask();
       } else {
         startTask(task);
+        startTask(task);
       }
+    } else {
+      startTask(task);
+    }
+  };
+
+  const handleDeleteTask = async () => {
+    const { data, error } = await supabase
+      .from("tasks")
+      .delete()
+      .eq("id", task.id)
+      .select();
+
+    if (error) {
+      Alert.alert("Error", error.message);
+    } else {
+      Alert.alert("Success", "Task deleted!");
+      removeTask(data[0].id);
+
+      setMenuOpened(null);
+    }
+  };
+
+  useEffect(() => {
+    if (currentTask) {
+      if (currentTask.id === task.id) {
+        setEla(ela + 1);
+      }
+    }
+  }, [elapsedTime]);
     } else {
       startTask(task);
     }
@@ -113,6 +146,24 @@ export function Task({ task, menuOpened, setMenuOpened }) {
           >
             <MaterialIcons name="more-vert" size={24} color="black" />
           </TouchableOpacity>
+      <View className="flex-row items-center mr-[10px]">
+        <Text className="font-ProximaNovaMedium mr-2 text-grey w-[40px] text-right">
+          {Math.floor(ela / (60 * 25))}/{task.estimated_pomodoro}
+        </Text>
+
+        {/* More button */}
+        <View className="bg-secondary relative rounded-sm flex items-center justify-center h-[30px] w-[30px]">
+          <TouchableOpacity
+            onPress={() => {
+              if (menuOpened != task.id) {
+                setMenuOpened(task.id);
+              } else {
+                setMenuOpened(null);
+              }
+            }}
+          >
+            <MaterialIcons name="more-vert" size={24} color="black" />
+          </TouchableOpacity>
         </View>
         <Modal
           transparent={true}
@@ -167,7 +218,61 @@ export function Task({ task, menuOpened, setMenuOpened }) {
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
         />
+        <Modal
+          transparent={true}
+          visible={task.id == menuOpened}
+          animationType="fade"
+        >
+          <Pressable
+            style={{
+              flex: 1,
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            onPress={() => setMenuOpened(null)}
+          >
+            <View
+              style={{
+                width: "80%",
+                backgroundColor: "white",
+                borderRadius: 10,
+                padding: 10,
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.25,
+                shadowRadius: 4,
+                elevation: 5,
+              }}
+            >
+              <TouchableOpacity
+                className="flex-row items-center px-2 py-1"
+                onPress={() => setModalVisible(true)}
+              >
+                <View className="p-2 bg-secondary rounded-md">
+                  <FontAwesome6 name="edit" size={14} color="black" />
+                </View>
+                <Text className="ml-2">Edit task</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="flex-row items-center px-2 py-1"
+                onPress={handleDeleteTask}
+              >
+                <View className="p-2 bg-secondary rounded-md">
+                  <FontAwesome6 name="trash-can" size={16} color="black" />
+                </View>
+                <Text className="ml-2">Delete task</Text>
+              </TouchableOpacity>
+            </View>
+          </Pressable>
+        </Modal>
+        <TaskModal
+          task={task}
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+        />
       </View>
+    </View>
     </View>
   );
 }

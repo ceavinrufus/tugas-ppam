@@ -134,6 +134,7 @@ const Edit = () => {
     setIsSubmitting(false);
   };
 
+
   return (
     <SafeAreaView className="bg-white" style={{ flex: 1 }}>
       <ScrollView>
@@ -175,11 +176,16 @@ const Edit = () => {
           <FormField
             title="Name"
             placeholder={"Ex: John Doe"}
+            placeholder={"Ex: John Doe"}
             value={form.name}
             handleChangeText={(e) => setForm({ ...form, name: e })}
             otherStyles="mt-7"
           />
           <FormField
+            title="Nickname"
+            placeholder={"Ex: John"}
+            value={form.nickname}
+            handleChangeText={(e) => setForm({ ...form, nickname: e })}
             title="Nickname"
             placeholder={"Ex: John"}
             value={form.nickname}
@@ -216,10 +222,17 @@ const Edit = () => {
             placeholder={"Ex: johndoe@gmail.com"}
             value={email}
             readOnly={true}
+            placeholder={"Ex: johndoe@gmail.com"}
+            value={email}
+            readOnly={true}
             otherStyles="mt-4"
             keyboardType="email"
           /> */}
           <FormField
+            title="Bio"
+            placeholder={"Bio"}
+            value={form.bio}
+            handleChangeText={(e) => setForm({ ...form, bio: e })}
             title="Bio"
             placeholder={"Bio"}
             value={form.bio}
@@ -230,10 +243,16 @@ const Edit = () => {
             title={"Save Changes"}
             handlePress={submit}
             containerStyles="mt-7"
+            containerStyles="mt-7"
             isLoading={isSubmitting}
           />
           <CustomButton
             title={"Change Password"}
+            handlePress={() => {
+              router.push("/changepassword");
+            }}
+            containerStyles="mt-2 bg-white border border-primary"
+            textStyles={"text-primary"}
             handlePress={() => {
               router.push("/changepassword");
             }}
