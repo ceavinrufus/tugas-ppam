@@ -111,7 +111,7 @@ export default function MusicControl() {
           </TouchableOpacity>
           <View className="items-center relative">
             <Text className="font-ProximaNovaBold py-1 text-center">
-              {playing ? `Playing: ${playing.title}` : "No song selected"}
+              {playing ? `${playing.title}` : "No song selected"}
             </Text>
 
             <View className="flex-row items-center my-2">

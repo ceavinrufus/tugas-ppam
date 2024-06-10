@@ -78,7 +78,11 @@ const Spaces = () => {
     <SafeAreaView className="bg-white" style={{ flex: 1 }}>
       <View className="self-center px-4 w-[95%] h-full">
         <View className="flex-1 flex-col my-6">
-          <TabButtons buttons={buttons} setSelectedTab={handleTabChange} />
+          <TabButtons
+            buttons={buttons}
+            setSelectedTab={handleTabChange}
+            selectedTab={selectedTab}
+          />
           <Text className="font-RalewayBold text-2xl text-primary my-4">
             {buttons[selectedTab].title}
           </Text>
