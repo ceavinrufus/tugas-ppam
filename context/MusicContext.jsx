@@ -29,8 +29,7 @@ export const MusicProvider = ({ children }) => {
       duration: 5 * 60 + 6,
       copyright: "Lofium",
       file: require("../assets/songs/Lofi-Relax-Travel-by-Lofium.mp3"),
-    },
-    // {
+    }, // {
     //   id: 1,
     //   title: "Clock",
     //   duration: 3,
@@ -61,21 +60,28 @@ export const MusicProvider = ({ children }) => {
   const [isRepeat, setIsRepeat] = useState(false);
   const [isLoop, setIsLoop] = useState(false);
   const [playingDuration, setPlayingDuration] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   async function playSound(song) {
+    setIsLoading(true);
     // console.log("Playing Sound " + song.id);
+    setPlaying(song);
+    setPlayingDuration(0);
+    setElapsedTime(0);
+    setSound(null);
     const { sound: newSound } = await Audio.Sound.createAsync(song.file);
     const status = await newSound.getStatusAsync();
 
     setPlayingDuration(status.durationMillis / 1000);
     setSound(newSound);
-    setPlaying(song);
     setIsPlaying(true);
+    setIsLoading(false);
 
     await newSound.playAsync();
   }
 
   useEffect(() => {
+    // setIsLoading(false);
     return sound
       ? () => {
           // console.log("Unloading Sound");
@@ -101,14 +107,32 @@ export const MusicProvider = ({ children }) => {
   }
 
   function nextSong() {
-    const currentIndex = playing.id - 1;
-    const nextIndex = (currentIndex + 1) % songs.length;
+    const currentIndex = songs.findIndex((song) => song.id === playing.id);
+    let nextIndex;
+
+    if (isShuffle) {
+      do {
+        nextIndex = Math.floor(Math.random() * songs.length);
+      } while (nextIndex === currentIndex);
+    } else {
+      nextIndex = (currentIndex + 1) % songs.length;
+    }
+
     playSound(songs[nextIndex]);
   }
 
   function prevSong() {
-    const currentIndex = playing.id - 1;
-    const prevIndex = (currentIndex - 1 + songs.length) % songs.length;
+    const currentIndex = songs.findIndex((song) => song.id === playing.id);
+    let prevIndex;
+
+    if (isShuffle) {
+      do {
+        prevIndex = Math.floor(Math.random() * songs.length);
+      } while (prevIndex === currentIndex);
+    } else {
+      prevIndex = (currentIndex - 1 + songs.length) % songs.length;
+    }
+
     playSound(songs[prevIndex]);
   }
 
@@ -182,6 +206,7 @@ export const MusicProvider = ({ children }) => {
         isShuffle,
         isRepeat,
         isLoop,
+        isLoading,
         songs,
       }}
     >

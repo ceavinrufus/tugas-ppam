@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -31,6 +31,7 @@ export default function MusicControl() {
     isRepeat,
     isLoop,
     toggleRepeatLoop,
+    isLoading,
   } = useMusic();
 
   const [isMinimized, setIsMinimized] = useState(true);
@@ -74,6 +75,32 @@ export default function MusicControl() {
       },
     })
   ).current;
+
+  const loadingAnimation = React.useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (isLoading) {
+      Animated.loop(
+        Animated.timing(loadingAnimation, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: false,
+        })
+      ).start();
+    } else {
+      loadingAnimation.stopAnimation();
+    }
+  }, [isLoading, loadingAnimation]);
+
+  const loadingTranslateX = loadingAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, width - 60], // Menyesuaikan dengan lebar layar
+  });
+
+  const loadingWidth = loadingAnimation.interpolate({
+    inputRange: [0, 0.5, 1],
+    outputRange: ["10%", "50%", "10%"], // Membesar dan mengecil
+  });
 
   return (
     <View className="absolute bottom-2 w-full px-5">
@@ -156,17 +183,29 @@ export default function MusicControl() {
               <Text className="font-ProximaNovaMedium w-[48px]">
                 {formatTime(elapsedTime)}
               </Text>
-              <View className="h-2 bg-gray-300 rounded-full flex-grow overflow-hidden">
-                <View
-                  style={{
-                    width: `${
-                      playingDuration !== 0
-                        ? (elapsedTime / playingDuration) * 100
-                        : 0
-                    }%`,
-                  }}
-                  className="h-full bg-primary rounded-full"
-                />
+              <View className="h-2 bg-gray-300 rounded-full flex-grow overflow-hidden relative">
+                {/* Duration Bar */}
+                {isLoading ? (
+                  <Animated.View
+                    style={{
+                      width: loadingWidth,
+                      transform: [{ translateX: loadingTranslateX }],
+                      position: "absolute",
+                    }}
+                    className="h-full bg-gray-400 rounded-full"
+                  />
+                ) : (
+                  <View
+                    style={{
+                      width: `${
+                        playingDuration !== 0
+                          ? (elapsedTime / playingDuration) * 100
+                          : 0
+                      }%`,
+                    }}
+                    className="h-full bg-primary rounded-full"
+                  />
+                )}
               </View>
               <Text className="font-ProximaNovaMedium w-[48px] text-right">
                 {formatTime(playingDuration)}
