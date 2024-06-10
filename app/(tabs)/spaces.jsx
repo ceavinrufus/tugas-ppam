@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { View, SafeAreaView, ScrollView, Text } from "react-native";
 import { supabase } from "../../lib/supabase";
-
 import SearchBar from "../../components/SearchBar";
 import SpaceCard from "../../components/Space/SpaceCard";
 import TabButtons from "../../components/TabButtons";
+import { useSpace } from "../../context/SpaceContext";
+import { useAuth } from "../../context/AuthContext";
 
 const Spaces = () => {
   const [selectedTab, setSelectedTab] = useState(0);
   const [searchText, setSearchText] = useState("");
-  const [spaces, setSpaces] = useState([]);
-  const [defaultSpaces, setDefaultSpaces] = useState([]);
+  const { spaces, setSpaces } = useSpace();
+  const [searchedSpaces, setSearchedSpaces] = useState([]);
+  const [filteredSpaces, setFilteredSpaces] = useState([]);
+  const { user } = useAuth();
 
   const buttons = [
     { title: "Explore Spaces" },
@@ -19,45 +22,49 @@ const Spaces = () => {
   ];
 
   useEffect(() => {
+    const generateTabContent = async () => {
+      if (selectedTab === 0) {
+        setFilteredSpaces(spaces);
+        setSearchedSpaces(spaces);
+      } else if (selectedTab === 1 && user.id) {
+        setFilteredSpaces(
+          spaces.filter((space) => space.members.includes(user.id))
+        );
+        setSearchedSpaces(
+          spaces.filter((space) => space.members.includes(user.id))
+        );
+      } else if (selectedTab === 2 && user.id) {
+        setFilteredSpaces(
+          spaces.filter((space) => space.created_by?.includes(user.id))
+        );
+        setSearchedSpaces(
+          spaces.filter((space) => space.created_by?.includes(user.id))
+        );
+      }
+    };
+    generateTabContent();
+  }, [selectedTab, spaces]);
+
+  useEffect(() => {
+    const fetchSpaces = async () => {
+      const { data, error } = await supabase.from("spaces").select();
+
+      if (error) {
+        console.error("Error fetching spaces:", error);
+      } else {
+        setSpaces(data);
+        setFilteredSpaces(data);
+        setSearchedSpaces(data);
+      }
+    };
+
     fetchSpaces();
-  }, [selectedTab]);
+  }, []);
 
-  const fetchSpaces = async () => {
-    let data, error;
-    ({
-      data: { user },
-    } = await supabase.auth.getUser());
-
-    if (selectedTab === 0) {
-      ({ data, error } = await supabase.from("spaces").select());
-    } else if (selectedTab === 1 && user.id) {
-      ({ data, error } = await supabase
-        .from("space_members")
-        .select("space_id")
-        .eq("user_id", user.id));
-      const spaceFilter = data.map((obj) => obj.space_id);
-      ({ data, error } = await supabase
-        .from("spaces")
-        .select()
-        .in("id", spaceFilter));
-    } else if (selectedTab === 2 && user.id) {
-      ({ data, error } = await supabase
-        .from("spaces")
-        .select()
-        .eq("created_by", user.id));
-    }
-
-    if (error) {
-      console.error("Error fetching spaces:", error);
-    } else {
-      setSpaces(data);
-      setDefaultSpaces(data);
-    }
-  };
   const handleChangeText = (text) => {
     setSearchText(text);
-    setSpaces(
-      defaultSpaces.filter((space) =>
+    setSearchedSpaces(
+      filteredSpaces.filter((space) =>
         space.name.toLowerCase().includes(text.toLowerCase())
       )
     );
@@ -68,10 +75,14 @@ const Spaces = () => {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView className="bg-white" style={{ flex: 1 }}>
       <View className="self-center px-4 w-[95%] h-full">
         <View className="flex-1 flex-col my-6">
-          <TabButtons buttons={buttons} setSelectedTab={handleTabChange} />
+          <TabButtons
+            buttons={buttons}
+            setSelectedTab={handleTabChange}
+            selectedTab={selectedTab}
+          />
           <Text className="font-RalewayBold text-2xl text-primary my-4">
             {buttons[selectedTab].title}
           </Text>
@@ -81,9 +92,14 @@ const Spaces = () => {
             onChangeText={handleChangeText}
           />
           <ScrollView style={{ marginTop: 16 }}>
-            {spaces.map((space) => (
-              <SpaceCard key={space.id} space={space} />
-            ))}
+            {searchedSpaces &&
+              searchedSpaces.map((space) => (
+                <SpaceCard
+                  canEdit={selectedTab == 2}
+                  key={space.id}
+                  space={space}
+                />
+              ))}
           </ScrollView>
         </View>
       </View>

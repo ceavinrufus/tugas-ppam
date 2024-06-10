@@ -1,5 +1,5 @@
 import { View, Text, Pressable } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Animated, {
   runOnJS,
   useAnimatedStyle,
@@ -7,7 +7,13 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-const TabButtons = ({ buttons, setSelectedTab, otherTextStyles }) => {
+const TabButtons = ({
+  buttons,
+  triggerReset,
+  setSelectedTab,
+  otherTextStyles,
+  selectedTab, // Add selectedTab to props
+}) => {
   const [dimensions, setDimensions] = useState({ height: 30, width: 300 });
 
   const buttonWidth = dimensions.width / buttons.length;
@@ -25,6 +31,18 @@ const TabButtons = ({ buttons, setSelectedTab, otherTextStyles }) => {
     setSelectedTab(index);
   };
 
+  useEffect(() => {
+    tabPositionX.value = withTiming(buttonWidth * 0, {}, () => {
+      runOnJS(handlePress)(0);
+    });
+  }, [triggerReset]);
+
+  useEffect(() => {
+    tabPositionX.value = withTiming(buttonWidth * selectedTab, {}, () => {
+      runOnJS(handlePress)(selectedTab);
+    });
+  }, [selectedTab]); // Update animation when selectedTab changes
+
   const onTabPress = (index) => {
     tabPositionX.value = withTiming(buttonWidth * index, {}, () => {
       runOnJS(handlePress)(index);
@@ -38,7 +56,7 @@ const TabButtons = ({ buttons, setSelectedTab, otherTextStyles }) => {
   });
 
   return (
-    <View className="bg-white rounded-lg justify-center">
+    <View className="bg-gray-100 rounded-lg justify-center">
       <Animated.View
         className="absolute bg-yellow rounded-lg"
         style={[

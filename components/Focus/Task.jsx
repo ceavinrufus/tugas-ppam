@@ -1,177 +1,173 @@
 import {
   Text,
-  Platform,
-  StatusBar,
   View,
+  TouchableOpacity,
+  Modal,
+  Alert,
   Pressable,
-  useWindowDimensions,
 } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import React, { useState } from "react";
-import { MaterialIcons } from "@expo/vector-icons";
-import Animated, {
-  cancelAnimation,
-  runOnJS,
-  useAnimatedGestureHandler,
-  useAnimatedReaction,
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-  withTiming,
-} from "react-native-reanimated";
-import { PanGestureHandler } from "react-native-gesture-handler";
-import * as Haptics from "expo-haptics";
-import { BlurView } from "expo-blur";
+import React, { useState, useEffect } from "react";
+import { MaterialIcons } from "react-native-vector-icons";
+import { useTimer } from "../../context/TimerContext";
+import { FontAwesome6 } from "@expo/vector-icons";
+import { useSchedule } from "../../context/ScheduleContext";
+import { supabase } from "../../lib/supabase";
+import TaskModal from "./TaskModal";
+import { formatTime } from "../../utils/timeHelper";
 
-function clamp(value, lowerBound, upperBound) {
-  "worklet";
-  return Math.max(lowerBound, Math.min(value, upperBound));
-}
+export function Task({ task, menuOpened, setMenuOpened }) {
+  const { currentTask, startTask, pauseTask, isRunning, elapsedTime } =
+    useTimer();
+  const isCurrentTask = currentTask && currentTask.id === task.id;
+  const [ela, setEla] = useState(task.elapsedTime);
+  const { removeTask } = useSchedule();
+  const [modalVisible, setModalVisible] = useState(false);
 
-function objectMove(object, from, to) {
-  "worklet";
-  const newObject = Object.assign({}, object);
-
-  for (const id in object) {
-    if (object[id] === from) {
-      newObject[id] = to;
-    }
-
-    if (object[id] === to) {
-      newObject[id] = from;
-    }
-  }
-
-  return newObject;
-}
-
-export default function MovableTask({
-  task,
-  tasksCount,
-  positions,
-  scrollY,
-  yPositionPage,
-}) {
-  const dimensions = useWindowDimensions();
-  const insets = useSafeAreaInsets();
-  const [moving, setMoving] = useState(false);
-  const top = useSharedValue(positions.value[task.id] * 72);
-
-  const SCROLL_HEIGHT_THRESHOLD = 72;
-
-  useAnimatedReaction(
-    () => positions.value[task.id],
-    (currentPosition, previousPosition) => {
-      if (currentPosition !== previousPosition) {
-        if (!moving) {
-          top.value = withSpring(currentPosition * 72);
-        }
-      }
-    },
-    [moving]
-  );
-
-  const gestureHandler = useAnimatedGestureHandler({
-    onStart() {
-      runOnJS(setMoving)(true);
-
-      if (Platform.OS === "ios") {
-        runOnJS(Haptics.impactAsync)(Haptics.ImpactFeedbackStyle.Medium);
-      }
-    },
-    onActive(event) {
-      const positionY =
-        event.absoluteY +
-        scrollY.value -
-        yPositionPage +
-        SCROLL_HEIGHT_THRESHOLD / 2;
-
-      if (positionY <= scrollY.value + SCROLL_HEIGHT_THRESHOLD) {
-        // Scroll up
-        scrollY.value = withTiming(0, { duration: 1500 });
-      } else if (
-        positionY >=
-        scrollY.value + dimensions.height - SCROLL_HEIGHT_THRESHOLD
-      ) {
-        // Scroll down
-        const contentHeight = tasksCount * 72;
-        const containerHeight = dimensions.height - insets.top - insets.bottom;
-        const maxScroll = Math.max(contentHeight - containerHeight, 0);
-        scrollY.value = withTiming(maxScroll, { duration: 1500 });
+  const handlePlayPause = () => {
+    if (currentTask) {
+      if (currentTask.id === task.id && isRunning) {
+        pauseTask();
       } else {
-        cancelAnimation(scrollY);
+        startTask(task);
       }
+    } else {
+      startTask(task);
+    }
+  };
 
-      top.value = positionY - 72;
+  const handleDeleteTask = async () => {
+    const { data, error } = await supabase
+      .from("tasks")
+      .delete()
+      .eq("id", task.id)
+      .select();
 
-      const newPosition = clamp(Math.floor(positionY / 72), 0, tasksCount - 1);
+    if (error) {
+      Alert.alert("Error", error.message);
+    } else {
+      Alert.alert("Success", "Task deleted!");
+      removeTask(data[0].id);
 
-      if (newPosition !== positions.value[task.id]) {
-        positions.value = objectMove(
-          positions.value,
-          positions.value[task.id],
-          newPosition
-        );
+      setMenuOpened(null);
+    }
+  };
 
-        if (Platform.OS === "ios") {
-          runOnJS(Haptics.impactAsync)(Haptics.ImpactFeedbackStyle.Light);
-        }
+  useEffect(() => {
+    if (currentTask) {
+      if (currentTask.id === task.id) {
+        setEla(ela + 1);
       }
-    },
-    onFinish() {
-      top.value = withSpring(positions.value[task.id] * 72);
-      runOnJS(setMoving)(false);
-    },
-  });
-
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      position: "absolute",
-      left: 0,
-      right: 0,
-      top: top.value,
-      borderRadius: 12,
-      zIndex: moving ? 1 : 0,
-      backgroundColor: "transparent",
-      shadowColor: "black",
-      shadowOpacity: withSpring(moving ? 0.2 : 0),
-      shadowRadius: 10,
-    };
-  }, [moving]);
+    }
+  }, [elapsedTime]);
 
   return (
-    <Animated.View
-      style={[animatedStyle, { shadowOffset: { height: 0, width: 0 } }]}
-    >
-      <BlurView intensity={moving ? 200 : 0}>
-        <View className="flex-row items-center justify-between border-secondary border-2 px-4 rounded-xl h-[60px]">
-          <Task task={task} />
-          <PanGestureHandler onGestureEvent={gestureHandler}>
-            <Animated.View className="absolute right-0 z-10">
-              <MaterialIcons name="drag-indicator" size={20} color="#807E78" />
-            </Animated.View>
-          </PanGestureHandler>
+    <View className="flex-row items-center gap-2">
+      <TouchableOpacity onPress={handlePlayPause}>
+        <MaterialIcons
+          name={
+            isCurrentTask && isRunning
+              ? "pause-circle-filled"
+              : "play-circle-filled"
+          }
+          size={32}
+          color="#190482"
+        />
+      </TouchableOpacity>
+      <View className="flex-1">
+        <View className="w-full">
+          <Text className="font-ProximaNovaBold">{task.name}</Text>
+          {isCurrentTask && (
+            <>
+              <Text className="font-ProximaNovaMedium">{formatTime(ela)}</Text>
+              <View className="h-2 w-full bg-gray-300 rounded-full overflow-hidden">
+                <View
+                  style={{
+                    width: `${
+                      task.estimated_pomodoro != 0
+                        ? (ela / (task.estimated_pomodoro * 60 * 25)) * 100
+                        : 0
+                    }%`,
+                  }}
+                  className="h-full bg-primary rounded-full"
+                />
+              </View>
+            </>
+          )}
         </View>
-      </BlurView>
-    </Animated.View>
-  );
-}
+      </View>
+      <View className="flex-row items-center mr-[10px]">
+        <Text className="font-ProximaNovaMedium mr-2 text-grey w-[40px] text-right">
+          {Math.floor(ela / (60 * 25))}/{task.estimated_pomodoro}
+        </Text>
 
-export function Task({ task }) {
-  return (
-    <>
-      <View className="flex-row items-center gap-2">
-        <Pressable>
-          <MaterialIcons name="play-circle-filled" size={32} color="#190482" />
-        </Pressable>
-        <Text className="font-ProximaNovaMedium">{task.name}</Text>
-      </View>
-      <View className="flex-row items-center gap-2 mr-[10px]">
-        <Text className="font-ProximaNovaMedium text-grey">0/2</Text>
-        <View className="bg-secondary rounded-sm flex items-center justify-center h-[30px] w-[30px]">
-          <MaterialIcons name="more-vert" size={24} color="#190482" />
+        {/* More button */}
+        <View className="bg-secondary relative rounded-sm flex items-center justify-center h-[30px] w-[30px]">
+          <TouchableOpacity
+            onPress={() => {
+              if (menuOpened != task.id) {
+                setMenuOpened(task.id);
+              } else {
+                setMenuOpened(null);
+              }
+            }}
+          >
+            <MaterialIcons name="more-vert" size={24} color="black" />
+          </TouchableOpacity>
         </View>
+        <Modal
+          transparent={true}
+          visible={task.id == menuOpened}
+          animationType="fade"
+        >
+          <Pressable
+            style={{
+              flex: 1,
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            onPress={() => setMenuOpened(null)}
+          >
+            <View
+              style={{
+                width: "80%",
+                backgroundColor: "white",
+                borderRadius: 10,
+                padding: 10,
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.25,
+                shadowRadius: 4,
+                elevation: 5,
+              }}
+            >
+              <TouchableOpacity
+                className="flex-row items-center px-2 py-1"
+                onPress={() => setModalVisible(true)}
+              >
+                <View className="p-2 bg-secondary rounded-md">
+                  <FontAwesome6 name="edit" size={14} color="black" />
+                </View>
+                <Text className="ml-2">Edit task</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="flex-row items-center px-2 py-1"
+                onPress={handleDeleteTask}
+              >
+                <View className="p-2 bg-secondary rounded-md">
+                  <FontAwesome6 name="trash-can" size={16} color="black" />
+                </View>
+                <Text className="ml-2">Delete task</Text>
+              </TouchableOpacity>
+            </View>
+          </Pressable>
+        </Modal>
+        <TaskModal
+          task={task}
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+        />
       </View>
-    </>
+    </View>
   );
 }

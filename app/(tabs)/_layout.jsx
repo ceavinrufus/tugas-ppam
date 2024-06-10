@@ -1,14 +1,27 @@
-import { Text, View, Pressable } from "react-native";
+import {
+  Text,
+  Alert,
+  View,
+  Pressable,
+  TouchableOpacity,
+  BackHandler,
+} from "react-native";
 import React, { useState, useEffect } from "react";
 import { SplashScreen, Tabs, useSegments } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { useFonts, Raleway_700Bold } from "@expo-google-fonts/raleway";
 import HamburgerButton from "../../components/HamburgerButton";
-import { FontAwesome5 } from "@expo/vector-icons";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { MaterialIcons } from "@expo/vector-icons";
+import {
+  MaterialIcons,
+  MaterialCommunityIcons,
+  FontAwesome,
+  FontAwesome5,
+  FontAwesome6,
+} from "@expo/vector-icons";
 import { router } from "expo-router";
-import { supabase } from "../../lib/supabase";
+import SpaceModal from "../../components/Space/SpaceModal";
+import { useAuth } from "../../context/AuthContext";
+import { useFocusEffect } from "@react-navigation/native";
 
 const TabIcon = ({ icon, color, name, focused }) => {
   return (
@@ -27,7 +40,9 @@ const TabIcon = ({ icon, color, name, focused }) => {
 
 const TabsLayout = () => {
   const [menuVisible, setMenuVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
   const segments = useSegments();
+  const { signOut } = useAuth();
 
   let [fontsLoaded, error] = useFonts({
     Raleway_700Bold,
@@ -35,6 +50,27 @@ const TabsLayout = () => {
     ProximaNovaBold: require("../../assets/fonts/ProximaNovaBold.otf"),
     ProximaNovaMedium: require("../../assets/fonts/ProximaNovaSemibold.otf"),
   });
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        Alert.alert("Exit App", "Do you want to exit?", [
+          {
+            text: "Cancel",
+            onPress: () => null,
+            style: "cancel",
+          },
+          { text: "YES", onPress: () => BackHandler.exitApp() },
+        ]);
+        return true;
+      };
+
+      BackHandler.addEventListener("hardwareBackPress", onBackPress);
+
+      return () =>
+        BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+    }, [])
+  );
 
   useEffect(() => {
     if (error) {
@@ -47,25 +83,6 @@ const TabsLayout = () => {
 
   const handleMenuPress = () => {
     setMenuVisible((prev) => !prev);
-  };
-
-  const doLogout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      Alert.alert(
-        "Logout failed!",
-        error.message,
-        [
-          {
-            text: "Cancel",
-            style: "cancel",
-          },
-        ],
-        {
-          cancelable: true,
-        }
-      );
-    }
   };
 
   useEffect(() => {
@@ -124,6 +141,20 @@ const TabsLayout = () => {
                   focused={focused}
                 />
               ),
+              headerRight: () => (
+                <View className="p-[10px] mr-4 bg-gray-100 rounded-md">
+                  <MaterialIcons
+                    name="group-add"
+                    size={24}
+                    color="black"
+                    onPress={() => setModalVisible(true)}
+                  />
+                  <SpaceModal
+                    modalVisible={modalVisible}
+                    setModalVisible={setModalVisible}
+                  />
+                </View>
+              ),
             }}
           />
           <Tabs.Screen
@@ -170,21 +201,38 @@ const TabsLayout = () => {
                 <View className="py-[10px] mr-4 bg-gray-100 rounded-md">
                   <HamburgerButton onPress={handleMenuPress} />
                   {menuVisible && (
-                    <View className="absolute top-12 right-0 bg-white rounded-md shadow-lg">
-                      <Pressable
-                        className="px-4 py-2"
+                    <View className="absolute top-12 right-0 border border-grey bg-white rounded-md shadow-lg">
+                      <TouchableOpacity
+                        className="flex-row items-center px-2 py-1"
                         onPress={() => {
                           router.push("/settings");
                         }}
                       >
-                        <Text>Settings</Text>
-                      </Pressable>
-                      <Pressable
-                        className="px-4 py-2"
-                        onPress={() => console.log("Music Pressed")}
+                        <View className="p-1 bg-secondary rounded-md mr-2">
+                          <MaterialIcons
+                            name="settings"
+                            size={16}
+                            color="black"
+                          />
+                        </View>
+                        <Text className="text-xs">Settings</Text>
+                      </TouchableOpacity>
+                      <View className="border-t border-grey"></View>
+                      <TouchableOpacity
+                        className="flex-row items-center px-2 py-1"
+                        onPress={() => {
+                          router.push("/music");
+                        }}
                       >
-                        <Text>Music</Text>
-                      </Pressable>
+                        <View className="p-1 bg-secondary rounded-md mr-2">
+                          <MaterialIcons
+                            name="music-note"
+                            size={16}
+                            color="black"
+                          />
+                        </View>
+                        <Text className="text-xs">Music</Text>
+                      </TouchableOpacity>
                     </View>
                   )}
                 </View>
@@ -210,19 +258,18 @@ const TabsLayout = () => {
                 <View className="py-[10px] mr-4 bg-gray-100 rounded-md">
                   <HamburgerButton onPress={handleMenuPress} />
                   {menuVisible && (
-                    <View className="absolute top-12 right-0 bg-white rounded-md shadow-lg">
-                      <Pressable
-                        className="px-4 py-2"
-                        onPress={() => console.log("Settings Pressed")}
+                    <View className="absolute top-12 right-0 border border-grey bg-white rounded-md shadow-lg">
+                      <TouchableOpacity
+                        className="flex-row items-center px-2 py-1"
+                        onPress={() =>
+                          console.log("Spaces Leaderboard Pressed")
+                        }
                       >
-                        <Text>Global Leaderboard</Text>
-                      </Pressable>
-                      <Pressable
-                        className="px-4 py-2"
-                        onPress={() => console.log("Music Pressed")}
-                      >
-                        <Text>Spaces Leaderboard</Text>
-                      </Pressable>
+                        <View className="p-1 bg-secondary rounded-md mr-1">
+                          <MaterialIcons name="group" size={16} color="black" />
+                        </View>
+                        <Text className="text-xs">Spaces Leaderboard</Text>
+                      </TouchableOpacity>
                     </View>
                   )}
                 </View>
@@ -250,7 +297,16 @@ const TabsLayout = () => {
                     name="logout"
                     size={24}
                     color="black"
-                    onPress={doLogout}
+                    onPress={() =>
+                      Alert.alert("Confirm logout", "Do you want to logout?", [
+                        {
+                          text: "Cancel",
+                          onPress: () => null,
+                          style: "cancel",
+                        },
+                        { text: "YES", onPress: () => signOut() },
+                      ])
+                    }
                   />
                 </View>
               ),

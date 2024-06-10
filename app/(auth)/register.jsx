@@ -31,8 +31,12 @@ const Register = () => {
   };
 
   const validatePassword = (password) => {
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-    return passwordRegex.test(password);
+    const passwordRegex = /(?=.*[a-zA-Z])(?=.*[0-9])/; // Lookahead assertions for at least one letter and one number
+    if (passwordRegex.test(password)) {
+      return password.length >= 8;
+    } else {
+      return false;
+    }
   };
 
   const submit = async () => {
@@ -82,22 +86,16 @@ const Register = () => {
     } = await supabase.auth.signUp({
       email: form.email,
       password: form.password,
+      options: {
+        data: {
+          full_name: form.name,
+          nickname: form.name.replace(/ .*/, ""),
+        },
+      },
     });
 
     if (error) {
-      Alert.alert(
-        "Register failed!",
-        error.message,
-        [
-          {
-            text: "Cancel",
-            style: "cancel",
-          },
-        ],
-        {
-          cancelable: true,
-        }
-      );
+      Alert.alert("Register failed!", error.message);
       setIsSubmitting(false);
     } else {
       if (!session)
@@ -120,7 +118,7 @@ const Register = () => {
   };
 
   return (
-    <SafeAreaView className="">
+    <SafeAreaView className="bg-white" style={{ flex: 1 }}>
       <ScrollView>
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}

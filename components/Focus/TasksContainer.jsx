@@ -1,9 +1,6 @@
-import { View, Text, ScrollView } from "react-native";
-import React, { useRef, useState } from "react";
-import { tasks } from "../../mocks/tasks";
-import MovableTask from "./Task";
-import CustomButton from "../CustomButton";
-import { MaterialIcons } from "@expo/vector-icons";
+import { View, Text } from "react-native";
+import React, { useEffect, useState } from "react";
+import MovableTask from "./MovableTask";
 import TaskModal from "./TaskModal";
 import Animated, {
   scrollTo,
@@ -12,25 +9,29 @@ import Animated, {
   useAnimatedScrollHandler,
   useSharedValue,
 } from "react-native-reanimated";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { useSchedule } from "../../context/ScheduleContext";
 
 function listToObject(list) {
   const values = Object.values(list);
   const object = {};
-
   for (let i = 0; i < values.length; i++) {
     object[values[i].id] = i;
   }
-
   return object;
 }
 
-export default function TasksContainer() {
-  const [modalVisible, setModalVisible] = useState(false);
+export default function TasksContainer({ modalVisible, setModalVisible }) {
+  const { tasks, schedule } = useSchedule(); // Use the tasks from context
   const positions = useSharedValue(listToObject(tasks));
   const scrollViewRef = useAnimatedRef();
   const scrollY = useSharedValue(0);
   const [yPositionPage, setYPositionPage] = useState(0);
+  const [menuOpened, setMenuOpened] = useState(null);
+
+  // Biar kalo abis add/remove positions juga ikut keupdate
+  useEffect(() => {
+    positions.value = listToObject(tasks);
+  }, [tasks]);
 
   useAnimatedReaction(
     () => scrollY.value,
@@ -41,6 +42,22 @@ export default function TasksContainer() {
     scrollY.value = event.contentOffset.y;
   });
 
+  const convertSecondsToReadableTime = (totalSeconds) => {
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    const hoursDisplay = `${hours}`.padStart(2, 0);
+    const minutesDisplay = `${minutes}`.padStart(2, 0);
+    const secondsDisplay = `${seconds}`.padStart(2, 0);
+
+    return [hoursDisplay, minutesDisplay, secondsDisplay]
+      .filter(Boolean)
+      .join(":");
+  };
+
+  if (!positions) return null;
+
   return (
     <View
       onLayout={(event) => {
@@ -50,41 +67,39 @@ export default function TasksContainer() {
       }}
       className="flex-1"
     >
+      <View className="border-t border-primary mt-1"></View>
       <Animated.ScrollView
         ref={scrollViewRef}
         onScroll={handleScroll}
         scrollEventThrottle={16}
         style={{
-          marginVertical: 4,
           backgroundColor: "transparent",
         }}
         contentContainerStyle={{
-          height: tasks.length * 72,
+          height: tasks.length * 64,
         }}
       >
-        {tasks.map((task) => (
-          <MovableTask
-            key={task.id}
-            task={task}
-            tasksCount={tasks.length}
-            positions={positions}
-            scrollY={scrollY}
-            yPositionPage={yPositionPage}
-          />
-        ))}
+        {tasks &&
+          tasks.map((task) => (
+            <MovableTask
+              key={task.id}
+              task={task}
+              menuOpened={menuOpened}
+              setMenuOpened={setMenuOpened}
+              tasksCount={tasks.length}
+              positions={positions}
+              scrollY={scrollY}
+              yPositionPage={yPositionPage}
+            />
+          ))}
       </Animated.ScrollView>
-      <CustomButton
-        title={"Add Task"}
-        containerStyles="bg-primary flex-row space-x-2 mt-3"
-        leftIcon={<MaterialIcons name="add-circle" size={20} color="white" />}
-        textStyles={"font-ProximaNovaBold"}
-        handlePress={() => setModalVisible(true)}
-      />
-      <View className="border-t border-primary my-3"></View>
+      <View className="border-t border-primary mb-3"></View>
       <View className="flex-row items-center mb-3 justify-center border-secondary border-2 px-4 rounded-xl h-[40px]">
         <Text className="text-primary font-ProximaNovaReg text-xs">
-          <Text className="font-ProximaNovaBold">Today's Focus Session: </Text>3
-          sessions / 01 : 15 : 00
+          <Text className="font-ProximaNovaBold">Today's Focus Session: </Text>
+          {schedule ? schedule.sessions : 0}{" "}
+          {schedule?.sessions != 1 ? "sessions" : "session"} /{" "}
+          {convertSecondsToReadableTime(schedule ? schedule.focus_time : 0)}
         </Text>
       </View>
       <TaskModal

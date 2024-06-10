@@ -1,14 +1,12 @@
 import { Alert, ScrollView, Text, View } from "react-native";
-import React, { useState } from "react";
-import { Redirect, router } from "expo-router";
+import React, { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import CustomButton from "../../components/CustomButton";
 import ProfileCard from "../../components/Profile/ProfileCard";
 import Menu from "../../components/Profile/Menu";
 
 const Profile = () => {
   return (
-    <SafeAreaView>
+    <SafeAreaView className="bg-white" style={{ flex: 1 }}>
       <ScrollView>
         <View className="self-center px-4 w-[95%] h-full">
           <ProfileCard />

@@ -11,6 +11,7 @@ const FormField = ({
   handleChangeText,
   otherStyles,
   required = true,
+  readOnly = false,
   ...props
 }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -25,7 +26,9 @@ const FormField = ({
       <View className="w-full h-11 px-4 bg-black-100 border border-lightgrey rounded-lg focus:border-yellow flex-row items-center">
         <TextInput
           className="flex-1 font-ProximaNovaReg"
-          selectionColor={"black"}
+          readOnly={readOnly}
+          selectionColor={"#99C3FF"}
+          cursorColor={"black"}
           value={value}
           placeholder={placeholder}
           placeholderTextColor={"#807E78"}
