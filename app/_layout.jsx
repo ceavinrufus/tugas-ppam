@@ -53,6 +53,12 @@ const InitialLayout = () => {
         }}
       />
       <Stack.Screen
+        name="(leaderboard)"
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
         name="+not-found"
         options={{
           headerShown: false,

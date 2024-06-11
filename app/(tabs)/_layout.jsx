@@ -261,9 +261,7 @@ const TabsLayout = () => {
                     <View className="absolute top-12 right-0 border border-grey bg-white rounded-md shadow-lg">
                       <TouchableOpacity
                         className="flex-row items-center px-2 py-1"
-                        onPress={() =>
-                          console.log("Spaces Leaderboard Pressed")
-                        }
+                        onPress={() => router.push("/spacerank")}
                       >
                         <View className="p-1 bg-secondary rounded-md mr-1">
                           <MaterialIcons name="group" size={16} color="black" />

@@ -1,9 +1,10 @@
-import { View, SafeAreaView, ScrollView } from "react-native";
+import { View, ScrollView } from "react-native";
 import React, { useState, useEffect } from "react";
 import RankingCard from "../../components/Leaderboard/RankingCard";
 import ProfileCard from "../../components/Leaderboard/ProfileCard";
 import SearchBar from "../../components/SearchBar";
 import { supabase } from "../../lib/supabase";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Leaderboard = () => {
   const [searchText, setSearchText] = useState("");
@@ -84,7 +85,7 @@ const Leaderboard = () => {
   return (
     <SafeAreaView className="bg-white" style={{ flex: 1 }}>
       <View className="self-center px-4 w-[95%] h-full">
-        <View className="mt-[34px] flex-1">
+        <View className="flex-1">
           {/* User Leaderboard Card */}
           <ProfileCard />
           <SearchBar

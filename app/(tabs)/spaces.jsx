@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { View, SafeAreaView, ScrollView, Text } from "react-native";
-import { supabase } from "../../lib/supabase";
 import SearchBar from "../../components/SearchBar";
 import SpaceCard from "../../components/Space/SpaceCard";
 import TabButtons from "../../components/TabButtons";
@@ -11,8 +10,8 @@ const Spaces = () => {
   const [selectedTab, setSelectedTab] = useState(0);
   const [searchText, setSearchText] = useState("");
   const { spaces, setSpaces } = useSpace();
-  const [searchedSpaces, setSearchedSpaces] = useState([]);
-  const [filteredSpaces, setFilteredSpaces] = useState([]);
+  const [searchedSpaces, setSearchedSpaces] = useState(spaces);
+  const [filteredSpaces, setFilteredSpaces] = useState(spaces);
   const { user } = useAuth();
 
   const buttons = [
@@ -44,22 +43,6 @@ const Spaces = () => {
     };
     generateTabContent();
   }, [selectedTab, spaces]);
-
-  useEffect(() => {
-    const fetchSpaces = async () => {
-      const { data, error } = await supabase.from("spaces").select();
-
-      if (error) {
-        console.error("Error fetching spaces:", error);
-      } else {
-        setSpaces(data);
-        setFilteredSpaces(data);
-        setSearchedSpaces(data);
-      }
-    };
-
-    fetchSpaces();
-  }, []);
 
   const handleChangeText = (text) => {
     setSearchText(text);
