@@ -56,9 +56,6 @@ const SpaceRank = () => {
     <SafeAreaView className="bg-white" style={{ flex: 1 }}>
       <View className="self-center px-4 w-[95%] h-full">
         <View className="flex-1">
-          <Text className="font-RalewayBold text-2xl text-primary mb-4">
-            Space Leaderboard
-          </Text>
           <ScrollView style={{ marginBottom: 16 }}>
             {spaces.map((space, index) => (
               <SpaceRankCard

@@ -242,7 +242,10 @@ const TabsLayout = () => {
           <Tabs.Screen
             name="(leaderboard)"
             options={{
-              title: "Leaderboard",
+              title:
+                segments[2] === "spacerank"
+                  ? "Space Leaderboard"
+                  : "User Leaderboard",
               headerShown: true,
               tabBarIcon: ({ color, focused }) => (
                 <TabIcon

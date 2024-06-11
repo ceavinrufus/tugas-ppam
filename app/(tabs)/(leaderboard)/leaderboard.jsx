@@ -86,9 +86,6 @@ const Leaderboard = () => {
     <SafeAreaView className="bg-white" style={{ flex: 1 }}>
       <View className="self-center px-4 w-[95%] h-full">
         <View className="flex-1">
-          <Text className="font-RalewayBold text-2xl text-primary mb-4">
-            User Leaderboard
-          </Text>
           {/* User Leaderboard Card */}
           <ProfileCard />
           <SearchBar
