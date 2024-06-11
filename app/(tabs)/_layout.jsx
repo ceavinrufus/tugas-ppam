@@ -1,11 +1,4 @@
-import {
-  Text,
-  Alert,
-  View,
-  Pressable,
-  TouchableOpacity,
-  BackHandler,
-} from "react-native";
+import { Text, Alert, View, TouchableOpacity, BackHandler } from "react-native";
 import React, { useState, useEffect } from "react";
 import { SplashScreen, Tabs, useSegments } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
@@ -14,14 +7,13 @@ import HamburgerButton from "../../components/HamburgerButton";
 import {
   MaterialIcons,
   MaterialCommunityIcons,
-  FontAwesome,
   FontAwesome5,
-  FontAwesome6,
 } from "@expo/vector-icons";
 import { router } from "expo-router";
 import SpaceModal from "../../components/Space/SpaceModal";
 import { useAuth } from "../../context/AuthContext";
 import { useFocusEffect } from "@react-navigation/native";
+import MusicControl from "../../components/Focus/MusicControl";
 
 const TabIcon = ({ icon, color, name, focused }) => {
   return (
@@ -314,6 +306,7 @@ const TabsLayout = () => {
           />
         </Tabs>
       </LinearGradient>
+      <MusicControl />
     </>
   );
 };

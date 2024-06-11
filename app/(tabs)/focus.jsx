@@ -1,4 +1,4 @@
-import { Text, View, TouchableOpacity } from "react-native";
+import { Text, View, TouchableOpacity, Alert } from "react-native";
 import React, { useState, useEffect, useRef } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
@@ -88,12 +88,19 @@ const Focus = () => {
   const formattedDate = getDayFormattedDate(new Date(targetDate));
 
   const handleStartSession = () => {
-    if (selectedTab === 0 && !isPomodoroTimerRunning) {
-      startTask(currentTask || tasks[0]);
-    } else if (selectedTab === 1 && !isShortBreakTimerRunning) {
-      startShortBreak();
-    } else if (selectedTab === 2 && !isLongBreakTimerRunning) {
-      startLongBreak();
+    if (currentTask) {
+      if (selectedTab === 0 && !isPomodoroTimerRunning) {
+        startTask(currentTask || tasks[0]);
+      } else if (selectedTab === 1 && !isShortBreakTimerRunning) {
+        startShortBreak();
+      } else if (selectedTab === 2 && !isLongBreakTimerRunning) {
+        startLongBreak();
+      }
+    } else {
+      Alert.alert(
+        "Can't start session!",
+        "Create a task before starting a session"
+      );
     }
   };
 
@@ -231,9 +238,6 @@ const Focus = () => {
 
             <View className="mt-7 items-center">
               {/* Display the appropriate timer */}
-              <Text className="text-2xl font-ProximaNovaBold">
-                {formatTime(notFocusTimer)}
-              </Text>
               <Text className="text-6xl font-ProximaNovaBold">
                 {formatTime(getCurrentTimer())}
               </Text>

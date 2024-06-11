@@ -35,8 +35,7 @@ export default function CustomPieChart({ data }) {
       hours > 0 ? `${hours} hour${hours !== 1 ? "s" : ""}` : "";
     const minutesDisplay =
       minutes > 0 ? `${minutes} min${minutes !== 1 ? "s" : ""}` : "";
-    const secondsDisplay =
-      seconds > 0 ? `${seconds} sec${seconds !== 1 ? "s" : ""}` : "";
+    const secondsDisplay = `${seconds} sec${seconds !== 1 ? "s" : ""}`;
 
     return [hoursDisplay, minutesDisplay, secondsDisplay]
       .filter(Boolean)
@@ -89,11 +88,11 @@ export default function CustomPieChart({ data }) {
       <View className="justify-center gap-2">
         {renderLegend(
           `Focus: ${convertSecondsToReadableTime(data[0].value)}`,
-          "#C2D9FF"
+          "#190482"
         )}
         {renderLegend(
           `Break: ${convertSecondsToReadableTime(data[1].value)}`,
-          "#190482"
+          "#C2D9FF"
         )}
         {renderLegend(
           `Not Focus: ${convertSecondsToReadableTime(data[2].value)}`,
