@@ -1,5 +1,5 @@
 import { Text, View, TouchableOpacity } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import TabButtons from "../../components/TabButtons";
@@ -27,6 +27,9 @@ const Focus = () => {
   );
   const { user } = useAuth();
   const [sessionRunning, setSessionRunning] = useState(false);
+  const [showStopConfirmation, setShowStopConfirmation] = useState(false);
+  const [countdown, setCountdown] = useState(10);
+  const countdownIntervalRef = useRef(null);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -59,7 +62,11 @@ const Focus = () => {
     isNotFocusTimerRunning,
     startTask,
     pauseTask,
+    resetTimers,
     startShortBreak,
+    setIsPomodoroTimerRunning,
+    setIsShortBreakTimerRunning,
+    setIsLongBreakTimerRunning,
     startLongBreak,
     startNotFocus,
     pauseShortBreak,
@@ -69,6 +76,9 @@ const Focus = () => {
     isAutoStartBreaks,
     isAutoStartPomodoros,
     isAutoSwitchTasks,
+    defaultPomodoroTimer,
+    defaultShortBreakTimer,
+    defaultLongBreakTimer,
   } = useTimer(); // Use the useTimer hook
 
   const buttons = [
@@ -91,10 +101,70 @@ const Focus = () => {
   };
 
   const handleStopSession = () => {
-    // Give user confirmation to stop session
-    // Countdown to 10 seconds
-    // If the countdown finished, update the elapsed data for each task to task database in supabase
-    // If the countdown finished, update all the column on schedules table in supabase
+    setShowStopConfirmation(true);
+    setIsPomodoroTimerRunning(false);
+    setIsShortBreakTimerRunning(false);
+    setIsLongBreakTimerRunning(false);
+    pauseTask();
+    setCountdown(10);
+
+    countdownIntervalRef.current = setInterval(() => {
+      setCountdown((prevCountdown) => {
+        if (prevCountdown <= 1) {
+          clearInterval(countdownIntervalRef.current);
+          updateSessionData();
+          resetTimers();
+          setShowStopConfirmation(false);
+        }
+        return prevCountdown - 1;
+      });
+    }, 1000);
+  };
+
+  const cancelStopSession = () => {
+    clearInterval(countdownIntervalRef.current);
+    setShowStopConfirmation(false);
+    setCountdown(10);
+  };
+
+  const updateSessionData = async () => {
+    try {
+      // TODO: Update elapsed time for each task
+      // for (const task of tasks) {
+      //   await supabase
+      //     .from("tasks")
+      //     .update({ elapsedTime: task.elapsedTime }) // Adjust as per your column names
+      //     .eq("id", task.id);
+      // }
+
+      // Update schedule data
+      const { data, error } = await supabase
+        .from("schedules")
+        .update({
+          focus_time: defaultPomodoroTimer - pomodoroTimer,
+          break_time:
+            defaultShortBreakTimer -
+            defaultLongBreakTimer -
+            shortBreakTimer +
+            longBreakTimer,
+          not_focus_time: notFocusTimer,
+          sessions: calculateSessions(), // Implement the logic for calculating sessions
+        })
+        .eq("user_id", user.id)
+        .eq("date", targetDate)
+        .select();
+    } catch (error) {
+      console.error("Error updating session data:", error);
+    }
+  };
+
+  const calculateSessions = () => {
+    // Calculate the number of sessions completed based on tasks and pomodoroTimer
+    let completedSessions = 0;
+    for (const task of tasks) {
+      completedSessions += Math.floor(task.elapsed_time / defaultPomodoroTimer);
+    }
+    return completedSessions;
   };
 
   const getCurrentTimer = () => {
@@ -112,7 +182,8 @@ const Focus = () => {
     setSessionRunning(
       (selectedTab == 0 && isPomodoroTimerRunning) ||
         (selectedTab == 1 && isShortBreakTimerRunning) ||
-        (selectedTab == 2 && isLongBreakTimerRunning)
+        (selectedTab == 2 && isLongBreakTimerRunning) ||
+        currentTask
     );
   }, [
     isPomodoroTimerRunning,
@@ -211,6 +282,26 @@ const Focus = () => {
           </View>
         </View>
       </GestureHandlerRootView>
+      {showStopConfirmation && (
+        <View
+          style={{ backgroundColor: "rgba(194, 217, 255, 0.5)" }}
+          className="absolute top-0 left-0 right-0 bottom-0 bg-opacity-50 flex justify-center items-center"
+        >
+          <View className="bg-white p-4 rounded-lg">
+            <Text className="text-lg font-RalewayBold">Stop Session?</Text>
+            <Text className="mt-2 font-ProximaNovaReg">
+              Session will be logged in {countdown} seconds.
+            </Text>
+            <View className="flex-row mt-4">
+              <CustomButton
+                title={"Cancel"}
+                handlePress={cancelStopSession}
+                containerStyles="bg-red-500 px-4 py-2 rounded-lg"
+              />
+            </View>
+          </View>
+        </View>
+      )}
     </SafeAreaView>
   );
 };

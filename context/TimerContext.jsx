@@ -215,9 +215,18 @@ export const TimerProvider = ({ children }) => {
     setIsLongBreakTimerRunning(false);
   };
 
+  const resetTimers = () => {
+    setPomodoroTimer(defaultPomodoroTimer);
+    setShortBreakTimer(defaultShortBreakTimer);
+    setLongBreakTimer(defaultLongBreakTimer);
+    setNotFocusTimer(0);
+    setCurrentTask(null);
+  };
+
   return (
     <TimerContext.Provider
       value={{
+        resetTimers,
         currentTask,
         startTask,
         pauseTask,
