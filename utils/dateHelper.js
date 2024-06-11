@@ -42,3 +42,14 @@ export const getDayFormattedDate = (date) => {
     }
   )} ${date.getFullYear()}`;
 };
+
+export const getStartOfWeek = (date) => {
+  const day = date.getDay();
+  const diff = date.getDate() - day; // Adjust back to Sunday
+  return new Date(date.setDate(diff));
+};
+
+export const getEndOfWeek = (date) => {
+  const startOfWeek = getStartOfWeek(date);
+  return new Date(startOfWeek.setDate(startOfWeek.getDate() + 6));
+};

@@ -1,4 +1,4 @@
-import { ScrollView, Text, View } from "react-native";
+import { ScrollView, Text, View, TextInput } from "react-native";
 import React, { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
@@ -7,7 +7,11 @@ import { supabase } from "../../lib/supabase";
 import CustomBarChart from "../../components/Analytics/CustomBarChart";
 import CustomPieChart from "../../components/Analytics/CustomPieChart";
 import CustomButton from "../../components/CustomButton";
-import { generateLocaleISODate, getNextDate } from "../../utils/dateHelper";
+import {
+  generateLocaleISODate,
+  getStartOfWeek,
+  getEndOfWeek,
+} from "../../utils/dateHelper";
 import { LinearGradient } from "expo-linear-gradient";
 
 const Analytics = () => {
@@ -16,11 +20,11 @@ const Analytics = () => {
   const [barData, setBarData] = useState([]);
   const currentDate = new Date();
   const [lowRange, setLowRange] = useState(
-    generateLocaleISODate(
-      new Date(currentDate.getTime() - 7 * 24 * 60 * 60 * 1000)
-    )
+    generateLocaleISODate(getStartOfWeek(currentDate))
   );
-  const [highRange, setHighRange] = useState(getNextDate(currentDate));
+  const [highRange, setHighRange] = useState(
+    generateLocaleISODate(getEndOfWeek(currentDate))
+  );
 
   useEffect(() => {
     const fetchSchedule = async () => {
@@ -43,7 +47,7 @@ const Analytics = () => {
     };
 
     fetchSchedule();
-  }, []);
+  }, [lowRange, highRange]);
 
   const generateWeeklyData = (data) => {
     const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -96,7 +100,7 @@ const Analytics = () => {
 
   const totalSessions = schedule.reduce((acc, item) => acc + item.sessions, 0);
   const totalAccess = schedule.length;
-  const totalStreak = calculateStreak(schedule); // TODO: Change the way to count streak
+  const totalStreak = calculateStreak(schedule);
   const totalFocus = schedule.reduce((acc, item) => acc + item.focus_time, 0);
   const totalNotFocus = schedule.reduce(
     (acc, item) => acc + item.not_focus_time,
@@ -113,10 +117,39 @@ const Analytics = () => {
   return (
     <SafeAreaView className="bg-white" style={{ flex: 1 }}>
       <ScrollView>
-        <View View className="justify-center self-center h-full px-4 w-[95%]">
+        <View className="justify-center self-center h-full px-4 w-[95%]">
           <Text className="text-2xl font-RalewayBold text-primary">
-            Overview
+            Weekly Overview
           </Text>
+
+          {/* Date Input Fields */}
+          <View className="flex-row justify-between mt-4">
+            <View className="flex-1 mr-2">
+              <Text className="text-sm font-RalewayBold text-primary">
+                Start Date
+              </Text>
+              <TextInput
+                value={lowRange}
+                readOnly
+                onChangeText={setLowRange}
+                placeholder="YYYY-MM-DD"
+                className="border border-gray-300 p-2 rounded-md"
+              />
+            </View>
+            <View className="flex-1 ml-2">
+              <Text className="text-sm font-RalewayBold text-primary">
+                End Date
+              </Text>
+              <TextInput
+                value={highRange}
+                readOnly
+                onChangeText={setHighRange}
+                placeholder="YYYY-MM-DD"
+                className="border border-gray-300 p-2 rounded-md"
+              />
+            </View>
+          </View>
+
           <LinearGradient
             className="mt-2 rounded-lg border-[#C2D9FF] border"
             colors={["#C2D9FF", "#DFEBFF", "#FFF"]}
@@ -186,7 +219,13 @@ const Analytics = () => {
             />
           </View>
           <View className="mt-2 items-center justify-center border-secondary border-2 pb-4 rounded-xl">
-            <CustomPieChart data={pieData} />
+            {totalFocus | totalBreak | totalNotFocus ? (
+              <CustomPieChart data={pieData} />
+            ) : (
+              <Text className="pt-4 font-ProximaNovaItalic">
+                You haven't done any sessions this week
+              </Text>
+            )}
           </View>
           <View className="mt-7"></View>
         </View>
