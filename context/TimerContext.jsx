@@ -41,12 +41,14 @@ export const TimerProvider = ({ children }) => {
   const longBreakTimerRef = useRef(null);
   const notFocusTimerRef = useRef(null);
 
+  // Handle Pomodoro Timer
   useEffect(() => {
     if (isPomodoroTimerRunning) {
       pomodoroTimerRef.current = setInterval(() => {
         setPomodoroTimer((prevTimer) => {
           if (prevTimer <= 1) {
             clearInterval(pomodoroTimerRef.current);
+            setIsPomodoroTimerRunning(false);
             if (isAutoStartBreaks) {
               startShortBreak();
             }
@@ -55,11 +57,20 @@ export const TimerProvider = ({ children }) => {
           return prevTimer - 1;
         });
       }, 1000);
-    } else if (isShortBreakTimerRunning) {
+    }
+    return () => {
+      clearInterval(pomodoroTimerRef.current);
+    };
+  }, [isPomodoroTimerRunning, isAutoStartBreaks]);
+
+  // Handle Short Break Timer
+  useEffect(() => {
+    if (isShortBreakTimerRunning) {
       shortBreakTimerRef.current = setInterval(() => {
         setShortBreakTimer((prevTimer) => {
           if (prevTimer <= 1) {
             clearInterval(shortBreakTimerRef.current);
+            setIsShortBreakTimerRunning(false);
             if (isAutoStartPomodoros) {
               startTask(currentTask || tasks[0]);
             }
@@ -68,26 +79,44 @@ export const TimerProvider = ({ children }) => {
           return prevTimer - 1;
         });
       }, 1000);
-    } else if (isLongBreakTimerRunning) {
+    }
+    return () => {
+      clearInterval(shortBreakTimerRef.current);
+    };
+  }, [isShortBreakTimerRunning, isAutoStartPomodoros, currentTask, tasks]);
+
+  // Handle Long Break Timer
+  useEffect(() => {
+    if (isLongBreakTimerRunning) {
       longBreakTimerRef.current = setInterval(() => {
         setLongBreakTimer((prevTimer) => {
           if (prevTimer <= 1) {
             clearInterval(longBreakTimerRef.current);
+            setIsLongBreakTimerRunning(false);
             return 0;
           }
           return prevTimer - 1;
         });
       }, 1000);
-    } else if (currentTask) {
+    }
+    return () => {
+      clearInterval(longBreakTimerRef.current);
+    };
+  }, [isLongBreakTimerRunning]);
+
+  // Handle Not Focus Timer
+  useEffect(() => {
+    if (
+      !isPomodoroTimerRunning &&
+      !isShortBreakTimerRunning &&
+      !isLongBreakTimerRunning &&
+      currentTask
+    ) {
       notFocusTimerRef.current = setInterval(() => {
         setNotFocusTimer((prevTimer) => prevTimer + 1);
       }, 1000);
     }
-
     return () => {
-      clearInterval(pomodoroTimerRef.current);
-      clearInterval(shortBreakTimerRef.current);
-      clearInterval(longBreakTimerRef.current);
       clearInterval(notFocusTimerRef.current);
     };
   }, [
@@ -95,8 +124,6 @@ export const TimerProvider = ({ children }) => {
     isShortBreakTimerRunning,
     isLongBreakTimerRunning,
     currentTask,
-    isAutoStartBreaks,
-    isAutoStartPomodoros,
   ]);
 
   useEffect(() => {

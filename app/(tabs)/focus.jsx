@@ -26,6 +26,7 @@ const Focus = () => {
     generateLocaleISODate(new Date())
   );
   const { user } = useAuth();
+  const [sessionRunning, setSessionRunning] = useState(false);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -79,14 +80,21 @@ const Focus = () => {
   // Format Day, Date Month Year
   const formattedDate = getDayFormattedDate(new Date(targetDate));
 
-  const handleStartPause = () => {
-    if (selectedTab === 0) {
-      isPomodoroTimerRunning ? pauseTask() : startTask(currentTask || tasks[0]);
-    } else if (selectedTab === 1) {
-      isShortBreakTimerRunning ? pauseShortBreak() : startShortBreak();
-    } else if (selectedTab === 2) {
-      isLongBreakTimerRunning ? pauseLongBreak() : startLongBreak();
+  const handleStartSession = () => {
+    if (selectedTab === 0 && !isPomodoroTimerRunning) {
+      startTask(currentTask || tasks[0]);
+    } else if (selectedTab === 1 && !isShortBreakTimerRunning) {
+      startShortBreak();
+    } else if (selectedTab === 2 && !isLongBreakTimerRunning) {
+      startLongBreak();
     }
+  };
+
+  const handleStopSession = () => {
+    // Give user confirmation to stop session
+    // Countdown to 10 seconds
+    // If the countdown finished, update the elapsed data for each task to task database in supabase
+    // If the countdown finished, update all the column on schedules table in supabase
   };
 
   const getCurrentTimer = () => {
@@ -99,6 +107,18 @@ const Focus = () => {
     }
     return notFocusTimer;
   };
+
+  useEffect(() => {
+    setSessionRunning(
+      (selectedTab == 0 && isPomodoroTimerRunning) ||
+        (selectedTab == 1 && isShortBreakTimerRunning) ||
+        (selectedTab == 2 && isLongBreakTimerRunning)
+    );
+  }, [
+    isPomodoroTimerRunning,
+    isShortBreakTimerRunning,
+    isPomodoroTimerRunning,
+  ]);
 
   useEffect(() => {
     if (isAutoStartBreaks && shortBreakTimer == 5 && isShortBreakTimerRunning) {
@@ -127,6 +147,9 @@ const Focus = () => {
 
             <View className="mt-7 items-center">
               {/* Display the appropriate timer */}
+              <Text className="text-2xl font-ProximaNovaBold">
+                {formatTime(notFocusTimer)}
+              </Text>
               <Text className="text-6xl font-ProximaNovaBold">
                 {formatTime(getCurrentTimer())}
               </Text>
@@ -142,14 +165,10 @@ const Focus = () => {
               </LinearGradient>
               {/* Start/Pause button */}
               <CustomButton
-                title={
-                  (selectedTab == 0 && isPomodoroTimerRunning) ||
-                  (selectedTab == 1 && isShortBreakTimerRunning) ||
-                  (selectedTab == 2 && isLongBreakTimerRunning)
-                    ? "Pause"
-                    : "Start"
+                title={sessionRunning ? "Stop Session" : "Start Session"}
+                handlePress={
+                  sessionRunning ? handleStopSession : handleStartSession
                 }
-                handlePress={handleStartPause}
                 containerStyles="mt-2 h-[30px] w-full rounded-md"
                 textStyles={"font-ProximaNovaBold text-xs"}
               />
