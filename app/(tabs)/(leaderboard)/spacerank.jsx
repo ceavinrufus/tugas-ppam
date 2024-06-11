@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { View, ScrollView } from "react-native";
-import SpaceRankCard from "../../components/Leaderboard/SpaceRankCard"; // Adjust the import path as necessary
+import { View, ScrollView, Text } from "react-native";
+import SpaceRankCard from "../../../components/Leaderboard/SpaceRankCard"; // Adjust the import path as necessary
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useSpace } from "../../context/SpaceContext";
-import { supabase } from "../../lib/supabase"; // Adjust the import path as necessary
+import { useSpace } from "../../../context/SpaceContext";
+import { supabase } from "../../../lib/supabase"; // Adjust the import path as necessary
 
 const SpaceRank = () => {
   const { spaces, setSpaces } = useSpace();
@@ -56,6 +56,9 @@ const SpaceRank = () => {
     <SafeAreaView className="bg-white" style={{ flex: 1 }}>
       <View className="self-center px-4 w-[95%] h-full">
         <View className="flex-1">
+          <Text className="font-RalewayBold text-2xl text-primary mb-4">
+            Space Leaderboard
+          </Text>
           <ScrollView style={{ marginBottom: 16 }}>
             {spaces.map((space, index) => (
               <SpaceRankCard

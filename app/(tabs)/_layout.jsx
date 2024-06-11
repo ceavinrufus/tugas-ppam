@@ -240,7 +240,7 @@ const TabsLayout = () => {
             }}
           />
           <Tabs.Screen
-            name="leaderboard"
+            name="(leaderboard)"
             options={{
               title: "Leaderboard",
               headerShown: true,
@@ -255,22 +255,21 @@ const TabsLayout = () => {
                 />
               ),
               headerRight: () => (
-                <View className="py-[10px] mr-4 bg-gray-100 rounded-md">
-                  <HamburgerButton onPress={handleMenuPress} />
-                  {menuVisible && (
-                    <View className="absolute top-12 right-0 border border-grey bg-white rounded-md shadow-lg">
-                      <TouchableOpacity
-                        className="flex-row items-center px-2 py-1"
-                        onPress={() => router.push("/spacerank")}
-                      >
-                        <View className="p-1 bg-secondary rounded-md mr-1">
-                          <MaterialIcons name="group" size={16} color="black" />
-                        </View>
-                        <Text className="text-xs">Spaces Leaderboard</Text>
-                      </TouchableOpacity>
-                    </View>
+                <TouchableOpacity className="p-[10px] mr-4 bg-gray-100 rounded-md">
+                  {segments[2] === "spacerank" ? (
+                    <FontAwesome5
+                      name="globe-asia"
+                      size={24}
+                      onPress={() => router.navigate("leaderboard")}
+                    />
+                  ) : (
+                    <MaterialCommunityIcons
+                      name="account-group"
+                      size={24}
+                      onPress={() => router.navigate("spacerank")}
+                    />
                   )}
-                </View>
+                </TouchableOpacity>
               ),
             }}
           />

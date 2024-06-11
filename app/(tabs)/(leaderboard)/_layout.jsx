@@ -6,9 +6,22 @@ const LeaderboardLayout = () => {
     <>
       <Stack>
         <Stack.Screen
+          name="leaderboard"
+          options={{
+            headerShown: false,
+            headerStyle: { backgroundColor: "#C2D9FF" },
+            headerTitle: "Spaces Leaderboard",
+            headerBackVisible: true,
+            headerTitleStyle: {
+              fontFamily: "ProximaNovaBold",
+              fontSize: 24,
+            },
+          }}
+        />
+        <Stack.Screen
           name="spacerank"
           options={{
-            headerShown: true,
+            headerShown: false,
             headerStyle: { backgroundColor: "#C2D9FF" },
             headerTitle: "Spaces Leaderboard",
             headerBackVisible: true,

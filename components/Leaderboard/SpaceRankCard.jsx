@@ -44,7 +44,7 @@ const SpaceRankCard = ({ rank, space, score }) => {
       >
         <Text className="text-md font-bold px-4">{rank}</Text>
         {/* Image */}
-        <View className={`border-secondary border-r-2 rounded-l-xl`}>
+        <View className={`${rankBorder} border-r rounded-l-xl`}>
           {space.image ? (
             <Image
               resizeMode="cover"
