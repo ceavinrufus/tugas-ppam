@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import CustomButton from "../CustomButton";
 import { LinearGradient } from "expo-linear-gradient";
 import { FontAwesome6, FontAwesome5 } from "@expo/vector-icons";
-import TextProximaNovaReg from "../TextProximaNovaReg";
+import { router } from "expo-router";
 import { supabase } from "../../lib/supabase"; // Import Supabase client
 import { Alert } from "react-native";
 import { useAuth } from "../../context/AuthContext";
@@ -148,7 +148,7 @@ export default function SpaceInfoModal({
                 <FontAwesome6 size={10} name="bolt" color="black" />
                 <Text className="ml-2 text-xs font-ProximaNovaMedium">
                   {space.sessions}{" "}
-                  {space.sessions != 1 ? "sessions" : "session"}
+                  {space.sessions != 1 ? "sessions" : "session"}/day
                 </Text>
               </View>
             </View>
@@ -167,13 +167,19 @@ export default function SpaceInfoModal({
 
           <View className="flex-row justify-between items-center">
             <CustomButton
-              containerStyles={"bg-white w-[49%] mt-2 border-primary border"}
+              containerStyles={"bg-white w-[32%] mt-2 border-primary border"}
               textStyles={"text-primary"}
               title={"Cancel"}
               handlePress={() => setModalVisible(!modalVisible)}
             />
             <CustomButton
-              containerStyles={`mt-2 w-[49%] border-primary border ${
+              containerStyles={"bg-white w-[32%] mt-2 border-primary border"}
+              textStyles={"text-primary"}
+              title={"See"}
+              handlePress={() => router.push("/" + space.id)}
+            />
+            <CustomButton
+              containerStyles={`mt-2 w-[32%] border-primary border ${
                 isJoined ? "bg-[#CC0000] border-0" : ""
               }`}
               title={isJoined ? "Leave" : "Join"}

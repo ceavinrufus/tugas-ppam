@@ -70,7 +70,7 @@ export default function SpaceCard({ space, canEdit = false }) {
         <View className="flex-row items-center">
           <FontAwesome6 size={10} name="bolt" color="black" />
           <Text className="ml-2 text-xs font-ProximaNovaMedium">
-            {space.sessions} {space.sessions != 1 ? "sessions" : "session"}
+            {space.sessions} {space.sessions != 1 ? "sessions" : "session"}/day
           </Text>
         </View>
       </View>
