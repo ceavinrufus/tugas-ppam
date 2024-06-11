@@ -6,7 +6,7 @@ import TabButtons from "../../components/TabButtons";
 import CustomButton from "../../components/CustomButton";
 import TasksContainer from "../../components/Focus/TasksContainer";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { useTimer } from "../../context/TimerContext"; // Import the useTimer hook
+import { useTimer } from "../../context/TimerContext";
 import { supabase } from "../../lib/supabase";
 import { useSchedule } from "../../context/ScheduleContext";
 import { Entypo } from "@expo/vector-icons";
@@ -14,8 +14,9 @@ import { useAuth } from "../../context/AuthContext";
 import {
   generateLocaleISODate,
   getDayFormattedDate,
+  getPreviousDate,
+  getNextDate,
 } from "../../utils/dateHelper";
-import { getPreviousDate, getNextDate } from "../../utils/dateHelper";
 import { formatTime } from "../../utils/timeHelper";
 
 const Focus = () => {
@@ -30,6 +31,8 @@ const Focus = () => {
   const [showStopConfirmation, setShowStopConfirmation] = useState(false);
   const [countdown, setCountdown] = useState(10);
   const countdownIntervalRef = useRef(null);
+  const [triggerResetTimer, setTriggerResetTimer] = useState(false);
+  const [tempTask, setTempTask] = useState(currentTask);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -49,7 +52,7 @@ const Focus = () => {
     };
 
     fetchTasks();
-  }, [targetDate]);
+  }, [targetDate, user]);
 
   const {
     pomodoroTimer,
@@ -73,7 +76,7 @@ const Focus = () => {
     defaultPomodoroTimer,
     defaultShortBreakTimer,
     defaultLongBreakTimer,
-  } = useTimer(); // Use the useTimer hook
+  } = useTimer();
 
   const buttons = [
     { title: "Pomodoro" },
@@ -99,15 +102,16 @@ const Focus = () => {
     setIsPomodoroTimerRunning(false);
     setIsShortBreakTimerRunning(false);
     setIsLongBreakTimerRunning(false);
+    setTempTask(currentTask);
     pauseTask();
-    setCountdown(1);
+    setCountdown(10);
 
     countdownIntervalRef.current = setInterval(() => {
       setCountdown((prevCountdown) => {
         if (prevCountdown <= 1) {
           clearInterval(countdownIntervalRef.current);
           updateSessionData();
-          resetTimers();
+          setTriggerResetTimer(!triggerResetTimer);
           setShowStopConfirmation(false);
         }
         return prevCountdown - 1;
@@ -117,6 +121,7 @@ const Focus = () => {
 
   const cancelStopSession = () => {
     clearInterval(countdownIntervalRef.current);
+    startTask(tempTask);
     setShowStopConfirmation(false);
     setCountdown(10);
   };
@@ -128,8 +133,7 @@ const Focus = () => {
         await supabase
           .from("tasks")
           .update({ elapsedTime: task.elapsedTime })
-          .eq("id", task.id)
-          .select();
+          .eq("id", task.id);
       }
 
       // Update schedule data
@@ -154,9 +158,7 @@ const Focus = () => {
     // Calculate the number of sessions completed based on tasks and pomodoroTimer
     let completedSessions = 0;
     for (const task of tasks) {
-      completedSessions += parseInt(
-        Math.floor(task.elapsedTime / defaultPomodoroTimer)
-      );
+      completedSessions += Math.floor(task.elapsedTime / defaultPomodoroTimer);
     }
     return completedSessions;
   };
@@ -173,26 +175,43 @@ const Focus = () => {
   };
 
   useEffect(() => {
+    resetTimers();
+  }, [triggerResetTimer]);
+
+  useEffect(() => {
     setSessionRunning(
-      (selectedTab == 0 && isPomodoroTimerRunning) ||
-        (selectedTab == 1 && isShortBreakTimerRunning) ||
-        (selectedTab == 2 && isLongBreakTimerRunning) ||
+      (selectedTab === 0 && isPomodoroTimerRunning) ||
+        (selectedTab === 1 && isShortBreakTimerRunning) ||
+        (selectedTab === 2 && isLongBreakTimerRunning) ||
         currentTask
     );
   }, [
     isPomodoroTimerRunning,
     isShortBreakTimerRunning,
-    isPomodoroTimerRunning,
+    isLongBreakTimerRunning,
+    currentTask,
+    selectedTab,
   ]);
 
   useEffect(() => {
-    if (isAutoStartBreaks && shortBreakTimer == 5 && isShortBreakTimerRunning) {
-      setSelectedTab(1); // Switch to short break tab
+    if (
+      isAutoStartBreaks &&
+      shortBreakTimer === 5 &&
+      isShortBreakTimerRunning
+    ) {
+      setSelectedTab(1);
     }
-    if (isAutoStartPomodoros && pomodoroTimer == 5 && isPomodoroTimerRunning) {
-      setSelectedTab(0); // Switch to pomodoro tab
+    if (isAutoStartPomodoros && pomodoroTimer === 5 && isPomodoroTimerRunning) {
+      setSelectedTab(0);
     }
-  }, [isShortBreakTimerRunning, isPomodoroTimerRunning]);
+  }, [
+    isShortBreakTimerRunning,
+    isPomodoroTimerRunning,
+    shortBreakTimer,
+    pomodoroTimer,
+    isAutoStartBreaks,
+    isAutoStartPomodoros,
+  ]);
 
   return (
     <SafeAreaView className="bg-white" style={{ flex: 1 }}>
