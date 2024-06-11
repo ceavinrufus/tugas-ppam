@@ -224,6 +224,16 @@ const Focus = () => {
     <SafeAreaView className="bg-white" style={{ flex: 1 }}>
       <GestureHandlerRootView className="justify-center self-center h-full w-full">
         <View className="self-center px-4 w-[95%] h-full">
+          <Text className="font-RalewayBold text-2xl">
+            Hello,{" "}
+            <Text className="font-RalewayBold text-primary text-2xl">
+              {user.user_metadata.nickname}
+            </Text>
+            !
+          </Text>
+          <Text className="font-ProximaNovaReg text-lg mb-2">
+            What do you want to do?
+          </Text>
           <LinearGradient
             className="rounded-lg border-[#FACC2D] border"
             colors={["#FACC2D", "#FBDB6A", "#FDEAA7", "#FFF"]}
@@ -280,7 +290,10 @@ const Focus = () => {
                 </TouchableOpacity>
               </View>
               <TouchableOpacity
-                onPress={() => setModalVisible(true)}
+                onPress={() => {
+                  setTargetDate(generateLocaleISODate(new Date()));
+                  setModalVisible(true);
+                }}
                 className="w-1/6 h-[45px] justify-center bg-secondary items-center rounded-md"
               >
                 {/* <FontAwesome name="sort-amount-asc" size={20} color="black" /> */}
