@@ -20,7 +20,7 @@ export function Task({ task, menuOpened, setMenuOpened }) {
     useTimer();
   const isCurrentTask = currentTask && currentTask.id === task.id;
   const [ela, setEla] = useState(task.elapsedTime);
-  const { removeTask } = useSchedule();
+  const { removeTask, updateTask } = useSchedule();
   const [modalVisible, setModalVisible] = useState(false);
 
   const handlePlayPause = () => {
@@ -56,6 +56,7 @@ export function Task({ task, menuOpened, setMenuOpened }) {
     if (currentTask) {
       if (currentTask.id === task.id) {
         setEla(ela + 1);
+        updateTask(task.id, { elapsedTime: ela + 1 }); // Update task.elapsedTime when paused
       }
     }
   }, [elapsedTime]);

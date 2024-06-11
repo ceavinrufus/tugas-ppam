@@ -59,7 +59,6 @@ const Focus = () => {
     isPomodoroTimerRunning,
     isShortBreakTimerRunning,
     isLongBreakTimerRunning,
-    isNotFocusTimerRunning,
     startTask,
     pauseTask,
     resetTimers,
@@ -68,14 +67,9 @@ const Focus = () => {
     setIsShortBreakTimerRunning,
     setIsLongBreakTimerRunning,
     startLongBreak,
-    startNotFocus,
-    pauseShortBreak,
-    pauseLongBreak,
-    pauseNotFocus,
     currentTask,
     isAutoStartBreaks,
     isAutoStartPomodoros,
-    isAutoSwitchTasks,
     defaultPomodoroTimer,
     defaultShortBreakTimer,
     defaultLongBreakTimer,
@@ -106,7 +100,7 @@ const Focus = () => {
     setIsShortBreakTimerRunning(false);
     setIsLongBreakTimerRunning(false);
     pauseTask();
-    setCountdown(10);
+    setCountdown(1);
 
     countdownIntervalRef.current = setInterval(() => {
       setCountdown((prevCountdown) => {
@@ -129,30 +123,28 @@ const Focus = () => {
 
   const updateSessionData = async () => {
     try {
-      // TODO: Update elapsed time for each task
-      // for (const task of tasks) {
-      //   await supabase
-      //     .from("tasks")
-      //     .update({ elapsedTime: task.elapsedTime }) // Adjust as per your column names
-      //     .eq("id", task.id);
-      // }
+      // Update elapsed time for each task
+      for (const task of tasks) {
+        await supabase
+          .from("tasks")
+          .update({ elapsedTime: task.elapsedTime })
+          .eq("id", task.id)
+          .select();
+      }
 
       // Update schedule data
-      const { data, error } = await supabase
-        .from("schedules")
-        .update({
-          focus_time: defaultPomodoroTimer - pomodoroTimer,
-          break_time:
-            defaultShortBreakTimer -
-            defaultLongBreakTimer -
-            shortBreakTimer +
-            longBreakTimer,
-          not_focus_time: notFocusTimer,
-          sessions: calculateSessions(), // Implement the logic for calculating sessions
-        })
-        .eq("user_id", user.id)
-        .eq("date", targetDate)
-        .select();
+      await supabase.rpc("increment_schedule", {
+        uid: user.id,
+        d: targetDate,
+        add_focus: defaultPomodoroTimer - pomodoroTimer,
+        add_break:
+          defaultShortBreakTimer +
+          defaultLongBreakTimer -
+          shortBreakTimer -
+          longBreakTimer,
+        add_not_focus: notFocusTimer,
+        add_sessions: calculateSessions(),
+      });
     } catch (error) {
       console.error("Error updating session data:", error);
     }
@@ -162,7 +154,9 @@ const Focus = () => {
     // Calculate the number of sessions completed based on tasks and pomodoroTimer
     let completedSessions = 0;
     for (const task of tasks) {
-      completedSessions += Math.floor(task.elapsed_time / defaultPomodoroTimer);
+      completedSessions += parseInt(
+        Math.floor(task.elapsedTime / defaultPomodoroTimer)
+      );
     }
     return completedSessions;
   };
