@@ -95,38 +95,44 @@ const Edit = () => {
       updated_at: new Date(),
     };
 
-    if (avatar) {
-      const base64img = await FileSystem.readAsStringAsync(avatar, {
-        encoding: "base64",
-      });
-      const filePath = user.id + "/" + Date.now() + ".jpg";
-
-      const { data, error } = await supabase.storage
-        .from("avatars")
-        .upload(filePath, decode(base64img), {
-          contentType: "image/jpg",
+    if (avatar && !avatar.startsWith("http")) {
+      try {
+        const base64img = await FileSystem.readAsStringAsync(avatar, {
+          encoding: "base64",
         });
+        const filePath = user.id + "/" + Date.now() + ".jpg";
 
-      if (error) {
-        Alert.alert("Error uploading avatar!", error);
+        const { data, error } = await supabase.storage
+          .from("avatars")
+          .upload(filePath, decode(base64img), {
+            contentType: "image/jpg",
+          });
+
+        if (error) {
+          Alert.alert("Error uploading avatar!", error.message);
+          setIsSubmitting(false);
+          return;
+        }
+
+        updates.avatar =
+          "https://mcycndeqnthjuhunlxda.supabase.co" +
+          "/storage/v1/object/public/avatars/" +
+          data.path;
+      } catch (error) {
+        Alert.alert("Error processing image", error.message);
         setIsSubmitting(false);
         return;
       }
-
-      updates.avatar =
-        process.env.EXPO_PUBLIC_SUPABASE_URL +
-        "/storage/v1/object/public/avatars/" +
-        data.path;
     }
 
-    ({ data, error } = await supabase
+    const { data, error } = await supabase
       .from("profiles")
       .update(updates)
       .eq("id", user.id)
-      .select());
+      .select();
 
     if (error) {
-      Alert.alert("Error updating profile!", error);
+      Alert.alert("Error updating profile!", error.message);
     } else {
       router.push("/profile");
     }
@@ -205,20 +211,7 @@ const Edit = () => {
                 setGender(item.value);
               }}
             />
-            {/* {errors.priority ? (
-              <TextProximaNovaReg className="text-red-500">
-                {errors.priority}
-              </TextProximaNovaReg>
-            ) : null} */}
           </View>
-          {/* <FormField
-            title="Email Address"
-            placeholder={"Ex: johndoe@gmail.com"}
-            value={email}
-            readOnly={true}
-            otherStyles="mt-4"
-            keyboardType="email"
-          /> */}
           <FormField
             title="Bio"
             placeholder={"Bio"}
@@ -247,6 +240,7 @@ const Edit = () => {
 };
 
 export default Edit;
+
 const styles = StyleSheet.create({
   modalView: {
     shadowColor: "#000",
